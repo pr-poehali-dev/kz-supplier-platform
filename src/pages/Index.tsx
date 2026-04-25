@@ -239,7 +239,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
               <button onClick={() => onNav("catalog")} className="btn-modern bg-foreground text-background font-medium px-7 py-3.5 rounded-2xl text-sm flex items-center gap-2 justify-center">
                 {t.hero.findSupplier} <Icon name="ArrowRight" size={16} />
               </button>
-              <button className="bg-white/70 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
+              <button onClick={() => onNav("addCompany")} className="bg-white/70 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
                 {t.hero.placeCompany}
               </button>
             </div>
