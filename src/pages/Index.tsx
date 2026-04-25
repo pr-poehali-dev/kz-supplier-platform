@@ -108,6 +108,24 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
+          <a
+            href="https://max.ru"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="MAX"
+            className="px-2.5 py-1.5 text-xs font-bold text-foreground hover:text-accent hover:bg-secondary/60 rounded-xl transition-colors border border-border"
+          >
+            MAX
+          </a>
+          <a
+            href="https://vk.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="VK"
+            className="p-2 text-muted-foreground hover:text-[#0077FF] hover:bg-secondary/60 rounded-xl transition-colors"
+          >
+            <Icon name="Send" fallback="Share2" size={18} />
+          </a>
           <button
             onClick={() => onNav("messages")}
             className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/60 rounded-xl transition-colors"
