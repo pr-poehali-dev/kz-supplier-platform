@@ -188,7 +188,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
               <div className="h-px w-8 bg-accent" />
               <span className="text-sm font-medium text-blue-300 uppercase tracking-widest">{t.hero.tag}</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6 font-ibm animate-fade-in-up animate-fade-in-up-delay-2">
+            <h1 className="text-4xl sm:text-5xl leading-tight mb-6 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 font-extrabold">
               {t.hero.title1}<br />
               <span className="text-blue-300">{t.hero.title2}</span>
             </h1>
