@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Список всех компаний",
+      "method": "GET",
+      "path": "/?all=1",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET без токена",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401
+    },
+    {
+      "name": "POST без токена",
+      "method": "POST",
+      "path": "/",
+      "body": {"name": "Test"},
+      "expectedStatus": 401
+    }
+  ]
+}

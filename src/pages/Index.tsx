@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Icon from "@/components/ui/icon";
 import { translations, type Lang, type Translation } from "@/lib/i18n";
+import AuthModal from "@/components/AuthModal";
+import AccountPage from "@/components/AccountPage";
+import { fetchMe, type User } from "@/lib/auth";
 
 const PRODUCTS_API = "https://functions.poehali.dev/0d3d03b7-73bc-4278-a3b4-b0d2196eea41";
 
@@ -19,7 +22,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -69,7 +72,7 @@ function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => voi
   );
 }
 
-function Navbar({ current, onNav, lang, setLang, t }: { current: Page; onNav: (p: Page) => void; lang: Lang; setLang: (l: Lang) => void; t: Translation }) {
+function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: Page; onNav: (p: Page) => void; lang: Lang; setLang: (l: Lang) => void; t: Translation; user: User | null; onLogin: () => void }) {
   const [open, setOpen] = useState(false);
   const links: { label: string; page: Page }[] = [
     { label: t.nav.home, page: "home" },
@@ -109,12 +112,23 @@ function Navbar({ current, onNav, lang, setLang, t }: { current: Page; onNav: (p
             <Icon name="MessageSquare" size={18} />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full pulse-glow"></span>
           </button>
-          <button className="text-sm font-medium text-foreground px-4 py-2 rounded-xl hover:bg-secondary/60 transition-colors">
-            {t.nav.login}
-          </button>
-          <button className="btn-modern text-sm font-medium bg-foreground text-background px-4 py-2 rounded-xl">
-            {t.nav.addCompany}
-          </button>
+          {user ? (
+            <button onClick={() => onNav("account")} className="text-sm font-medium text-foreground px-3 py-2 rounded-xl hover:bg-secondary/60 transition-colors flex items-center gap-2">
+              <span className="w-7 h-7 bg-gradient-to-br from-foreground to-foreground/80 text-white rounded-lg flex items-center justify-center text-xs font-bold">
+                {(user.name || user.email)[0].toUpperCase()}
+              </span>
+              <span className="max-w-[100px] truncate">{user.name || user.email.split("@")[0]}</span>
+            </button>
+          ) : (
+            <>
+              <button onClick={onLogin} className="text-sm font-medium text-foreground px-4 py-2 rounded-xl hover:bg-secondary/60 transition-colors">
+                {t.nav.login}
+              </button>
+              <button onClick={onLogin} className="btn-modern text-sm font-medium bg-foreground text-background px-4 py-2 rounded-xl">
+                {t.nav.addCompany}
+              </button>
+            </>
+          )}
         </div>
 
         <div className="md:hidden flex items-center gap-2">
@@ -365,9 +379,26 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
   );
 }
 
+type RealCompany = { id: number; name: string; logo_url: string; description: string; category: string; location: string; phone: string; email: string; website: string; products_count: number };
+
 function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Translation }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
+  const [realCompanies, setRealCompanies] = useState<RealCompany[]>([]);
+
+  useEffect(() => {
+    fetch("https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa?all=1")
+      .then((r) => r.json())
+      .then((d) => setRealCompanies(d.items || []))
+      .catch(() => setRealCompanies([]));
+  }, []);
+
+  const filteredReal = realCompanies.filter((c) => {
+    const q = search.toLowerCase();
+    const matchSearch = !q || c.name.toLowerCase().includes(q) || (c.category || "").toLowerCase().includes(q) || (c.description || "").toLowerCase().includes(q);
+    const matchCat = activeCategory === t.catalog.categories[0] || (c.category || "").includes(activeCategory);
+    return matchSearch && matchCat;
+  });
 
   const allIdx = baseSuppliers.map((_, i) => i);
   const filtered = allIdx.filter((i) => {
@@ -436,6 +467,23 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
             </select>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {filteredReal.map((c) => (
+              <div key={`real-${c.id}`} className="card-hover bg-white border border-border rounded-2xl p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md overflow-hidden">
+                    {c.logo_url ? <img src={c.logo_url} alt="" className="w-full h-full object-cover" /> : c.name[0].toUpperCase()}
+                  </div>
+                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Новый</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1 text-base">{c.name}</h3>
+                {c.category && <p className="text-xs text-accent font-medium mb-3">{c.category}</p>}
+                {c.description && <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{c.description}</p>}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4 flex-wrap">
+                  {c.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={12} />{c.location}</span>}
+                  {c.products_count > 0 && <span className="flex items-center gap-1.5"><Icon name="Package" size={12} />{c.products_count} тов.</span>}
+                </div>
+              </div>
+            ))}
             {filtered.map((i) => (
               <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />
             ))}
@@ -1082,7 +1130,13 @@ export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const [lang, setLang] = useState<Lang>("ru");
   const [activePostIndex, setActivePostIndex] = useState(0);
+  const [user, setUser] = useState<User | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
   const t = translations[lang];
+
+  useEffect(() => {
+    fetchMe().then(setUser);
+  }, []);
 
   const navigate = (p: Page) => {
     setPage(p);
@@ -1094,9 +1148,17 @@ export default function Index() {
     navigate("blogPost");
   };
 
+  const requireAuth = () => {
+    if (!user) {
+      setAuthOpen(true);
+    } else {
+      navigate("account");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background font-ibm">
-      <Navbar current={page} onNav={navigate} lang={lang} setLang={setLang} t={t} />
+      <Navbar current={page} onNav={navigate} lang={lang} setLang={setLang} t={t} user={user} onLogin={requireAuth} />
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
           {page === "home" && <HomePage onNav={navigate} t={t} />}
@@ -1108,9 +1170,12 @@ export default function Index() {
           {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
           {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
           {page === "contacts" && <ContactsPage t={t} />}
+          {page === "account" && user && <AccountPage user={user} onLogout={() => { setUser(null); navigate("home"); }} />}
+          {page === "account" && !user && <div className="max-w-xl mx-auto p-12 text-center"><p className="text-muted-foreground mb-4">Войди, чтобы открыть кабинет</p><button onClick={() => setAuthOpen(true)} className="btn-modern bg-foreground text-background px-6 py-3 rounded-xl text-sm font-medium">Войти</button></div>}
         </div>
       </main>
       <Footer onNav={navigate} t={t} />
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onSuccess={(u) => { setUser(u); setAuthOpen(false); navigate("account"); }} />}
     </div>
   );
 }

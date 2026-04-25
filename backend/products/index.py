@@ -6,7 +6,7 @@ from psycopg2.extras import RealDictCursor
 CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Auth-Token',
     'Access-Control-Max-Age': '86400',
     'Content-Type': 'application/json',
 }
@@ -29,21 +29,42 @@ def _esc(value):
     return f"'{s}'"
 
 
+def _user_id_from_token(token: str):
+    if not token:
+        return None
+    sql = f"SELECT user_id FROM {SCHEMA}.sessions WHERE token = {_esc(token)}"
+    with _conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            row = cur.fetchone()
+            return row[0] if row else None
+
+
 def handler(event: dict, context) -> dict:
-    """CRUD товаров для админки и каталога"""
+    """CRUD товаров с привязкой к пользователю"""
     method = event.get('httpMethod', 'GET')
 
     if method == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
 
+    headers = event.get('headers') or {}
+    token = headers.get('X-Auth-Token') or headers.get('x-auth-token')
+
     try:
         if method == 'GET':
             qs = event.get('queryStringParameters') or {}
+            mine = qs.get('mine') == '1'
             category = qs.get('category')
-            where = ''
+            where = []
             if category:
-                where = f"WHERE category = {_esc(category)}"
-            sql = f"SELECT id, title, category, price, currency, moq, description, image_url, supplier, in_stock, created_at FROM {SCHEMA}.products {where} ORDER BY created_at DESC"
+                where.append(f"category = {_esc(category)}")
+            if mine:
+                user_id = _user_id_from_token(token)
+                if not user_id:
+                    return {'statusCode': 401, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'unauthorized'})}
+                where.append(f"user_id = {_esc(user_id)}")
+            where_sql = ('WHERE ' + ' AND '.join(where)) if where else ''
+            sql = f"SELECT id, title, category, price, currency, moq, description, image_url, supplier, in_stock, user_id, created_at FROM {SCHEMA}.products {where_sql} ORDER BY created_at DESC"
             with _conn() as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(sql)
@@ -61,11 +82,13 @@ def handler(event: dict, context) -> dict:
                             'image_url': r['image_url'] or '',
                             'supplier': r['supplier'] or '',
                             'in_stock': r['in_stock'],
+                            'user_id': r['user_id'],
                             'created_at': r['created_at'].isoformat() if r['created_at'] else None,
                         })
             return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': json.dumps({'items': items})}
 
         body = json.loads(event.get('body') or '{}')
+        user_id = _user_id_from_token(token)
 
         if method == 'POST':
             title = body.get('title', '').strip()
@@ -80,8 +103,8 @@ def handler(event: dict, context) -> dict:
             supplier = body.get('supplier') or ''
             in_stock = bool(body.get('in_stock', True))
             sql = (
-                f"INSERT INTO {SCHEMA}.products (title, category, price, currency, moq, description, image_url, supplier, in_stock) "
-                f"VALUES ({_esc(title)}, {_esc(category)}, {_esc(price)}, {_esc(currency)}, {_esc(moq)}, {_esc(description)}, {_esc(image_url)}, {_esc(supplier)}, {_esc(in_stock)}) RETURNING id"
+                f"INSERT INTO {SCHEMA}.products (title, category, price, currency, moq, description, image_url, supplier, in_stock, user_id) "
+                f"VALUES ({_esc(title)}, {_esc(category)}, {_esc(price)}, {_esc(currency)}, {_esc(moq)}, {_esc(description)}, {_esc(image_url)}, {_esc(supplier)}, {_esc(in_stock)}, {_esc(user_id)}) RETURNING id"
             )
             with _conn() as conn:
                 with conn.cursor() as cur:
@@ -107,7 +130,8 @@ def handler(event: dict, context) -> dict:
             if not updates:
                 return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'no fields'})}
             updates.append('updated_at = NOW()')
-            sql = f"UPDATE {SCHEMA}.products SET {', '.join(updates)} WHERE id = {_esc(int(pid))}"
+            owner_check = f" AND user_id = {_esc(user_id)}" if user_id else ""
+            sql = f"UPDATE {SCHEMA}.products SET {', '.join(updates)} WHERE id = {_esc(int(pid))}{owner_check}"
             with _conn() as conn:
                 with conn.cursor() as cur:
                     cur.execute(sql)
@@ -118,7 +142,8 @@ def handler(event: dict, context) -> dict:
             pid = body.get('id')
             if not pid:
                 return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'id required'})}
-            sql = f"DELETE FROM {SCHEMA}.products WHERE id = {_esc(int(pid))}"
+            owner_check = f" AND user_id = {_esc(user_id)}" if user_id else ""
+            sql = f"DELETE FROM {SCHEMA}.products WHERE id = {_esc(int(pid))}{owner_check}"
             with _conn() as conn:
                 with conn.cursor() as cur:
                     cur.execute(sql)

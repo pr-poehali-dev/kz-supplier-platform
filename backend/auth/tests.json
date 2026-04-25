@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Регистрация без email",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "register", "email": "", "password": ""},
+      "expectedStatus": 400
+    },
+    {
+      "name": "Регистрация",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "register", "email": "test_lk_user@example.com", "password": "secret123", "name": "Тестовый юзер"},
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    }
+  ]
+}
