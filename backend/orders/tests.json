@@ -1,0 +1,49 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET orders list",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {"orders": "array"},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST create order",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "customer_name": "Иван Тест",
+        "customer_email": "test@example.com",
+        "customer_phone": "+79991234567",
+        "delivery_address": "Москва, ул. Тестовая, 1",
+        "comment": "Тестовый заказ",
+        "currency": "RUB",
+        "items": [
+          {"productId": 1, "title": "Тестовый товар", "price": 100, "currency": "RUB", "quantity": 2, "image_url": ""}
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {"status": "new"},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST empty cart returns 400",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "customer_name": "Иван",
+        "customer_email": "a@b.c",
+        "customer_phone": "+7",
+        "items": []
+      },
+      "expectedStatus": 400
+    }
+  ]
+}
