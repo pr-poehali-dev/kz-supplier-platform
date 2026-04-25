@@ -1042,8 +1042,15 @@ function ServicesPage({ t, onNav, onOpenService }: { t: Translation; onNav: (p: 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
         {t.services.items.map((s, i) => (
           <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6 flex flex-col">
-            <div className="w-14 h-14 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center mb-5">
-              <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${s.icon === "Taobao" ? "bg-gradient-to-br from-[#FF4400]/15 to-[#FF4400]/5" : "bg-gradient-to-br from-accent/15 to-accent/5"}`}>
+              {s.icon === "Taobao" ? (
+                <svg viewBox="0 0 64 64" width="28" height="28" xmlns="http://www.w3.org/2000/svg" aria-label="Taobao">
+                  <circle cx="32" cy="32" r="30" fill="#1E5BFF" />
+                  <text x="50%" y="54%" textAnchor="middle" dominantBaseline="middle" fontFamily="'IBM Plex Sans', system-ui, sans-serif" fontWeight="800" fontSize="22" fill="#ffffff">淘</text>
+                </svg>
+              ) : (
+                <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+              )}
             </div>
             <h3 className="font-semibold text-foreground mb-2 leading-snug text-lg">{s.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{s.desc}</p>
