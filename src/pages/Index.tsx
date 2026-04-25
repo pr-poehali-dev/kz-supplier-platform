@@ -380,56 +380,56 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold font-ibm mb-2">{t.catalog.title}</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+      <div className="mb-10">
+        <h1 className="text-4xl sm:text-5xl font-bold font-ibm mb-3 tracking-tight">{t.catalog.title}</h1>
         <p className="text-muted-foreground">{t.catalog.foundCount(baseSuppliers.length)}</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-64 flex-shrink-0">
-          <div className="bg-white border border-border rounded p-5 mb-4">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <aside className="lg:w-72 flex-shrink-0 space-y-4">
+          <div className="bg-white border border-border rounded-2xl p-5">
             <h3 className="font-semibold mb-4 text-sm">{t.catalog.searchTitle}</h3>
             <div className="relative">
-              <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Icon name="Search" size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input type="text" placeholder={t.catalog.searchPlaceholder} value={search} onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                className="w-full pl-10 pr-3 py-2.5 bg-secondary/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
             </div>
           </div>
 
-          <div className="bg-white border border-border rounded p-5 mb-4">
+          <div className="bg-white border border-border rounded-2xl p-5">
             <h3 className="font-semibold mb-4 text-sm">{t.catalog.categoriesTitle}</h3>
             <div className="flex flex-col gap-1">
               {t.catalog.categories.map((cat) => (
                 <button key={cat} onClick={() => setActiveCategory(cat)}
-                  className={`text-sm text-left px-3 py-2 rounded transition-colors ${activeCategory === cat ? "bg-accent text-white font-medium" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+                  className={`text-sm text-left px-3 py-2.5 rounded-xl transition-all ${activeCategory === cat ? "bg-foreground text-background font-medium" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
                   {cat}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="bg-white border border-border rounded p-5">
+          <div className="bg-white border border-border rounded-2xl p-5">
             <h3 className="font-semibold mb-4 text-sm">{t.catalog.filtersTitle}</h3>
-            <label className="flex items-center gap-2 text-sm mb-3 cursor-pointer">
-              <input type="checkbox" className="accent-accent" defaultChecked />
+            <label className="flex items-center gap-2.5 text-sm mb-3 cursor-pointer">
+              <input type="checkbox" className="accent-accent w-4 h-4 rounded" defaultChecked />
               <span>{t.catalog.onlyVerified}</span>
             </label>
-            <label className="flex items-center gap-2 text-sm mb-3 cursor-pointer">
-              <input type="checkbox" className="accent-accent" />
+            <label className="flex items-center gap-2.5 text-sm mb-3 cursor-pointer">
+              <input type="checkbox" className="accent-accent w-4 h-4 rounded" />
               <span>{t.catalog.ratingPlus}</span>
             </label>
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" className="accent-accent" />
+            <label className="flex items-center gap-2.5 text-sm cursor-pointer">
+              <input type="checkbox" className="accent-accent w-4 h-4 rounded" />
               <span>{t.catalog.sinceFilter}</span>
             </label>
           </div>
         </aside>
 
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-5">
-            <span className="text-sm text-muted-foreground">{filtered.length} {t.catalog.companies}</span>
-            <select className="text-sm border border-border rounded px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent/30">
+          <div className="flex items-center justify-between mb-6 bg-white border border-border rounded-2xl px-5 py-3">
+            <span className="text-sm text-muted-foreground font-medium">{filtered.length} {t.catalog.companies}</span>
+            <select className="text-sm bg-secondary/60 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent/30 cursor-pointer font-medium">
               <option>{t.catalog.sortRating}</option>
               <option>{t.catalog.sortReviews}</option>
               <option>{t.catalog.sortName}</option>
@@ -460,39 +460,41 @@ function SupplierProfilePage({ onBack, onMessage, t }: { onBack: () => void; onM
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
-      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors bg-white/50 hover:bg-white border border-border px-4 py-2 rounded-xl">
         <Icon name="ArrowLeft" size={16} />
         {t.profile.back}
       </button>
 
-      <div className="bg-white border border-border rounded mb-6 overflow-hidden">
-        <div className="h-32 bg-gradient-to-r from-navy-900 to-navy-700 relative">
-          <div className="absolute bottom-0 left-6 translate-y-1/2 w-20 h-20 bg-white border-4 border-white rounded shadow-lg flex items-center justify-center text-navy-900 font-bold text-2xl">
+      <div className="bg-white border border-border rounded-3xl mb-5 overflow-hidden">
+        <div className="h-36 gradient-bg relative overflow-hidden">
+          <div className="absolute inset-0 hero-grid opacity-50" />
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute bottom-0 left-8 translate-y-1/2 w-24 h-24 bg-white border-4 border-white rounded-2xl shadow-xl flex items-center justify-center text-foreground font-bold text-2xl">
             {meta.avatar}
           </div>
         </div>
-        <div className="pt-14 pb-6 px-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="pt-16 pb-7 px-7 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl font-bold font-ibm">{data.name}</h1>
-              <div className="flex items-center gap-1 text-emerald-600 text-sm font-medium">
-                <Icon name="BadgeCheck" size={16} />
+            <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight">{data.name}</h1>
+              <div className="flex items-center gap-1 text-emerald-700 text-xs font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                <Icon name="BadgeCheck" size={13} />
                 {t.profile.verified}
               </div>
             </div>
-            <p className="text-accent font-medium mb-2">{data.category}</p>
+            <p className="text-accent font-medium mb-3 text-sm">{data.category}</p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-              <span className="flex items-center gap-1"><Icon name="MapPin" size={14} />{data.location}</span>
-              <span className="flex items-center gap-1"><Icon name="Calendar" size={14} />{t.profile.since} {meta.since} {t.profile.year}</span>
-              <span className="flex items-center gap-1"><Icon name="Users" size={14} />{t.profile.employees}</span>
+              <span className="flex items-center gap-1.5"><Icon name="MapPin" size={14} />{data.location}</span>
+              <span className="flex items-center gap-1.5"><Icon name="Calendar" size={14} />{t.profile.since} {meta.since} {t.profile.year}</span>
+              <span className="flex items-center gap-1.5"><Icon name="Users" size={14} />{t.profile.employees}</span>
             </div>
           </div>
-          <div className="flex gap-3">
-            <button onClick={onMessage} className="flex items-center gap-2 bg-accent text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-500 transition-colors">
+          <div className="flex gap-2">
+            <button onClick={onMessage} className="btn-modern flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-xl text-sm font-medium">
               <Icon name="MessageSquare" size={16} />
               {t.profile.message}
             </button>
-            <button className="flex items-center gap-2 border border-border px-5 py-2.5 rounded text-sm font-medium hover:bg-secondary transition-colors">
+            <button className="flex items-center gap-2 bg-secondary/60 hover:bg-secondary px-5 py-3 rounded-xl text-sm font-medium transition-colors">
               <Icon name="Phone" size={16} />
               {t.profile.contacts}
             </button>
@@ -500,16 +502,18 @@ function SupplierProfilePage({ onBack, onMessage, t }: { onBack: () => void; onM
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
           { label: t.profile.stats.rating, value: "4.8", icon: "Star" },
           { label: t.profile.stats.reviews, value: "127", icon: "MessageSquare" },
           { label: t.profile.stats.deals, value: "1 840", icon: "Handshake" },
           { label: t.profile.stats.years, value: "11", icon: "TrendingUp" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-border rounded p-5">
+          <div key={stat.label} className="bg-white border border-border rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-2">
-              <Icon name={stat.icon} size={16} className="text-accent" fallback="Info" />
+              <div className="w-8 h-8 bg-accent/10 rounded-xl flex items-center justify-center">
+                <Icon name={stat.icon} size={14} className="text-accent" fallback="Info" />
+              </div>
               <span className="text-xs text-muted-foreground">{stat.label}</span>
             </div>
             <div className="text-2xl font-bold font-ibm">{stat.value}</div>
@@ -517,11 +521,11 @@ function SupplierProfilePage({ onBack, onMessage, t }: { onBack: () => void; onM
         ))}
       </div>
 
-      <div className="bg-white border border-border rounded overflow-hidden">
-        <div className="flex border-b border-border">
+      <div className="bg-white border border-border rounded-2xl overflow-hidden">
+        <div className="flex border-b border-border px-2 pt-2 gap-1">
           {(["about", "reviews", "contacts"] as const).map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-6 py-4 text-sm font-medium transition-colors ${activeTab === tab ? "text-accent border-b-2 border-accent" : "text-muted-foreground hover:text-foreground"}`}>
+              className={`px-5 py-3 text-sm font-medium rounded-xl transition-all ${activeTab === tab ? "bg-foreground text-background" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"}`}>
               {tab === "about" ? t.profile.tabs.about : tab === "reviews" ? `${t.profile.tabs.reviews} (${t.reviewsData.length})` : t.profile.tabs.contacts}
             </button>
           ))}
@@ -543,7 +547,7 @@ function SupplierProfilePage({ onBack, onMessage, t }: { onBack: () => void; onM
               <h3 className="font-semibold mb-4">{t.profile.certsTitle}</h3>
               <div className="flex flex-wrap gap-2">
                 {["ISO 9001:2015", "ISO 14001", "ГОСТ Р ИСО 9001", "Ростехнадзор"].map((cert) => (
-                  <div key={cert} className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-3 py-1.5 rounded font-medium">
+                  <div key={cert} className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs px-3 py-1.5 rounded-full font-medium">
                     <Icon name="Award" size={12} />
                     {cert}
                   </div>
@@ -573,10 +577,10 @@ function SupplierProfilePage({ onBack, onMessage, t }: { onBack: () => void; onM
           )}
 
           {activeTab === "contacts" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {contactsList.map((c) => (
-                <div key={c.label} className="flex items-start gap-3">
-                  <div className="w-9 h-9 bg-secondary rounded flex items-center justify-center flex-shrink-0">
+                <div key={c.label} className="flex items-start gap-3 bg-secondary/40 p-4 rounded-2xl">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
                     <Icon name={c.icon} size={16} className="text-accent" fallback="Info" />
                   </div>
                   <div>
@@ -613,31 +617,31 @@ function MessagesPage({ t }: { t: Translation }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
-      <h1 className="text-3xl font-bold font-ibm mb-6">{t.messages.title}</h1>
-      <div className="bg-white border border-border rounded overflow-hidden flex h-[600px]">
-        <div className="w-72 flex-shrink-0 border-r border-border flex flex-col">
-          <div className="p-4 border-b border-border">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+      <h1 className="text-4xl sm:text-5xl font-bold font-ibm mb-8 tracking-tight">{t.messages.title}</h1>
+      <div className="bg-white border border-border rounded-3xl overflow-hidden flex h-[640px]">
+        <div className="w-80 flex-shrink-0 border-r border-border flex flex-col bg-secondary/30">
+          <div className="p-4">
             <div className="relative">
-              <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input type="text" placeholder={t.messages.searchPlaceholder} className="w-full pl-9 pr-3 py-2 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+              <Icon name="Search" size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input type="text" placeholder={t.messages.searchPlaceholder} className="w-full pl-10 pr-3 py-2.5 bg-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto px-2 pb-2">
             {chatList.map((m) => (
               <button key={m.id} onClick={() => setActiveChat(m)}
-                className={`w-full text-left p-4 border-b border-border transition-colors ${activeChat.id === m.id ? "bg-accent/5 border-l-2 border-l-accent" : "hover:bg-secondary/50"}`}>
+                className={`w-full text-left p-3 rounded-2xl mb-1 transition-all ${activeChat.id === m.id ? "bg-white shadow-sm" : "hover:bg-white/60"}`}>
                 <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-navy-900 text-white rounded-full flex items-center justify-center text-xs font-bold">{m.avatar}</div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 bg-gradient-to-br from-foreground to-foreground/80 text-white rounded-xl flex items-center justify-center text-xs font-bold shadow-sm">{m.avatar}</div>
                     <span className="text-sm font-medium">{m.from}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {m.unread > 0 && <span className="w-5 h-5 bg-accent text-white rounded-full text-xs flex items-center justify-center font-medium">{m.unread}</span>}
-                    <span className="text-xs text-muted-foreground">{m.time}</span>
+                    <span className="text-[10px] text-muted-foreground">{m.time}</span>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground line-clamp-1">{m.text}</p>
+                <p className="text-xs text-muted-foreground line-clamp-1 pl-12">{m.text}</p>
               </button>
             ))}
           </div>
@@ -646,27 +650,27 @@ function MessagesPage({ t }: { t: Translation }) {
         <div className="flex-1 flex flex-col">
           <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-navy-900 text-white rounded-full flex items-center justify-center text-sm font-bold">{activeChat.avatar}</div>
+              <div className="w-10 h-10 bg-gradient-to-br from-foreground to-foreground/80 text-white rounded-xl flex items-center justify-center text-sm font-bold">{activeChat.avatar}</div>
               <div>
-                <div className="font-medium text-sm">{activeChat.from}</div>
-                <div className="text-xs text-emerald-500 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                <div className="font-semibold text-sm">{activeChat.from}</div>
+                <div className="text-xs text-emerald-600 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
                   {t.messages.online}
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button className="p-2 hover:bg-secondary rounded transition-colors"><Icon name="Phone" size={16} className="text-muted-foreground" /></button>
-              <button className="p-2 hover:bg-secondary rounded transition-colors"><Icon name="MoreVertical" size={16} className="text-muted-foreground" /></button>
+            <div className="flex gap-1">
+              <button className="p-2.5 hover:bg-secondary rounded-xl transition-colors"><Icon name="Phone" size={16} className="text-muted-foreground" /></button>
+              <button className="p-2.5 hover:bg-secondary rounded-xl transition-colors"><Icon name="MoreVertical" size={16} className="text-muted-foreground" /></button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-secondary/20">
+          <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-secondary/20">
             {conversation.map((msg, i) => (
               <div key={i} className={`flex ${msg.from === "me" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded text-sm ${msg.from === "me" ? "bg-accent text-white" : "bg-white border border-border text-foreground"}`}>
-                  <p>{msg.text}</p>
-                  <div className={`text-xs mt-1 ${msg.from === "me" ? "text-blue-200" : "text-muted-foreground"}`}>{msg.time}</div>
+                <div className={`max-w-xs lg:max-w-md px-4 py-2.5 text-sm ${msg.from === "me" ? "bg-foreground text-background rounded-2xl rounded-br-sm" : "bg-white border border-border text-foreground rounded-2xl rounded-bl-sm"}`}>
+                  <p className="leading-relaxed">{msg.text}</p>
+                  <div className={`text-[10px] mt-1 ${msg.from === "me" ? "text-background/60" : "text-muted-foreground"}`}>{msg.time}</div>
                 </div>
               </div>
             ))}
@@ -675,8 +679,8 @@ function MessagesPage({ t }: { t: Translation }) {
           <div className="p-4 border-t border-border">
             <div className="flex gap-2">
               <input type="text" placeholder={t.messages.inputPlaceholder} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()}
-                className="flex-1 border border-border rounded px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
-              <button onClick={send} className="bg-accent hover:bg-blue-500 text-white px-4 py-2.5 rounded text-sm font-medium transition-colors">
+                className="flex-1 bg-secondary/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
+              <button onClick={send} className="btn-modern bg-foreground text-background px-5 py-3 rounded-xl text-sm font-medium">
                 <Icon name="Send" size={16} />
               </button>
             </div>
@@ -689,41 +693,46 @@ function MessagesPage({ t }: { t: Translation }) {
 
 function BlogPage({ t, onOpenPost }: { t: Translation; onOpenPost: (i: number) => void }) {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-10">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.blog.tag}</p>
-        <h1 className="text-3xl font-bold font-ibm">{t.blog.title}</h1>
-        <p className="text-muted-foreground mt-2">{t.blog.subtitle}</p>
+        <h1 className="text-4xl sm:text-5xl font-bold font-ibm tracking-tight">{t.blog.title}</h1>
+        <p className="text-muted-foreground mt-3 max-w-2xl">{t.blog.subtitle}</p>
       </div>
 
-      <button onClick={() => onOpenPost(0)} className="w-full text-left bg-navy-900 text-white rounded p-8 mb-10 relative overflow-hidden card-hover cursor-pointer">
-        <div className="absolute top-0 right-0 w-64 h-full opacity-10 hero-grid" />
-        <span className="text-xs font-medium uppercase tracking-widest text-blue-300 bg-blue-900/50 px-3 py-1 rounded mb-4 inline-block">{t.blog.featuredCategory}</span>
-        <h2 className="text-2xl font-bold font-ibm max-w-xl mb-4">{t.blog.featuredTitle}</h2>
-        <p className="text-blue-200/80 max-w-lg mb-6 text-sm leading-relaxed">{t.blog.featuredExcerpt}</p>
-        <div className="flex items-center gap-4 text-sm text-blue-300">
-          <span>{t.blog.featuredDate}</span>
-          <span>•</span>
-          <span>{t.blog.readMin(8)}</span>
+      <button onClick={() => onOpenPost(0)} className="w-full text-left gradient-bg text-white rounded-3xl p-10 mb-12 relative overflow-hidden card-hover cursor-pointer">
+        <div className="absolute top-0 right-0 w-full h-full opacity-30 hero-grid" />
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-accent/30 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-blue-400/20 blur-3xl" />
+        <div className="relative max-w-2xl">
+          <span className="text-xs font-semibold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full mb-5 inline-block">{t.blog.featuredCategory}</span>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm mb-4 tracking-tight leading-tight">{t.blog.featuredTitle}</h2>
+          <p className="text-blue-100/90 mb-6 leading-relaxed">{t.blog.featuredExcerpt}</p>
+          <div className="flex items-center gap-4 text-sm text-blue-200/80">
+            <span>{t.blog.featuredDate}</span>
+            <span>•</span>
+            <span>{t.blog.readMin(8)}</span>
+          </div>
         </div>
       </button>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {t.blogPosts.map((post, i) => (
-          <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
-            <div className="h-40 from-navy-800 to-navy-600 flex items-center justify-center bg-zinc-900">
-              <Icon name="FileText" size={40} className="text-white/20" />
+          <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded-2xl overflow-hidden cursor-pointer">
+            <div className="h-44 bg-gradient-to-br from-foreground to-foreground/70 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 hero-grid opacity-50" />
+              <Icon name="FileText" size={40} className="text-white/30 relative" />
             </div>
             <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-0.5 rounded">{post.category}</span>
+                <span className="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">{post.category}</span>
                 <span className="text-xs text-muted-foreground">{post.readTime}</span>
               </div>
               <h3 className="font-semibold text-foreground mb-2 leading-snug">{post.title}</h3>
               <p className="text-sm text-muted-foreground mb-4 leading-relaxed line-clamp-3">{post.excerpt}</p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pt-3 border-t border-border">
                 <span className="text-xs text-muted-foreground">{post.date}</span>
-                <button onClick={(e) => { e.stopPropagation(); onOpenPost(i); }} className="text-xs text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+                <button onClick={(e) => { e.stopPropagation(); onOpenPost(i); }} className="text-xs text-foreground font-medium flex items-center gap-1.5 hover:gap-2.5 transition-all bg-secondary/60 px-3 py-1.5 rounded-full hover:bg-secondary">
                   {t.blog.read} <Icon name="ArrowRight" size={12} />
                 </button>
               </div>
@@ -740,24 +749,26 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
   const related = t.blogPosts.map((p, i) => ({ p, i })).filter(({ i }) => i !== postIndex).slice(0, 2);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
-      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors bg-white/50 hover:bg-white border border-border px-4 py-2 rounded-xl">
         <Icon name="ArrowLeft" size={16} />
         {t.blog.backToBlog}
       </button>
 
       <div className="mb-6">
-        <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-1 rounded">{post.category}</span>
+        <span className="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">{post.category}</span>
       </div>
-      <h1 className="text-3xl sm:text-4xl font-bold font-ibm leading-tight mb-5">{post.title}</h1>
+      <h1 className="text-4xl sm:text-5xl font-bold font-ibm leading-[1.1] mb-6 tracking-tight">{post.title}</h1>
       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 pb-6 border-b border-border flex-wrap">
         <span className="flex items-center gap-1.5"><Icon name="User" size={14} />{post.author}</span>
         <span className="flex items-center gap-1.5"><Icon name="Calendar" size={14} />{post.date}</span>
         <span className="flex items-center gap-1.5"><Icon name="Clock" size={14} />{post.readTime}</span>
       </div>
 
-      <div className="h-64 bg-gradient-to-br from-navy-800 to-navy-600 rounded flex items-center justify-center mb-8">
-        <Icon name="FileText" size={56} className="text-white/20" />
+      <div className="h-72 gradient-bg rounded-3xl flex items-center justify-center mb-10 relative overflow-hidden">
+        <div className="absolute inset-0 hero-grid opacity-50" />
+        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
+        <Icon name="FileText" size={56} className="text-white/30 relative" />
       </div>
 
       <article className="prose max-w-none mb-10">
@@ -771,7 +782,7 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
         <div className="text-sm font-semibold mb-3">{t.blog.shareTitle}</div>
         <div className="flex gap-2">
           {["Send", "Mail", "Link", "Copy"].map((icon) => (
-            <button key={icon} className="w-9 h-9 border border-border rounded flex items-center justify-center hover:bg-secondary transition-colors">
+            <button key={icon} className="w-10 h-10 bg-secondary/60 rounded-xl flex items-center justify-center hover:bg-secondary transition-colors">
               <Icon name={icon} size={15} className="text-muted-foreground" fallback="Share2" />
             </button>
           ))}
@@ -780,16 +791,17 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
 
       {related.length > 0 && (
         <div>
-          <h3 className="text-xl font-bold font-ibm mb-5">{t.blog.relatedTitle}</h3>
+          <h3 className="text-2xl font-bold font-ibm mb-5 tracking-tight">{t.blog.relatedTitle}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {related.map(({ p, i }) => (
-              <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
-                <div className="h-32 bg-gradient-to-br from-navy-800 to-navy-600 flex items-center justify-center">
-                  <Icon name="FileText" size={28} className="text-white/20" />
+              <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded-2xl overflow-hidden cursor-pointer">
+                <div className="h-36 bg-gradient-to-br from-foreground to-foreground/70 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 hero-grid opacity-50" />
+                  <Icon name="FileText" size={28} className="text-white/30 relative" />
                 </div>
-                <div className="p-4">
-                  <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
-                  <h4 className="font-semibold text-foreground mt-2 mb-1 leading-snug text-sm">{p.title}</h4>
+                <div className="p-5">
+                  <span className="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">{p.category}</span>
+                  <h4 className="font-semibold text-foreground mt-3 mb-2 leading-snug text-sm">{p.title}</h4>
                   <span className="text-xs text-muted-foreground">{p.date} · {p.readTime}</span>
                 </div>
               </div>
@@ -853,32 +865,34 @@ function ProductsPage({ t }: { t: Translation }) {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.tag}</p>
-        <h1 className="text-3xl font-bold font-ibm">{t.products.title}</h1>
-        <p className="text-muted-foreground mt-2">{t.products.subtitle}</p>
+        <h1 className="text-4xl sm:text-5xl font-bold font-ibm tracking-tight">{t.products.title}</h1>
+        <p className="text-muted-foreground mt-3 max-w-2xl">{t.products.subtitle}</p>
       </div>
 
-      <div className="mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-white border border-border rounded-2xl p-3">
         <div className="relative w-full sm:max-w-md">
-          <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Icon name="Search" size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t.products.searchPlaceholder}
-            className="w-full pl-9 pr-3 py-2.5 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent bg-white"
+            className="w-full pl-10 pr-3 py-2.5 bg-secondary/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all"
           />
         </div>
-        <span className="text-sm text-muted-foreground">{t.products.found(filtered.length)}</span>
+        <span className="text-sm text-muted-foreground font-medium px-3">{t.products.found(filtered.length)}</span>
       </div>
 
       {loading ? (
         <div className="text-center text-muted-foreground py-16">...</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-dashed border-border rounded p-16 text-center">
-          <Icon name="Package" size={32} className="mx-auto mb-3 text-muted-foreground/50" />
+        <div className="bg-white border border-dashed border-border rounded-2xl p-20 text-center">
+          <div className="w-16 h-16 bg-secondary/60 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <Icon name="Package" size={28} className="text-muted-foreground/60" />
+          </div>
           <p className="text-sm text-muted-foreground">{t.products.empty}</p>
         </div>
       ) : (
@@ -894,26 +908,26 @@ function ProductsPage({ t }: { t: Translation }) {
 
 function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-10">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.services.tag}</p>
-        <h1 className="text-3xl font-bold font-ibm">{t.services.title}</h1>
-        <p className="text-muted-foreground mt-2 max-w-2xl">{t.services.subtitle}</p>
+        <h1 className="text-4xl sm:text-5xl font-bold font-ibm tracking-tight">{t.services.title}</h1>
+        <p className="text-muted-foreground mt-3 max-w-2xl">{t.services.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
         {t.services.items.map((s, i) => (
-          <div key={i} className="card-hover bg-white border border-border rounded p-6 flex flex-col">
-            <div className="w-12 h-12 bg-accent/10 rounded flex items-center justify-center mb-4">
-              <Icon name={s.icon} size={22} className="text-accent" fallback="Star" />
+          <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6 flex flex-col">
+            <div className="w-14 h-14 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center mb-5">
+              <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2 leading-snug">{s.title}</h3>
+            <h3 className="font-semibold text-foreground mb-2 leading-snug text-lg">{s.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{s.desc}</p>
             <div className="flex items-center gap-2 pt-4 border-t border-border">
-              <button onClick={() => onNav("contacts")} className="text-xs font-medium bg-accent text-white px-3 py-2 rounded hover:bg-blue-600 transition-colors">
+              <button onClick={() => onNav("contacts")} className="btn-modern text-xs font-medium bg-foreground text-background px-4 py-2.5 rounded-xl">
                 {t.services.orderBtn}
               </button>
-              <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+              <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-all flex items-center gap-1 hover:gap-2 px-3 py-2.5 rounded-xl hover:bg-secondary/60">
                 {t.services.detailBtn} <Icon name="ArrowRight" size={12} />
               </button>
             </div>
@@ -921,13 +935,17 @@ function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }
         ))}
       </div>
 
-      <div className="bg-navy-900 text-white rounded p-8 sm:p-10 text-center relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-full opacity-10 hero-grid" />
-        <h2 className="text-2xl font-bold font-ibm mb-3">{t.services.ctaTitle}</h2>
-        <p className="text-blue-200/80 mb-6 max-w-xl mx-auto text-sm">{t.services.ctaSubtitle}</p>
-        <button onClick={() => onNav("contacts")} className="bg-accent hover:bg-blue-500 text-white font-medium px-8 py-3 rounded text-sm transition-colors">
-          {t.services.ctaBtn}
-        </button>
+      <div className="gradient-bg text-white rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+        <div className="absolute inset-0 hero-grid opacity-50" />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-blue-400/20 blur-3xl" />
+        <div className="relative">
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm mb-4 tracking-tight">{t.services.ctaTitle}</h2>
+          <p className="text-blue-100/80 mb-8 max-w-xl mx-auto">{t.services.ctaSubtitle}</p>
+          <button onClick={() => onNav("contacts")} className="btn-modern bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm">
+            {t.services.ctaBtn}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -936,43 +954,43 @@ function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }
 function ContactsPage({ t }: { t: Translation }) {
   const contactIcons = ["Phone", "Mail", "MessageSquare", "MapPin"];
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-10">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.contacts.tag}</p>
-        <h1 className="text-3xl font-bold font-ibm">{t.contacts.title}</h1>
-        <p className="text-muted-foreground mt-2">{t.contacts.subtitle}</p>
+        <h1 className="text-4xl sm:text-5xl font-bold font-ibm tracking-tight">{t.contacts.title}</h1>
+        <p className="text-muted-foreground mt-3">{t.contacts.subtitle}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-white border border-border rounded p-8">
-            <h2 className="font-semibold text-lg mb-6">{t.contacts.formTitle}</h2>
+          <div className="bg-white border border-border rounded-3xl p-8">
+            <h2 className="font-bold text-xl mb-6 font-ibm">{t.contacts.formTitle}</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">{t.contacts.name}</label>
-                  <input type="text" placeholder={t.contacts.namePh} className="w-full border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                  <label className="block text-sm font-medium mb-2">{t.contacts.name}</label>
+                  <input type="text" placeholder={t.contacts.namePh} className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">{t.contacts.company}</label>
-                  <input type="text" placeholder={t.contacts.companyPh} className="w-full border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                  <label className="block text-sm font-medium mb-2">{t.contacts.company}</label>
+                  <input type="text" placeholder={t.contacts.companyPh} className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5">{t.contacts.email}</label>
-                <input type="email" placeholder={t.contacts.emailPh} className="w-full border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+                <label className="block text-sm font-medium mb-2">{t.contacts.email}</label>
+                <input type="email" placeholder={t.contacts.emailPh} className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5">{t.contacts.topic}</label>
-                <select className="w-full border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30">
+                <label className="block text-sm font-medium mb-2">{t.contacts.topic}</label>
+                <select className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all cursor-pointer">
                   {t.contacts.topics.map((topic) => <option key={topic}>{topic}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5">{t.contacts.message}</label>
-                <textarea rows={5} placeholder={t.contacts.messagePh} className="w-full border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent resize-none" />
+                <label className="block text-sm font-medium mb-2">{t.contacts.message}</label>
+                <textarea rows={5} placeholder={t.contacts.messagePh} className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all resize-none" />
               </div>
-              <button className="bg-accent text-white px-6 py-3 rounded text-sm font-medium hover:bg-blue-500 transition-colors">
+              <button className="btn-modern bg-foreground text-background px-7 py-3.5 rounded-xl text-sm font-medium">
                 {t.contacts.submit}
               </button>
             </div>
@@ -981,27 +999,31 @@ function ContactsPage({ t }: { t: Translation }) {
 
         <div className="space-y-4">
           {t.contacts.contactCards.map((c, i) => (
-            <div key={c.title} className="bg-white border border-border rounded p-5 flex items-start gap-4">
-              <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center flex-shrink-0">
+            <div key={c.title} className="bg-white border border-border rounded-2xl p-5 flex items-start gap-4 card-hover">
+              <div className="w-11 h-11 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <Icon name={contactIcons[i]} size={18} className="text-accent" fallback="Info" />
               </div>
               <div>
                 <div className="text-xs text-muted-foreground mb-0.5">{c.title}</div>
-                <div className="font-medium text-sm">{c.value}</div>
+                <div className="font-semibold text-sm">{c.value}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{c.sub}</div>
               </div>
             </div>
           ))}
 
-          <div className="bg-navy-900 text-white rounded p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Icon name="HelpCircle" size={18} className="text-blue-300" />
-              <span className="font-semibold text-sm">{t.contacts.kbTitle}</span>
+          <div className="gradient-bg text-white rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute inset-0 hero-grid opacity-50" />
+            <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-accent/20 blur-3xl" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="HelpCircle" size={18} className="text-blue-300" />
+                <span className="font-semibold text-sm">{t.contacts.kbTitle}</span>
+              </div>
+              <p className="text-xs text-blue-100/80 mb-4 leading-relaxed">{t.contacts.kbText}</p>
+              <button className="text-xs text-white font-medium flex items-center gap-1.5 hover:gap-2.5 transition-all bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full">
+                {t.contacts.kbLink} <Icon name="ArrowRight" size={12} />
+              </button>
             </div>
-            <p className="text-xs text-blue-200/80 mb-4">{t.contacts.kbText}</p>
-            <button className="text-xs text-blue-300 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              {t.contacts.kbLink} <Icon name="ArrowRight" size={12} />
-            </button>
           </div>
         </div>
       </div>
@@ -1016,34 +1038,39 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
     ["contacts", "contacts", "messages"],
   ];
   return (
-    <footer className="bg-navy-950 text-blue-200/70 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
-          <div className="col-span-2 sm:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-7 h-7 bg-accent rounded-sm flex items-center justify-center text-white text-sm font-bold">P</span>
-              <span className="font-bold text-white font-ibm">{t.brand}</span>
+    <footer className="mt-auto px-3 sm:px-6 pb-3 sm:pb-6">
+      <div className="max-w-7xl mx-auto gradient-bg text-blue-100/70 rounded-3xl relative overflow-hidden">
+        <div className="absolute inset-0 hero-grid opacity-30" />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl" />
+        <div className="relative px-6 sm:px-10 py-12">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
+            <div className="col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-accent/30">P</span>
+                <span className="font-bold text-white font-ibm text-lg">{t.brand}</span>
+              </div>
+              <p className="text-xs leading-relaxed">{t.footer.desc}</p>
             </div>
-            <p className="text-xs leading-relaxed">{t.footer.desc}</p>
+            {t.footer.cols.map((col, ci) => (
+              <div key={col.title}>
+                <h4 className="font-semibold text-white text-sm mb-4">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map((l, li) => (
+                    <li key={l}>
+                      <button onClick={() => onNav(colPages[ci][li])} className="text-xs hover:text-white transition-colors">{l}</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          {t.footer.cols.map((col, ci) => (
-            <div key={col.title}>
-              <h4 className="font-semibold text-white text-sm mb-3">{col.title}</h4>
-              <ul className="space-y-2">
-                {col.links.map((l, li) => (
-                  <li key={l}>
-                    <button onClick={() => onNav(colPages[ci][li])} className="text-xs hover:text-white transition-colors">{l}</button>
-                  </li>
-                ))}
-              </ul>
+          <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between gap-4 text-xs">
+            <span>{t.footer.copyright}</span>
+            <div className="flex gap-4">
+              <button className="hover:text-white transition-colors">{t.footer.privacy}</button>
+              <button className="hover:text-white transition-colors">{t.footer.terms}</button>
             </div>
-          ))}
-        </div>
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between gap-4 text-xs">
-          <span>{t.footer.copyright}</span>
-          <div className="flex gap-4">
-            <button className="hover:text-white transition-colors">{t.footer.privacy}</button>
-            <button className="hover:text-white transition-colors">{t.footer.terms}</button>
           </div>
         </div>
       </div>
