@@ -1098,15 +1098,17 @@ export default function Index() {
     <div className="min-h-screen flex flex-col bg-background font-ibm">
       <Navbar current={page} onNav={navigate} lang={lang} setLang={setLang} t={t} />
       <main className="flex-1">
-        {page === "home" && <HomePage onNav={navigate} t={t} />}
-        {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
-        {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
-        {page === "messages" && <MessagesPage t={t} />}
-        {page === "products" && <ProductsPage t={t} />}
-        {page === "services" && <ServicesPage t={t} onNav={navigate} />}
-        {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
-        {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
-        {page === "contacts" && <ContactsPage t={t} />}
+        <div key={`${page}-${activePostIndex}`} className="animate-page">
+          {page === "home" && <HomePage onNav={navigate} t={t} />}
+          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
+          {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
+          {page === "messages" && <MessagesPage t={t} />}
+          {page === "products" && <ProductsPage t={t} />}
+          {page === "services" && <ServicesPage t={t} onNav={navigate} />}
+          {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
+          {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
+          {page === "contacts" && <ContactsPage t={t} />}
+        </div>
       </main>
       <Footer onNav={navigate} t={t} />
     </div>
