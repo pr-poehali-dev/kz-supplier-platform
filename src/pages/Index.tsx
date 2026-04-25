@@ -19,7 +19,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -74,6 +74,7 @@ function Navbar({ current, onNav, lang, setLang, t }: { current: Page; onNav: (p
   const links: { label: string; page: Page }[] = [
     { label: t.nav.home, page: "home" },
     { label: t.nav.catalog, page: "catalog" },
+    { label: t.nav.products, page: "products" },
     { label: t.nav.services, page: "services" },
     { label: t.nav.blog, page: "blog" },
     { label: t.nav.contacts, page: "contacts" },
@@ -182,6 +183,13 @@ function SupplierCard({ idx, t, onView }: { idx: number; t: Translation; onView:
 }
 
 function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
+  const [homeProducts, setHomeProducts] = useState<AdminProduct[]>([]);
+  useEffect(() => {
+    fetch(PRODUCTS_API)
+      .then((r) => r.json())
+      .then((d) => setHomeProducts((d.items || []).slice(0, 4)))
+      .catch(() => setHomeProducts([]));
+  }, []);
   const catIcons = [
     { icon: "Cpu", label: t.cats.equipment, count: 412 },
     { icon: "FlaskConical", label: t.cats.chemistry, count: 187 },
@@ -296,6 +304,26 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
         </div>
       </section>
 
+      {homeProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.homeTag}</p>
+              <h2 className="text-2xl font-bold font-ibm">{t.products.homeTitle}</h2>
+              <p className="text-sm text-muted-foreground mt-1">{t.products.homeSubtitle}</p>
+            </div>
+            <button onClick={() => onNav("products")} className="text-sm text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+              {t.products.allBtn} <Icon name="ArrowRight" size={14} />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {homeProducts.map((p) => (
+              <ProductCard key={p.id} p={p} t={t} />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.simpleTag}</p>
@@ -336,19 +364,6 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
 function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Translation }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
-  const [products, setProducts] = useState<AdminProduct[]>([]);
-
-  useEffect(() => {
-    fetch(PRODUCTS_API)
-      .then((r) => r.json())
-      .then((d) => setProducts(d.items || []))
-      .catch(() => setProducts([]));
-  }, []);
-
-  const filteredProducts = products.filter((p) => {
-    const q = search.toLowerCase();
-    return !search || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
-  });
 
   const allIdx = baseSuppliers.map((_, i) => i);
   const filtered = allIdx.filter((i) => {
@@ -416,42 +431,6 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
               <option>{t.catalog.sortName}</option>
             </select>
           </div>
-          {filteredProducts.length > 0 && (
-            <div className="mb-8">
-              <h2 className="font-bold mb-4 flex items-center gap-2">
-                <Icon name="Package" size={16} className="text-accent" />
-                Товары · {filteredProducts.length}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredProducts.map((p) => (
-                  <div key={p.id} className="bg-white border border-border rounded overflow-hidden card-hover">
-                    <div className="h-40 bg-secondary flex items-center justify-center overflow-hidden">
-                      {p.image_url ? (
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <Icon name="Image" size={28} className="text-muted-foreground/40" />
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
-                        {!p.in_stock && <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">Нет</span>}
-                      </div>
-                      <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{p.description}</p>
-                      <div className="flex items-end justify-between pt-3 border-t border-border">
-                        <div>
-                          <div className="font-bold">{p.price.toLocaleString("ru")} {p.currency}</div>
-                          <div className="text-xs text-muted-foreground">от {p.moq} шт.</div>
-                        </div>
-                        {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {filtered.map((i) => (
               <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />
@@ -818,6 +797,93 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
   );
 }
 
+function ProductCard({ p, t }: { p: AdminProduct; t: Translation }) {
+  return (
+    <div className="card-hover bg-white border border-border rounded overflow-hidden">
+      <div className="h-44 bg-secondary flex items-center justify-center overflow-hidden">
+        {p.image_url ? (
+          <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+        ) : (
+          <Icon name="Image" size={28} className="text-muted-foreground/40" />
+        )}
+      </div>
+      <div className="p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
+          {!p.in_stock && <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">{t.products.outOfStock}</span>}
+        </div>
+        <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{p.description}</p>
+        <div className="flex items-end justify-between pt-3 border-t border-border">
+          <div>
+            <div className="font-bold">{p.price.toLocaleString("ru")} {p.currency}</div>
+            <div className="text-xs text-muted-foreground">{t.products.from} {p.moq} {t.products.pcs}</div>
+          </div>
+          {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsPage({ t }: { t: Translation }) {
+  const [items, setItems] = useState<AdminProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch(PRODUCTS_API)
+      .then((r) => r.json())
+      .then((d) => setItems(d.items || []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = items.filter((p) => {
+    const q = search.toLowerCase();
+    return !search || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+      <div className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.tag}</p>
+        <h1 className="text-3xl font-bold font-ibm">{t.products.title}</h1>
+        <p className="text-muted-foreground mt-2">{t.products.subtitle}</p>
+      </div>
+
+      <div className="mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div className="relative w-full sm:max-w-md">
+          <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t.products.searchPlaceholder}
+            className="w-full pl-9 pr-3 py-2.5 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent bg-white"
+          />
+        </div>
+        <span className="text-sm text-muted-foreground">{t.products.found(filtered.length)}</span>
+      </div>
+
+      {loading ? (
+        <div className="text-center text-muted-foreground py-16">...</div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white border border-dashed border-border rounded p-16 text-center">
+          <Icon name="Package" size={32} className="mx-auto mb-3 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">{t.products.empty}</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {filtered.map((p) => (
+            <ProductCard key={p.id} p={p} t={t} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
@@ -1001,6 +1067,7 @@ export default function Index() {
         {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
         {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
         {page === "messages" && <MessagesPage t={t} />}
+        {page === "products" && <ProductsPage t={t} />}
         {page === "services" && <ServicesPage t={t} onNav={navigate} />}
         {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
         {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
