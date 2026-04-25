@@ -1,6 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "@/components/ui/icon";
 import { translations, type Lang, type Translation } from "@/lib/i18n";
+
+const PRODUCTS_API = "https://functions.poehali.dev/0d3d03b7-73bc-4278-a3b4-b0d2196eea41";
+
+type AdminProduct = {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  currency: string;
+  moq: number;
+  description: string;
+  image_url: string;
+  supplier: string;
+  in_stock: boolean;
+};
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
@@ -320,6 +335,19 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
 function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Translation }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+
+  useEffect(() => {
+    fetch(PRODUCTS_API)
+      .then((r) => r.json())
+      .then((d) => setProducts(d.items || []))
+      .catch(() => setProducts([]));
+  }, []);
+
+  const filteredProducts = products.filter((p) => {
+    const q = search.toLowerCase();
+    return !search || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+  });
 
   const allIdx = baseSuppliers.map((_, i) => i);
   const filtered = allIdx.filter((i) => {
@@ -387,6 +415,42 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
               <option>{t.catalog.sortName}</option>
             </select>
           </div>
+          {filteredProducts.length > 0 && (
+            <div className="mb-8">
+              <h2 className="font-bold mb-4 flex items-center gap-2">
+                <Icon name="Package" size={16} className="text-accent" />
+                Товары · {filteredProducts.length}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredProducts.map((p) => (
+                  <div key={p.id} className="bg-white border border-border rounded overflow-hidden card-hover">
+                    <div className="h-40 bg-secondary flex items-center justify-center overflow-hidden">
+                      {p.image_url ? (
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <Icon name="Image" size={28} className="text-muted-foreground/40" />
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
+                        {!p.in_stock && <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">Нет</span>}
+                      </div>
+                      <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{p.description}</p>
+                      <div className="flex items-end justify-between pt-3 border-t border-border">
+                        <div>
+                          <div className="font-bold">{p.price.toLocaleString("ru")} {p.currency}</div>
+                          <div className="text-xs text-muted-foreground">от {p.moq} шт.</div>
+                        </div>
+                        {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {filtered.map((i) => (
               <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />

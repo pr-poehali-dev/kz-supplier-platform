@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Список товаров",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "OPTIONS CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Создание товара",
+      "method": "POST",
+      "path": "/",
+      "body": {"title": "Тестовая кастрюля", "category": "Кухня", "price": 1500, "moq": 10, "description": "Нержавейка 3л", "supplier": "ИП Тест"},
+      "expectedStatus": 200,
+      "expectedBody": {"success": true},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
