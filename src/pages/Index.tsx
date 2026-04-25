@@ -3,6 +3,7 @@ import Icon from "@/components/ui/icon";
 import { translations, type Lang, type Translation } from "@/lib/i18n";
 import AuthModal from "@/components/AuthModal";
 import AccountPage from "@/components/AccountPage";
+import ProductPage from "@/components/ProductPage";
 import { fetchMe, type User } from "@/lib/auth";
 
 const PRODUCTS_API = "https://functions.poehali.dev/0d3d03b7-73bc-4278-a3b4-b0d2196eea41";
@@ -22,7 +23,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -861,9 +862,12 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
   );
 }
 
-function ProductCard({ p, t }: { p: AdminProduct; t: Translation }) {
+function ProductCard({ p, t, onOpen }: { p: AdminProduct; t: Translation; onOpen: (id: number) => void }) {
   return (
-    <div className="card-hover bg-white border border-border rounded-2xl overflow-hidden">
+    <button
+      onClick={() => onOpen(p.id)}
+      className="card-hover bg-white border border-border rounded-2xl overflow-hidden text-left w-full hover:border-foreground/20 transition-colors"
+    >
       <div className="h-44 bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
         {p.image_url ? (
           <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
@@ -890,11 +894,11 @@ function ProductCard({ p, t }: { p: AdminProduct; t: Translation }) {
           {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
-function ProductsPage({ t }: { t: Translation }) {
+function ProductsPage({ t, onOpen }: { t: Translation; onOpen: (id: number) => void }) {
   const [items, setItems] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -946,7 +950,7 @@ function ProductsPage({ t }: { t: Translation }) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {filtered.map((p) => (
-            <ProductCard key={p.id} p={p} t={t} />
+            <ProductCard key={p.id} p={p} t={t} onOpen={onOpen} />
           ))}
         </div>
       )}
@@ -1132,6 +1136,7 @@ export default function Index() {
   const [activePostIndex, setActivePostIndex] = useState(0);
   const [user, setUser] = useState<User | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [activeProductId, setActiveProductId] = useState<number | null>(null);
   const t = translations[lang];
 
   useEffect(() => {
@@ -1165,7 +1170,10 @@ export default function Index() {
           {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "messages" && <MessagesPage t={t} />}
-          {page === "products" && <ProductsPage t={t} />}
+          {page === "products" && <ProductsPage t={t} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}
+          {page === "product" && activeProductId !== null && (
+            <ProductPage productId={activeProductId} onBack={() => navigate("products")} user={user} onLogin={() => setAuthOpen(true)} />
+          )}
           {page === "services" && <ServicesPage t={t} onNav={navigate} />}
           {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
           {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}

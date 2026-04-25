@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET без product_id",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 400
+    },
+    {
+      "name": "GET отзывов товара",
+      "method": "GET",
+      "path": "/?product_id=1",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST с неверным rating",
+      "method": "POST",
+      "path": "/",
+      "body": {"product_id": 1, "rating": 0},
+      "expectedStatus": 400
+    },
+    {
+      "name": "POST отзыв",
+      "method": "POST",
+      "path": "/",
+      "body": {"product_id": 1, "rating": 5, "text": "Отлично", "author_name": "Тестер"},
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    }
+  ]
+}
