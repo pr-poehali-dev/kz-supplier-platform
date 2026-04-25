@@ -89,7 +89,9 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
     <header className="sticky top-3 z-50 mx-3 sm:mx-6">
       <div className="max-w-7xl mx-auto glass border border-white/40 rounded-2xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.08)] flex items-center justify-between h-16 px-4 sm:px-6">
         <button onClick={() => onNav("home")} className="flex items-center gap-2.5 font-bold text-lg tracking-tight font-ibm">
-          <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-accent/30">P</span>
+          <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/30">
+            <Icon name="ShoppingCart" size={16} />
+          </span>
           <span className="gradient-text">{t.brand}</span>
         </button>
 
@@ -1097,7 +1099,9 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
-                <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-accent/30">P</span>
+                <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/30">
+            <Icon name="ShoppingCart" size={16} />
+          </span>
                 <span className="font-bold text-white font-ibm text-lg">{t.brand}</span>
               </div>
               <p className="text-xs leading-relaxed">{t.footer.desc}</p>

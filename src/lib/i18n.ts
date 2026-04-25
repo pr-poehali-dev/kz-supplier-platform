@@ -2,7 +2,7 @@ export type Lang = "ru" | "zh";
 
 export const translations = {
   ru: {
-    brand: "ProSupply",
+    brand: "OptCarts",
     nav: {
       home: "Главная",
       catalog: "Поставщики",
@@ -267,7 +267,7 @@ export const translations = {
     },
   },
   zh: {
-    brand: "ProSupply",
+    brand: "OptCarts",
     nav: {
       home: "首页",
       catalog: "供应商",
