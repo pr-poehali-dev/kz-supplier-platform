@@ -1345,7 +1345,8 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
 
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
-  const [lang, setLang] = useState<Lang>("ru");
+  const lang: Lang = "ru";
+  const setLang = (_l: Lang) => {};
   const [activePostIndex, setActivePostIndex] = useState(0);
   const [user, setUser] = useState<User | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
