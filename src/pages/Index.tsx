@@ -4,7 +4,7 @@ import { translations, type Lang, type Translation } from "@/lib/i18n";
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "contacts" | "messages";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -639,7 +639,7 @@ function MessagesPage({ t }: { t: Translation }) {
   );
 }
 
-function BlogPage({ t }: { t: Translation }) {
+function BlogPage({ t, onOpenPost }: { t: Translation; onOpenPost: (i: number) => void }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
       <div className="mb-10">
@@ -648,7 +648,7 @@ function BlogPage({ t }: { t: Translation }) {
         <p className="text-muted-foreground mt-2">{t.blog.subtitle}</p>
       </div>
 
-      <div className="bg-navy-900 text-white rounded p-8 mb-10 relative overflow-hidden">
+      <button onClick={() => onOpenPost(0)} className="w-full text-left bg-navy-900 text-white rounded p-8 mb-10 relative overflow-hidden card-hover cursor-pointer">
         <div className="absolute top-0 right-0 w-64 h-full opacity-10 hero-grid" />
         <span className="text-xs font-medium uppercase tracking-widest text-blue-300 bg-blue-900/50 px-3 py-1 rounded mb-4 inline-block">{t.blog.featuredCategory}</span>
         <h2 className="text-2xl font-bold font-ibm max-w-xl mb-4">{t.blog.featuredTitle}</h2>
@@ -658,11 +658,11 @@ function BlogPage({ t }: { t: Translation }) {
           <span>•</span>
           <span>{t.blog.readMin(8)}</span>
         </div>
-      </div>
+      </button>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {t.blogPosts.map((post, i) => (
-          <div key={i} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
+          <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
             <div className="h-40 from-navy-800 to-navy-600 flex items-center justify-center bg-zinc-900">
               <Icon name="FileText" size={40} className="text-white/20" />
             </div>
@@ -675,7 +675,7 @@ function BlogPage({ t }: { t: Translation }) {
               <p className="text-sm text-muted-foreground mb-4 leading-relaxed line-clamp-3">{post.excerpt}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">{post.date}</span>
-                <button className="text-xs text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+                <button onClick={(e) => { e.stopPropagation(); onOpenPost(i); }} className="text-xs text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
                   {t.blog.read} <Icon name="ArrowRight" size={12} />
                 </button>
               </div>
@@ -683,6 +683,72 @@ function BlogPage({ t }: { t: Translation }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; postIndex: number; onBack: () => void; onOpenPost: (i: number) => void }) {
+  const post = t.blogPosts[postIndex];
+  const related = t.blogPosts.map((p, i) => ({ p, i })).filter(({ i }) => i !== postIndex).slice(0, 2);
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <Icon name="ArrowLeft" size={16} />
+        {t.blog.backToBlog}
+      </button>
+
+      <div className="mb-6">
+        <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-1 rounded">{post.category}</span>
+      </div>
+      <h1 className="text-3xl sm:text-4xl font-bold font-ibm leading-tight mb-5">{post.title}</h1>
+      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 pb-6 border-b border-border flex-wrap">
+        <span className="flex items-center gap-1.5"><Icon name="User" size={14} />{post.author}</span>
+        <span className="flex items-center gap-1.5"><Icon name="Calendar" size={14} />{post.date}</span>
+        <span className="flex items-center gap-1.5"><Icon name="Clock" size={14} />{post.readTime}</span>
+      </div>
+
+      <div className="h-64 bg-gradient-to-br from-navy-800 to-navy-600 rounded flex items-center justify-center mb-8">
+        <Icon name="FileText" size={56} className="text-white/20" />
+      </div>
+
+      <article className="prose max-w-none mb-10">
+        <p className="text-lg text-foreground leading-relaxed mb-6 font-medium">{post.excerpt}</p>
+        {post.content.map((para, i) => (
+          <p key={i} className="text-base text-foreground leading-relaxed mb-5">{para}</p>
+        ))}
+      </article>
+
+      <div className="border-t border-border pt-6 mb-12">
+        <div className="text-sm font-semibold mb-3">{t.blog.shareTitle}</div>
+        <div className="flex gap-2">
+          {["Send", "Mail", "Link", "Copy"].map((icon) => (
+            <button key={icon} className="w-9 h-9 border border-border rounded flex items-center justify-center hover:bg-secondary transition-colors">
+              <Icon name={icon} size={15} className="text-muted-foreground" fallback="Share2" />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {related.length > 0 && (
+        <div>
+          <h3 className="text-xl font-bold font-ibm mb-5">{t.blog.relatedTitle}</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {related.map(({ p, i }) => (
+              <div key={i} onClick={() => onOpenPost(i)} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
+                <div className="h-32 bg-gradient-to-br from-navy-800 to-navy-600 flex items-center justify-center">
+                  <Icon name="FileText" size={28} className="text-white/20" />
+                </div>
+                <div className="p-4">
+                  <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
+                  <h4 className="font-semibold text-foreground mt-2 mb-1 leading-snug text-sm">{p.title}</h4>
+                  <span className="text-xs text-muted-foreground">{p.date} · {p.readTime}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -808,11 +874,17 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const [lang, setLang] = useState<Lang>("ru");
+  const [activePostIndex, setActivePostIndex] = useState(0);
   const t = translations[lang];
 
   const navigate = (p: Page) => {
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const openPost = (i: number) => {
+    setActivePostIndex(i);
+    navigate("blogPost");
   };
 
   return (
@@ -823,7 +895,8 @@ export default function Index() {
         {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
         {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
         {page === "messages" && <MessagesPage t={t} />}
-        {page === "blog" && <BlogPage t={t} />}
+        {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
+        {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
         {page === "contacts" && <ContactsPage t={t} />}
       </main>
       <Footer onNav={navigate} t={t} />
