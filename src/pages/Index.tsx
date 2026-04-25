@@ -240,7 +240,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
                 {t.hero.findSupplier} <Icon name="ArrowRight" size={16} />
               </button>
               <button onClick={() => onNav("addCompany")} className="bg-white/70 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
-                {t.hero.placeCompany}
+                Оставить заявку · 提交申请
               </button>
             </div>
           </div>
@@ -1277,16 +1277,16 @@ function AddCompanyPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void
         <div className="absolute inset-0 hero-grid opacity-30" />
         <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
         <div className="relative">
-          <h2 className="text-2xl sm:text-3xl font-bold font-ibm mb-2">Разместить компанию</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold font-ibm mb-2">{ru.cta} · {zh.cta}</h2>
           <p className="text-sm text-blue-100/80 mb-6 max-w-xl mx-auto">
             Заполните короткую форму — менеджер свяжется в течение рабочего дня.<br />
             填写简短表单 — 经理将在一个工作日内与您联系。
           </p>
           <button
-            onClick={() => onNav("addCompany")}
+            onClick={() => onNav("contacts")}
             className="btn-modern bg-white text-foreground px-8 py-3.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2"
           >
-            Разместить компанию <Icon name="ArrowRight" size={16} />
+            {ru.cta} / {zh.cta} <Icon name="ArrowRight" size={16} />
           </button>
         </div>
       </div>
