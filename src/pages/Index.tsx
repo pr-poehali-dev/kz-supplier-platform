@@ -292,9 +292,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">О бренде</p>
-              <h2 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight mb-3">
-                OptCarts — это <span className="gradient-text">опт</span> + <span className="gradient-text">carts</span>
-              </h2>
+              <h2 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight mb-3">Оптовые поставщики из Китая </h2>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-5">
                 Объединяем оптовых поставщиков и закупщиков в одной платформе. Заполняйте «корзины» оптовыми партиями, проверяйте поставщиков, договаривайтесь и отгружайте — всё в одном месте, без посредников.
               </p>
