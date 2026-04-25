@@ -108,7 +108,6 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
-          <LangSwitcher lang={lang} setLang={setLang} />
           <button
             onClick={() => onNav("messages")}
             className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/60 rounded-xl transition-colors"
@@ -136,7 +135,6 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
         </div>
 
         <div className="md:hidden flex items-center gap-2">
-          <LangSwitcher lang={lang} setLang={setLang} />
           <button className="p-2 rounded-xl hover:bg-secondary/60" onClick={() => setOpen(!open)}>
             <Icon name={open ? "X" : "Menu"} size={20} />
           </button>
