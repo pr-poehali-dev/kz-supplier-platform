@@ -4,6 +4,7 @@ import { translations, type Lang, type Translation } from "@/lib/i18n";
 import AuthModal from "@/components/AuthModal";
 import AccountPage from "@/components/AccountPage";
 import ProductPage from "@/components/ProductPage";
+import ServicePage from "@/components/ServicePage";
 import { fetchMe, type User } from "@/lib/auth";
 
 const PRODUCTS_API = "https://functions.poehali.dev/0d3d03b7-73bc-4278-a3b4-b0d2196eea41";
@@ -23,7 +24,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -958,7 +959,7 @@ function ProductsPage({ t, onOpen }: { t: Translation; onOpen: (id: number) => v
   );
 }
 
-function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
+function ServicesPage({ t, onNav, onOpenService }: { t: Translation; onNav: (p: Page) => void; onOpenService: (i: number) => void }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-10">
@@ -976,10 +977,7 @@ function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }
             <h3 className="font-semibold text-foreground mb-2 leading-snug text-lg">{s.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{s.desc}</p>
             <div className="flex items-center gap-2 pt-4 border-t border-border">
-              <button onClick={() => onNav("contacts")} className="btn-modern text-xs font-medium bg-foreground text-background px-4 py-2.5 rounded-xl">
-                {t.services.orderBtn}
-              </button>
-              <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-all flex items-center gap-1 hover:gap-2 px-3 py-2.5 rounded-xl hover:bg-secondary/60">
+              <button onClick={() => onOpenService(i)} className="text-xs font-medium text-foreground hover:text-accent transition-all flex items-center gap-1 hover:gap-2 px-3 py-2.5 rounded-xl hover:bg-secondary/60">
                 {t.services.detailBtn} <Icon name="ArrowRight" size={12} />
               </button>
             </div>
@@ -1137,6 +1135,7 @@ export default function Index() {
   const [user, setUser] = useState<User | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [activeProductId, setActiveProductId] = useState<number | null>(null);
+  const [activeServiceIndex, setActiveServiceIndex] = useState<number | null>(null);
   const t = translations[lang];
 
   useEffect(() => {
@@ -1174,7 +1173,10 @@ export default function Index() {
           {page === "product" && activeProductId !== null && (
             <ProductPage productId={activeProductId} onBack={() => navigate("products")} user={user} onLogin={() => setAuthOpen(true)} />
           )}
-          {page === "services" && <ServicesPage t={t} onNav={navigate} />}
+          {page === "services" && <ServicesPage t={t} onNav={navigate} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
+          {page === "service" && activeServiceIndex !== null && (
+            <ServicePage serviceIndex={activeServiceIndex} t={t} onBack={() => navigate("services")} />
+          )}
           {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
           {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
           {page === "contacts" && <ContactsPage t={t} />}
