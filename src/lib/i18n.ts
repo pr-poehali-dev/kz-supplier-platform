@@ -5,7 +5,7 @@ export const translations = {
     brand: "ProSupply",
     nav: {
       home: "Главная",
-      catalog: "Каталог",
+      catalog: "Поставщики",
       products: "Товары",
       services: "Наши услуги",
       blog: "Блог",
@@ -270,7 +270,7 @@ export const translations = {
     brand: "ProSupply",
     nav: {
       home: "首页",
-      catalog: "供应商目录",
+      catalog: "供应商",
       products: "商品",
       services: "我们的服务",
       blog: "博客",
