@@ -240,7 +240,7 @@ export const translations = {
       contactCards: [
         {
           title: "Телефон",
-          value: "+7 (800) 555-01-23",
+          value: "+7 (919) 186-12-22",
           sub: "Бесплатно по России",
         },
         {
@@ -274,7 +274,7 @@ export const translations = {
         },
         { title: "Поддержка", links: ["Контакты", "База знаний", "Сообщения"] },
       ],
-      copyright: "© 2026 OptCarts.ru. Все права защищены.",
+      copyright: "© 2026 OptCarts.ru Все права защищены.",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
     },
