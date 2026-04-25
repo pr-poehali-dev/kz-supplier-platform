@@ -279,6 +279,59 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
         </div>
       </section>
 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16">
+        <div className="bg-white border border-border rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-accent/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl" />
+          <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-20 h-20 bg-gradient-to-br from-accent to-blue-700 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-accent/30">
+                <Icon name="ShoppingCart" size={36} />
+              </div>
+              <div className="hidden lg:block w-px h-16 bg-border" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">О бренде</p>
+              <h2 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight mb-3">
+                OptCarts — это <span className="gradient-text">опт</span> + <span className="gradient-text">carts</span>
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-5">
+                Объединяем оптовых поставщиков и закупщиков в одной платформе. Заполняйте «корзины» оптовыми партиями, проверяйте поставщиков, договаривайтесь и отгружайте — всё в одном месте, без посредников.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-start gap-3 bg-secondary/40 rounded-2xl p-4">
+                  <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon name="ShieldCheck" size={16} className="text-accent" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">Проверенные</div>
+                    <div className="text-xs text-muted-foreground">поставщики с верификацией</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-secondary/40 rounded-2xl p-4">
+                  <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon name="Package" size={16} className="text-accent" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">Оптом</div>
+                    <div className="text-xs text-muted-foreground">от минимальных партий</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-secondary/40 rounded-2xl p-4">
+                  <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon name="Zap" size={16} className="text-accent" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">Быстро</div>
+                    <div className="text-xs text-muted-foreground">сделка за пару дней</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
