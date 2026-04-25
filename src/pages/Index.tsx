@@ -285,13 +285,18 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
           <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl" />
           <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-center">
             <div className="flex items-center gap-4">
-              <div className="flex flex-col items-center">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-accent/15 to-blue-200/40 overflow-hidden shadow-xl shadow-accent/20 flex items-end justify-center">
+              <button onClick={() => onNav("messages")} className="group flex flex-col items-center text-left">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-accent/15 to-blue-200/40 overflow-hidden shadow-xl shadow-accent/20 flex items-end justify-center transition-all group-hover:shadow-accent/40 group-hover:scale-[1.03]">
                   <img
                     src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/58194f38-4408-4cb6-90bc-4685390ee777.png"
                     alt="Лин — персональный менеджер OptCarts"
                     className="w-full h-full object-cover object-top"
                   />
+                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="bg-white text-foreground rounded-full px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 shadow-lg">
+                      <Icon name="MessageSquare" size={12} /> Написать
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-3 text-center">
                   <div className="font-semibold text-sm flex items-center justify-center gap-1.5">
@@ -300,7 +305,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
                   </div>
                   <div className="text-xs text-muted-foreground">персональный менеджер</div>
                 </div>
-              </div>
+              </button>
               <div className="hidden lg:block w-px h-32 bg-border" />
             </div>
             <div>
