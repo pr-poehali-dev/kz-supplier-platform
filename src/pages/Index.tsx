@@ -285,10 +285,14 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
           <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl" />
           <div className="relative grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-center">
             <div className="flex items-center gap-3">
-              <div className="w-20 h-20 bg-gradient-to-br from-accent to-blue-700 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-accent/30">
-                <Icon name="ShoppingCart" size={36} />
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-accent/15 to-blue-200/40 overflow-hidden shadow-xl shadow-accent/20 flex items-end justify-center">
+                <img
+                  src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/58194f38-4408-4cb6-90bc-4685390ee777.png"
+                  alt="Менеджер OptCarts"
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
-              <div className="hidden lg:block w-px h-16 bg-border" />
+              <div className="hidden lg:block w-px h-20 bg-border" />
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">О бренде</p>
