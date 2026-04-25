@@ -230,7 +230,7 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
               <span className="w-2 h-2 bg-accent rounded-full pulse-glow" />
               <span className="text-xs font-semibold text-foreground uppercase tracking-widest">{t.hero.tag}</span>
             </div>
-            <h1 className="sm:text-6xl lg:text-7xl leading-[1.05] mb-7 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 font-bold tracking-tight text-5xl">
+            <h1 className="sm:text-6xl lg:text-7xl leading-[1.05] mb-7 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 font-bold tracking-tight text-4xl">
               {t.hero.title1}<br />
               <span className="gradient-text">{t.hero.title2}</span>
             </h1>
