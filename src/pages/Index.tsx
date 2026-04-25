@@ -5,7 +5,8 @@ import AuthModal from "@/components/AuthModal";
 import AccountPage from "@/components/AccountPage";
 import ProductPage from "@/components/ProductPage";
 import ServicePage from "@/components/ServicePage";
-import { fetchMe, type User } from "@/lib/auth";
+import { fetchMe, getToken, type User } from "@/lib/auth";
+import { toast } from "sonner";
 
 const PRODUCTS_API = "https://functions.poehali.dev/0d3d03b7-73bc-4278-a3b4-b0d2196eea41";
 
@@ -950,54 +951,119 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
   );
 }
 
-function ProductCard({ p, t, onOpen }: { p: AdminProduct; t: Translation; onOpen: (id: number) => void }) {
+function ProductCard({ p, t, onOpen, canManage, onEdit, onDelete }: { p: AdminProduct; t: Translation; onOpen: (id: number) => void; canManage?: boolean; onEdit?: (p: AdminProduct) => void; onDelete?: (p: AdminProduct) => void }) {
   return (
-    <button
-      onClick={() => onOpen(p.id)}
-      className="card-hover bg-white border border-border rounded-2xl overflow-hidden text-left w-full hover:border-foreground/20 transition-colors"
-    >
-      <div className="h-44 bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
-        {p.image_url ? (
-          <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
-        ) : (
-          <Icon name="Image" size={28} className="text-muted-foreground/40" />
-        )}
-        <div className="absolute top-3 left-3">
-          <span className="text-xs font-medium text-foreground bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm">{p.category}</span>
+    <div className="card-hover bg-white border border-border rounded-2xl overflow-hidden hover:border-foreground/20 transition-colors relative group">
+      {canManage && (
+        <div className="absolute top-3 right-3 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit?.(p); }}
+            title="Редактировать"
+            className="w-8 h-8 bg-white/95 backdrop-blur-md rounded-lg flex items-center justify-center shadow-sm hover:bg-accent hover:text-white transition-colors"
+          >
+            <Icon name="Pencil" size={13} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete?.(p); }}
+            title="Удалить"
+            className="w-8 h-8 bg-white/95 backdrop-blur-md rounded-lg flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors"
+          >
+            <Icon name="Trash2" size={13} />
+          </button>
         </div>
-        {!p.in_stock && (
-          <div className="absolute top-3 right-3">
-            <span className="text-xs font-medium text-white bg-foreground/80 backdrop-blur-md px-2.5 py-1 rounded-full">{t.products.outOfStock}</span>
+      )}
+      <button onClick={() => onOpen(p.id)} className="text-left w-full">
+        <div className="h-44 bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
+          {p.image_url ? (
+            <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+          ) : (
+            <Icon name="Image" size={28} className="text-muted-foreground/40" />
+          )}
+          <div className="absolute top-3 left-3">
+            <span className="text-xs font-medium text-foreground bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm">{p.category}</span>
           </div>
-        )}
-      </div>
-      <div className="p-5">
-        <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{p.description}</p>
-        <div className="flex items-end justify-between pt-4 border-t border-border">
-          <div>
-            <div className="font-bold text-base">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
-            <div className="text-xs text-muted-foreground mt-0.5">{t.products.from} {p.moq} {t.products.pcs}</div>
-          </div>
-          {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
+          {!p.in_stock && !canManage && (
+            <div className="absolute top-3 right-3">
+              <span className="text-xs font-medium text-white bg-foreground/80 backdrop-blur-md px-2.5 py-1 rounded-full">{t.products.outOfStock}</span>
+            </div>
+          )}
         </div>
-      </div>
-    </button>
+        <div className="p-5">
+          <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
+          <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{p.description}</p>
+          <div className="flex items-end justify-between pt-4 border-t border-border">
+            <div>
+              <div className="font-bold text-base">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
+              <div className="text-xs text-muted-foreground mt-0.5">{t.products.from} {p.moq} {t.products.pcs}</div>
+            </div>
+            {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
+          </div>
+        </div>
+      </button>
+    </div>
   );
 }
 
-function ProductsPage({ t, onOpen }: { t: Translation; onOpen: (id: number) => void }) {
+function ProductsPage({ t, user, onOpen }: { t: Translation; user: User | null; onOpen: (id: number) => void }) {
   const [items, setItems] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState<AdminProduct | null>(null);
+  const [saving, setSaving] = useState(false);
+  const canManage = !!user;
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
     fetch(PRODUCTS_API)
       .then((r) => r.json())
       .then((d) => setItems(d.items || []))
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleDelete = async (p: AdminProduct) => {
+    if (!confirm(`Удалить товар «${p.title}»?`)) return;
+    const token = getToken() || "";
+    try {
+      const res = await fetch(PRODUCTS_API, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+        body: JSON.stringify({ id: p.id }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Товар удалён");
+      setItems((prev) => prev.filter((x) => x.id !== p.id));
+    } catch {
+      toast.error("Не удалось удалить");
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editing) return;
+    if (!editing.title.trim() || !editing.category.trim()) {
+      toast.error("Название и категория обязательны");
+      return;
+    }
+    setSaving(true);
+    const token = getToken() || "";
+    try {
+      const res = await fetch(PRODUCTS_API, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+        body: JSON.stringify(editing),
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Сохранено");
+      setItems((prev) => prev.map((x) => (x.id === editing.id ? editing : x)));
+      setEditing(null);
+    } catch {
+      toast.error("Ошибка сохранения");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const filtered = items.filter((p) => {
     const q = search.toLowerCase();
@@ -1038,8 +1104,77 @@ function ProductsPage({ t, onOpen }: { t: Translation; onOpen: (id: number) => v
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {filtered.map((p) => (
-            <ProductCard key={p.id} p={p} t={t} onOpen={onOpen} />
+            <ProductCard key={p.id} p={p} t={t} onOpen={onOpen} canManage={canManage} onEdit={setEditing} onDelete={handleDelete} />
           ))}
+        </div>
+      )}
+
+      {editing && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={() => setEditing(null)}>
+          <div className="bg-white rounded-3xl p-7 w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-xl font-bold font-ibm">Редактировать товар</h3>
+              <button onClick={() => setEditing(null)} className="w-9 h-9 rounded-xl hover:bg-secondary flex items-center justify-center">
+                <Icon name="X" size={16} />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Название *</label>
+                <input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+                  className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Категория *</label>
+                  <input value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Поставщик</label>
+                  <input value={editing.supplier} onChange={(e) => setEditing({ ...editing, supplier: e.target.value })}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Цена</label>
+                  <input type="number" value={editing.price} onChange={(e) => setEditing({ ...editing, price: parseFloat(e.target.value) || 0 })}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Валюта</label>
+                  <input value={editing.currency} onChange={(e) => setEditing({ ...editing, currency: e.target.value })}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Мин. шт.</label>
+                  <input type="number" value={editing.moq} onChange={(e) => setEditing({ ...editing, moq: parseInt(e.target.value) || 1 })}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Описание</label>
+                <textarea rows={4} value={editing.description} onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                  className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white resize-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1.5 text-muted-foreground">URL картинки</label>
+                <input value={editing.image_url} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })}
+                  className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer pt-1">
+                <input type="checkbox" checked={editing.in_stock} onChange={(e) => setEditing({ ...editing, in_stock: e.target.checked })} className="w-4 h-4 accent-accent" />
+                <span className="text-sm">В наличии</span>
+              </label>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <button onClick={() => setEditing(null)} className="flex-1 px-4 py-3 rounded-xl text-sm font-medium bg-secondary hover:bg-secondary/80">Отмена</button>
+              <button onClick={handleSaveEdit} disabled={saving} className="flex-1 btn-modern bg-foreground text-background px-4 py-3 rounded-xl text-sm font-medium disabled:opacity-50">
+                {saving ? "Сохраняем..." : "Сохранить"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1403,7 +1538,7 @@ export default function Index() {
           {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "messages" && <MessagesPage t={t} />}
-          {page === "products" && <ProductsPage t={t} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}
+          {page === "products" && <ProductsPage t={t} user={user} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}
           {page === "product" && activeProductId !== null && (
             <ProductPage productId={activeProductId} onBack={() => navigate("products")} user={user} onLogin={() => setAuthOpen(true)} />
           )}

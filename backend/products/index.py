@@ -130,7 +130,9 @@ def handler(event: dict, context) -> dict:
             if not updates:
                 return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'no fields'})}
             updates.append('updated_at = NOW()')
-            owner_check = f" AND user_id = {_esc(user_id)}" if user_id else ""
+            if not user_id:
+                return {'statusCode': 401, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'unauthorized'})}
+            owner_check = f" AND (user_id = {_esc(user_id)} OR user_id IS NULL)"
             sql = f"UPDATE {SCHEMA}.products SET {', '.join(updates)} WHERE id = {_esc(int(pid))}{owner_check}"
             with _conn() as conn:
                 with conn.cursor() as cur:
@@ -142,7 +144,9 @@ def handler(event: dict, context) -> dict:
             pid = body.get('id')
             if not pid:
                 return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'id required'})}
-            owner_check = f" AND user_id = {_esc(user_id)}" if user_id else ""
+            if not user_id:
+                return {'statusCode': 401, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'unauthorized'})}
+            owner_check = f" AND (user_id = {_esc(user_id)} OR user_id IS NULL)"
             sql = f"DELETE FROM {SCHEMA}.products WHERE id = {_esc(int(pid))}{owner_check}"
             with _conn() as conn:
                 with conn.cursor() as cur:

@@ -14,12 +14,11 @@
       "expectedStatus": 200
     },
     {
-      "name": "Создание товара",
-      "method": "POST",
+      "name": "DELETE без токена",
+      "method": "DELETE",
       "path": "/",
-      "body": {"title": "Тестовая кастрюля", "category": "Кухня", "price": 1500, "moq": 10, "description": "Нержавейка 3л", "supplier": "ИП Тест"},
-      "expectedStatus": 200,
-      "expectedBody": {"success": true},
+      "body": {"id": 999999},
+      "expectedStatus": 401,
       "bodyMatcher": "partial"
     }
   ]
