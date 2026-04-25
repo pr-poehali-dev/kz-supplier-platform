@@ -1042,8 +1042,12 @@ function ServicesPage({ t, onNav, onOpenService }: { t: Translation; onNav: (p: 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
         {t.services.items.map((s, i) => (
           <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6 flex flex-col">
-            <div className="w-14 h-14 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center mb-5">
-              <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+            <div className="w-14 h-14 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center mb-5 overflow-hidden">
+              {s.icon === "Taobao" ? (
+                <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/8322b202-2dcf-4f1e-b13c-86fe2d1b6c4b.png" alt="Taobao" className="w-10 h-10 object-contain" />
+              ) : (
+                <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+              )}
             </div>
             <h3 className="font-semibold text-foreground mb-2 leading-snug text-lg">{s.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{s.desc}</p>
