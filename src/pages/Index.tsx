@@ -663,7 +663,7 @@ function BlogPage({ t }: { t: Translation }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {t.blogPosts.map((post, i) => (
           <div key={i} className="card-hover bg-white border border-border rounded overflow-hidden cursor-pointer">
-            <div className="h-40 bg-gradient-to-br from-navy-800 to-navy-600 flex items-center justify-center">
+            <div className="h-40 from-navy-800 to-navy-600 flex items-center justify-center bg-zinc-900">
               <Icon name="FileText" size={40} className="text-white/20" />
             </div>
             <div className="p-5">
