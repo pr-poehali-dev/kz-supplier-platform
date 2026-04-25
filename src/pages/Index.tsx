@@ -24,7 +24,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -1158,10 +1158,148 @@ function ContactsPage({ t }: { t: Translation }) {
   );
 }
 
+function AddCompanyPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
+  const ru = {
+    tag: "Размещение компании",
+    title: "Разместите свою компанию на платформе",
+    subtitle: "Сервис для российских и китайских компаний: попадите в каталог, публикуйте товары и получайте заявки от проверенных партнёров.",
+    whyTitle: "Почему стоит разместиться",
+    why: [
+      { icon: "Globe", title: "Двуязычная аудитория", text: "Ваши товары увидят покупатели и поставщики из России и Китая." },
+      { icon: "Search", title: "Видимость в каталоге", text: "Карточка компании в общем каталоге с фильтрами и поиском." },
+      { icon: "Package", title: "Каталог товаров", text: "Загружайте товары с фото, ценами и характеристиками." },
+      { icon: "MessageSquare", title: "Прямые заявки", text: "Получайте сообщения от заинтересованных клиентов напрямую." },
+    ],
+    stepsTitle: "Как разместиться — 4 шага",
+    steps: [
+      { title: "Заявка", text: "Оставьте заявку через форму ниже — укажите название и контакты." },
+      { title: "Верификация", text: "Проверим документы компании и подтвердим её статус." },
+      { title: "Заполнение профиля", text: "Добавьте логотип, описание, категории и реквизиты." },
+      { title: "Публикация товаров", text: "Загрузите карточки товаров и начинайте получать заявки." },
+    ],
+    needTitle: "Что понадобится",
+    need: [
+      "Регистрационные документы компании (ОГРН/营业执照)",
+      "Логотип и краткое описание деятельности",
+      "Контактное лицо и способы связи",
+      "Фото и характеристики товаров",
+    ],
+    cta: "Оставить заявку",
+  };
+  const zh = {
+    tag: "公司入驻",
+    title: "在平台上发布您的公司",
+    subtitle: "面向中俄两国企业的服务：进入商品目录、发布产品并获取来自可靠合作伙伴的询盘。",
+    whyTitle: "为什么选择入驻",
+    why: [
+      { icon: "Globe", title: "双语受众", text: "您的产品将被来自中国和俄罗斯的买家与供应商看到。" },
+      { icon: "Search", title: "目录中的曝光", text: "您的公司卡片将出现在带有筛选和搜索的公共目录中。" },
+      { icon: "Package", title: "产品目录", text: "上传带图片、价格与规格的产品。" },
+      { icon: "MessageSquare", title: "直接询盘", text: "直接接收感兴趣客户的消息。" },
+    ],
+    stepsTitle: "如何入驻 — 四个步骤",
+    steps: [
+      { title: "提交申请", text: "通过下方表单提交申请，填写公司名称和联系方式。" },
+      { title: "认证审核", text: "我们将核对公司证件并确认其资质。" },
+      { title: "完善资料", text: "添加 Logo、简介、分类和企业信息。" },
+      { title: "发布产品", text: "上传产品卡片，开始接收询盘。" },
+    ],
+    needTitle: "您需要准备",
+    need: [
+      "公司注册文件（营业执照 / ОГРН）",
+      "Logo 与公司业务简介",
+      "联系人及联系方式",
+      "产品图片与规格",
+    ],
+    cta: "提交申请",
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+      <div className="mb-10 text-center max-w-3xl mx-auto">
+        <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{ru.tag} / {zh.tag}</p>
+        <h1 className="text-3xl sm:text-5xl font-bold font-ibm tracking-tight mb-3">{ru.title}</h1>
+        <p className="text-lg sm:text-xl font-medium text-foreground/80 mb-4">{zh.title}</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        {[ru, zh].map((lang, idx) => (
+          <div key={idx} className="bg-white border border-border rounded-3xl p-7">
+            <div className="flex items-center gap-2 mb-5">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-accent/10 text-accent">
+                {idx === 0 ? "RU · Русский" : "ZH · 中文"}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{lang.subtitle}</p>
+
+            <h3 className="font-bold text-base mb-4 font-ibm">{lang.whyTitle}</h3>
+            <div className="space-y-3 mb-6">
+              {lang.why.map((w) => (
+                <div key={w.title} className="flex items-start gap-3">
+                  <div className="w-9 h-9 bg-gradient-to-br from-accent/15 to-accent/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon name={w.icon} size={16} className="text-accent" fallback="Star" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">{w.title}</div>
+                    <div className="text-xs text-muted-foreground leading-relaxed">{w.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="font-bold text-base mb-4 font-ibm">{lang.stepsTitle}</h3>
+            <div className="space-y-3 mb-6">
+              {lang.steps.map((s, i) => (
+                <div key={s.title} className="flex items-start gap-3">
+                  <div className="w-7 h-7 rounded-full bg-foreground text-background text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    {i + 1}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">{s.title}</div>
+                    <div className="text-xs text-muted-foreground leading-relaxed">{s.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="font-bold text-base mb-3 font-ibm">{lang.needTitle}</h3>
+            <ul className="space-y-2">
+              {lang.need.map((n) => (
+                <li key={n} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <Icon name="Check" size={14} className="text-accent flex-shrink-0 mt-0.5" />
+                  <span>{n}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div className="gradient-bg text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden text-center">
+        <div className="absolute inset-0 hero-grid opacity-30" />
+        <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
+        <div className="relative">
+          <h2 className="text-2xl sm:text-3xl font-bold font-ibm mb-2">{ru.cta} · {zh.cta}</h2>
+          <p className="text-sm text-blue-100/80 mb-6 max-w-xl mx-auto">
+            Заполните короткую форму — менеджер свяжется в течение рабочего дня.<br />
+            填写简短表单 — 经理将在一个工作日内与您联系。
+          </p>
+          <button
+            onClick={() => onNav("contacts")}
+            className="btn-modern bg-white text-foreground px-8 py-3.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2"
+          >
+            {ru.cta} / {zh.cta} <Icon name="ArrowRight" size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
   const colPages: Page[][] = [
     ["home", "catalog", "blog"],
-    ["contacts", "contacts", "contacts"],
+    ["addCompany", "contacts", "contacts"],
     ["contacts", "contacts", "messages"],
   ];
   return (
@@ -1259,6 +1397,7 @@ export default function Index() {
           {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
           {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
           {page === "contacts" && <ContactsPage t={t} />}
+        {page === "addCompany" && <AddCompanyPage t={t} onNav={navigate} />}
           {page === "account" && user && <AccountPage user={user} onLogout={() => { setUser(null); navigate("home"); }} />}
           {page === "account" && !user && <div className="max-w-xl mx-auto p-12 text-center"><p className="text-muted-foreground mb-4">Войди, чтобы открыть кабинет</p><button onClick={() => setAuthOpen(true)} className="btn-modern bg-foreground text-background px-6 py-3 rounded-xl text-sm font-medium">Войти</button></div>}
         </div>
