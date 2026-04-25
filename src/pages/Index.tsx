@@ -19,7 +19,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages";
+type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -74,6 +74,7 @@ function Navbar({ current, onNav, lang, setLang, t }: { current: Page; onNav: (p
   const links: { label: string; page: Page }[] = [
     { label: t.nav.home, page: "home" },
     { label: t.nav.catalog, page: "catalog" },
+    { label: t.nav.services, page: "services" },
     { label: t.nav.blog, page: "blog" },
     { label: t.nav.contacts, page: "contacts" },
   ];
@@ -817,6 +818,47 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
   );
 }
 
+function ServicesPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+      <div className="mb-10">
+        <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.services.tag}</p>
+        <h1 className="text-3xl font-bold font-ibm">{t.services.title}</h1>
+        <p className="text-muted-foreground mt-2 max-w-2xl">{t.services.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {t.services.items.map((s, i) => (
+          <div key={i} className="card-hover bg-white border border-border rounded p-6 flex flex-col">
+            <div className="w-12 h-12 bg-accent/10 rounded flex items-center justify-center mb-4">
+              <Icon name={s.icon} size={22} className="text-accent" fallback="Star" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-2 leading-snug">{s.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{s.desc}</p>
+            <div className="flex items-center gap-2 pt-4 border-t border-border">
+              <button onClick={() => onNav("contacts")} className="text-xs font-medium bg-accent text-white px-3 py-2 rounded hover:bg-blue-600 transition-colors">
+                {t.services.orderBtn}
+              </button>
+              <button className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+                {t.services.detailBtn} <Icon name="ArrowRight" size={12} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-navy-900 text-white rounded p-8 sm:p-10 text-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-full opacity-10 hero-grid" />
+        <h2 className="text-2xl font-bold font-ibm mb-3">{t.services.ctaTitle}</h2>
+        <p className="text-blue-200/80 mb-6 max-w-xl mx-auto text-sm">{t.services.ctaSubtitle}</p>
+        <button onClick={() => onNav("contacts")} className="bg-accent hover:bg-blue-500 text-white font-medium px-8 py-3 rounded text-sm transition-colors">
+          {t.services.ctaBtn}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ContactsPage({ t }: { t: Translation }) {
   const contactIcons = ["Phone", "Mail", "MessageSquare", "MapPin"];
   return (
@@ -959,6 +1001,7 @@ export default function Index() {
         {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
         {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
         {page === "messages" && <MessagesPage t={t} />}
+        {page === "services" && <ServicesPage t={t} onNav={navigate} />}
         {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
         {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
         {page === "contacts" && <ContactsPage t={t} />}
