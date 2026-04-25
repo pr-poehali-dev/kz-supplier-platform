@@ -52,16 +52,16 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
 
 function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   return (
-    <div className="flex items-center bg-secondary rounded overflow-hidden text-xs font-medium">
+    <div className="flex items-center bg-secondary/70 rounded-xl overflow-hidden text-xs font-semibold p-0.5">
       <button
         onClick={() => setLang("ru")}
-        className={`px-2.5 py-1.5 transition-colors ${lang === "ru" ? "bg-accent text-white" : "text-muted-foreground hover:text-foreground"}`}
+        className={`px-2.5 py-1.5 rounded-lg transition-all ${lang === "ru" ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
       >
         RU
       </button>
       <button
         onClick={() => setLang("zh")}
-        className={`px-2.5 py-1.5 transition-colors ${lang === "zh" ? "bg-accent text-white" : "text-muted-foreground hover:text-foreground"}`}
+        className={`px-2.5 py-1.5 rounded-lg transition-all ${lang === "zh" ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
       >
         中文
       </button>
@@ -81,62 +81,62 @@ function Navbar({ current, onNav, lang, setLang, t }: { current: Page; onNav: (p
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-        <button onClick={() => onNav("home")} className="flex items-center gap-2 font-bold text-xl text-navy-800 tracking-tight font-ibm">
-          <span className="w-7 h-7 bg-accent rounded-sm flex items-center justify-center text-white text-sm font-bold">P</span>
-          {t.brand}
+    <header className="sticky top-3 z-50 mx-3 sm:mx-6">
+      <div className="max-w-7xl mx-auto glass border border-white/40 rounded-2xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.08)] flex items-center justify-between h-16 px-4 sm:px-6">
+        <button onClick={() => onNav("home")} className="flex items-center gap-2.5 font-bold text-lg tracking-tight font-ibm">
+          <span className="w-8 h-8 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-accent/30">P</span>
+          <span className="gradient-text">{t.brand}</span>
         </button>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-1">
           {links.map((l) => (
             <button
               key={l.page}
               onClick={() => onNav(l.page)}
-              className={`nav-link text-sm font-medium transition-colors ${current === l.page ? "text-accent active" : "text-muted-foreground hover:text-foreground"}`}
+              className={`text-sm font-medium px-3 py-2 rounded-xl transition-all ${current === l.page ? "bg-accent/10 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"}`}
             >
               {l.label}
             </button>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2">
           <LangSwitcher lang={lang} setLang={setLang} />
           <button
             onClick={() => onNav("messages")}
-            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-secondary/60 rounded-xl transition-colors"
           >
-            <Icon name="MessageSquare" size={20} />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
+            <Icon name="MessageSquare" size={18} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full pulse-glow"></span>
           </button>
-          <button className="text-sm font-medium text-foreground px-4 py-2 border border-border rounded hover:bg-secondary transition-colors">
+          <button className="text-sm font-medium text-foreground px-4 py-2 rounded-xl hover:bg-secondary/60 transition-colors">
             {t.nav.login}
           </button>
-          <button className="text-sm font-medium bg-accent text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+          <button className="btn-modern text-sm font-medium bg-foreground text-background px-4 py-2 rounded-xl">
             {t.nav.addCompany}
           </button>
         </div>
 
         <div className="md:hidden flex items-center gap-2">
           <LangSwitcher lang={lang} setLang={setLang} />
-          <button className="p-2" onClick={() => setOpen(!open)}>
-            <Icon name={open ? "X" : "Menu"} size={22} />
+          <button className="p-2 rounded-xl hover:bg-secondary/60" onClick={() => setOpen(!open)}>
+            <Icon name={open ? "X" : "Menu"} size={20} />
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border bg-white px-4 py-4 flex flex-col gap-3">
+        <div className="md:hidden mt-2 glass border border-white/40 rounded-2xl px-4 py-3 flex flex-col gap-1 shadow-lg">
           {links.map((l) => (
             <button
               key={l.page}
               onClick={() => { onNav(l.page); setOpen(false); }}
-              className="text-sm font-medium text-left py-2 border-b border-border last:border-0"
+              className="text-sm font-medium text-left py-2.5 px-3 rounded-xl hover:bg-secondary/60 transition-colors"
             >
               {l.label}
             </button>
           ))}
-          <button onClick={() => { onNav("messages"); setOpen(false); }} className="text-sm font-medium text-left py-2">
+          <button onClick={() => { onNav("messages"); setOpen(false); }} className="text-sm font-medium text-left py-2.5 px-3 rounded-xl hover:bg-secondary/60">
             {t.nav.messages}
           </button>
         </div>
@@ -149,21 +149,21 @@ function SupplierCard({ idx, t, onView }: { idx: number; t: Translation; onView:
   const meta = baseSuppliers[idx];
   const data = t.suppliersData[idx];
   return (
-    <div className="card-hover bg-white border border-border rounded p-5 cursor-pointer" onClick={onView}>
-      <div className="flex items-start justify-between mb-3">
-        <div className="w-12 h-12 bg-navy-900 rounded flex items-center justify-center text-white font-bold text-lg">
+    <div className="card-hover bg-white border border-border rounded-2xl p-6 cursor-pointer" onClick={onView}>
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md">
           {meta.avatar}
         </div>
         {meta.verified && (
-          <div className="flex items-center gap-1 text-emerald-600 text-xs font-medium">
-            <Icon name="BadgeCheck" size={14} />
+          <div className="flex items-center gap-1 text-emerald-700 text-xs font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+            <Icon name="BadgeCheck" size={13} />
             {t.card.verified}
           </div>
         )}
       </div>
-      <h3 className="font-semibold text-foreground mb-1">{data.name}</h3>
-      <p className="text-xs text-accent font-medium mb-2">{data.category}</p>
-      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{data.description}</p>
+      <h3 className="font-semibold text-foreground mb-1 text-base">{data.name}</h3>
+      <p className="text-xs text-accent font-medium mb-3">{data.category}</p>
+      <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{data.description}</p>
       <div className="flex items-center gap-3 mb-4">
         <StarRating rating={meta.rating} />
         <span className="text-sm font-semibold text-foreground">{meta.rating}</span>
@@ -171,12 +171,12 @@ function SupplierCard({ idx, t, onView }: { idx: number; t: Translation; onView:
       </div>
       <div className="flex flex-wrap gap-1.5 mb-4">
         {data.tags.map((tag) => (
-          <span key={tag} className="text-xs px-2 py-0.5 rounded font-medium bg-blue-50 text-blue-700 border border-blue-200">{tag}</span>
+          <span key={tag} className="text-xs px-2.5 py-1 rounded-full font-medium bg-secondary text-foreground/80">{tag}</span>
         ))}
       </div>
-      <div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-3">
-        <span className="flex items-center gap-1"><Icon name="MapPin" size={12} />{data.location}</span>
-        <span className="flex items-center gap-1"><Icon name="Calendar" size={12} />{t.card.since} {meta.since}</span>
+      <div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4">
+        <span className="flex items-center gap-1.5"><Icon name="MapPin" size={12} />{data.location}</span>
+        <span className="flex items-center gap-1.5"><Icon name="Calendar" size={12} />{t.card.since} {meta.since}</span>
       </div>
     </div>
   );
@@ -202,79 +202,80 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
 
   return (
     <div className="animate-fade-in">
-      <section className="relative bg-navy-900 text-white overflow-hidden min-h-[580px] flex items-center">
-        <div className="absolute inset-0 hero-grid" />
-        <div className="absolute inset-0 opacity-15" style={{ backgroundImage: `url(${HERO_IMAGE})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-900/90 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 w-full">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-6 animate-fade-in-up animate-fade-in-up-delay-1">
-              <div className="h-px w-8 bg-accent" />
-              <span className="text-sm font-medium text-blue-300 uppercase tracking-widest">{t.hero.tag}</span>
+      <section className="relative mesh-bg overflow-hidden pt-12 pb-16 sm:pt-20 sm:pb-24">
+        <div className="absolute top-32 right-10 w-64 h-64 rounded-full bg-accent/10 blur-3xl animate-float" />
+        <div className="absolute bottom-10 left-10 w-72 h-72 rounded-full bg-blue-300/20 blur-3xl animate-float" style={{ animationDelay: "1.5s" }} />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 mb-7 px-3 py-1.5 bg-white/70 border border-white/80 rounded-full backdrop-blur-md animate-fade-in-up animate-fade-in-up-delay-1 shadow-sm">
+              <span className="w-2 h-2 bg-accent rounded-full pulse-glow" />
+              <span className="text-xs font-semibold text-foreground uppercase tracking-widest">{t.hero.tag}</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl leading-tight mb-6 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 font-extrabold">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.05] mb-7 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 font-bold tracking-tight">
               {t.hero.title1}<br />
-              <span className="text-blue-300">{t.hero.title2}</span>
+              <span className="gradient-text">{t.hero.title2}</span>
             </h1>
-            <p className="text-lg text-blue-100/80 mb-10 max-w-xl leading-relaxed animate-fade-in-up animate-fade-in-up-delay-3">
+            <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed animate-fade-in-up animate-fade-in-up-delay-3">
               {t.hero.subtitle}
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 animate-fade-in-up animate-fade-in-up-delay-4">
-              <button onClick={() => onNav("catalog")} className="bg-accent hover:bg-blue-500 text-white font-medium px-8 py-3 rounded text-sm transition-colors flex items-center gap-2 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in-up animate-fade-in-up-delay-4">
+              <button onClick={() => onNav("catalog")} className="btn-modern bg-foreground text-background font-medium px-7 py-3.5 rounded-2xl text-sm flex items-center gap-2 justify-center">
                 {t.hero.findSupplier} <Icon name="ArrowRight" size={16} />
               </button>
-              <button className="border border-white/30 hover:border-white/60 text-white font-medium px-8 py-3 rounded text-sm transition-colors">
+              <button className="bg-white/70 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
                 {t.hero.placeCompany}
               </button>
             </div>
           </div>
-          <div className="flex gap-12 mt-16 animate-fade-in-up animate-fade-in-up-delay-4">
+
+          <div className="grid grid-cols-3 gap-3 sm:gap-6 mt-16 max-w-3xl mx-auto animate-fade-in-up animate-fade-in-up-delay-4">
             {[
               { value: "2 400+", label: t.hero.stat1Label },
               { value: "18 000+", label: t.hero.stat2Label },
               { value: "96%", label: t.hero.stat3Label },
             ].map((s, i) => (
-              <div key={i} className={`${i > 0 ? "stat-divider pl-12" : ""}`}>
-                <div className="text-2xl font-bold text-white">{s.value}</div>
-                <div className="text-sm text-blue-200/70 mt-1">{s.label}</div>
+              <div key={i} className="bg-white/60 border border-white/80 rounded-2xl p-5 backdrop-blur-md text-center">
+                <div className="text-2xl sm:text-3xl font-bold gradient-text">{s.value}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
-          <div className="flex gap-3 flex-col sm:flex-row">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
+        <div className="bg-white border border-border rounded-2xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] p-3">
+          <div className="flex gap-2 flex-col sm:flex-row">
             <div className="flex-1 relative">
-              <Icon name="Search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input type="text" placeholder={t.search.placeholder} className="w-full pl-10 pr-4 py-2.5 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent" />
+              <Icon name="Search" size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input type="text" placeholder={t.search.placeholder} className="w-full pl-11 pr-4 py-3 bg-secondary/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white transition-all" />
             </div>
-            <select className="px-3 py-2.5 border border-border rounded text-sm text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/30">
+            <select className="px-4 py-3 bg-secondary/50 rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/30 cursor-pointer">
               {t.catalog.categories.map((c) => <option key={c}>{c}</option>)}
             </select>
-            <button onClick={() => onNav("catalog")} className="bg-primary text-primary-foreground px-6 py-2.5 rounded text-sm font-medium hover:opacity-90 transition-opacity">
+            <button onClick={() => onNav("catalog")} className="btn-modern bg-foreground text-background px-7 py-3 rounded-xl text-sm font-medium">
               {t.search.find}
             </button>
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="flex items-end justify-between mb-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.directionsTag}</p>
-            <h2 className="text-2xl font-bold text-foreground font-ibm">{t.sections.directionsTitle}</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground font-ibm tracking-tight">{t.sections.directionsTitle}</h2>
           </div>
-          <button onClick={() => onNav("catalog")} className="text-sm text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+          <button onClick={() => onNav("catalog")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
             {t.sections.allCategories} <Icon name="ArrowRight" size={14} />
           </button>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {catIcons.map((cat) => (
-            <button key={cat.label} onClick={() => onNav("catalog")} className="card-hover bg-white border border-border rounded p-5 text-center flex flex-col items-center gap-3 group">
-              <div className="w-12 h-12 bg-secondary rounded flex items-center justify-center group-hover:bg-accent/10 transition-colors">
-                <Icon name={cat.icon} size={22} className="text-accent" fallback="Box" />
+            <button key={cat.label} onClick={() => onNav("catalog")} className="card-hover bg-white border border-border rounded-2xl p-5 text-center flex flex-col items-center gap-3 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-secondary to-secondary/40 rounded-2xl flex items-center justify-center group-hover:from-accent/10 group-hover:to-accent/5 transition-all">
+                <Icon name={cat.icon} size={24} className="text-accent" fallback="Box" />
               </div>
               <div>
                 <div className="text-sm font-semibold text-foreground">{cat.label}</div>
@@ -285,34 +286,32 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
         </div>
       </section>
 
-      <section className="bg-secondary/40 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.bestTag}</p>
-              <h2 className="text-2xl font-bold font-ibm">{t.sections.bestTitle}</h2>
-            </div>
-            <button onClick={() => onNav("catalog")} className="text-sm text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              {t.sections.allSuppliers} <Icon name="ArrowRight" size={14} />
-            </button>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.bestTag}</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.sections.bestTitle}</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[0, 1, 2].map((i) => (
-              <SupplierCard key={i} idx={i} t={t} onView={() => onNav("supplier")} />
-            ))}
-          </div>
+          <button onClick={() => onNav("catalog")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
+            {t.sections.allSuppliers} <Icon name="ArrowRight" size={14} />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[0, 1, 2].map((i) => (
+            <SupplierCard key={i} idx={i} t={t} onView={() => onNav("supplier")} />
+          ))}
         </div>
       </section>
 
       {homeProducts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-          <div className="flex items-end justify-between mb-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+          <div className="flex items-end justify-between mb-10">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.homeTag}</p>
-              <h2 className="text-2xl font-bold font-ibm">{t.products.homeTitle}</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.products.homeTitle}</h2>
               <p className="text-sm text-muted-foreground mt-1">{t.products.homeSubtitle}</p>
             </div>
-            <button onClick={() => onNav("products")} className="text-sm text-accent font-medium flex items-center gap-1 hover:gap-2 transition-all">
+            <button onClick={() => onNav("products")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
               {t.products.allBtn} <Icon name="ArrowRight" size={14} />
             </button>
           </div>
@@ -324,36 +323,41 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
         </section>
       )}
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.simpleTag}</p>
-          <h2 className="text-2xl font-bold font-ibm">{t.sections.simpleTitle}</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.sections.simpleTitle}</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {t.steps.map((item, i) => (
-            <div key={i}>
-              <div className="text-6xl font-bold text-border/60 font-ibm leading-none mb-4">{String(i + 1).padStart(2, "0")}</div>
-              <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center mb-4">
+            <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute -top-2 -right-2 text-7xl font-bold gradient-text opacity-20 font-ibm leading-none select-none">{String(i + 1).padStart(2, "0")}</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-accent/15 to-accent/5 rounded-2xl flex items-center justify-center mb-4 relative">
                 <Icon name={stepIcons[i]} size={20} className="text-accent" fallback="Star" />
               </div>
-              <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{item.text}</p>
+              <h3 className="font-semibold text-foreground mb-2 relative">{item.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed relative">{item.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-navy-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl font-bold font-ibm mb-4">{t.sections.ctaTitle}</h2>
-          <p className="text-blue-200/80 mb-8 max-w-lg mx-auto">{t.sections.ctaSubtitle}</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button onClick={() => onNav("catalog")} className="bg-accent hover:bg-blue-500 text-white font-medium px-8 py-3 rounded text-sm transition-colors">
-              {t.hero.findSupplier}
-            </button>
-            <button className="border border-white/30 hover:border-white/60 text-white font-medium px-8 py-3 rounded text-sm transition-colors">
-              {t.sections.becomeSupplier}
-            </button>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="gradient-bg text-white rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden">
+          <div className="absolute inset-0 hero-grid opacity-50" />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-blue-400/20 blur-3xl" />
+          <div className="relative">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm mb-4 tracking-tight">{t.sections.ctaTitle}</h2>
+            <p className="text-blue-100/80 mb-8 max-w-lg mx-auto">{t.sections.ctaSubtitle}</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onClick={() => onNav("catalog")} className="btn-modern bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm">
+                {t.hero.findSupplier}
+              </button>
+              <button className="bg-white/10 border border-white/20 hover:bg-white/20 text-white font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
+                {t.sections.becomeSupplier}
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -799,25 +803,29 @@ function BlogPostPage({ t, postIndex, onBack, onOpenPost }: { t: Translation; po
 
 function ProductCard({ p, t }: { p: AdminProduct; t: Translation }) {
   return (
-    <div className="card-hover bg-white border border-border rounded overflow-hidden">
-      <div className="h-44 bg-secondary flex items-center justify-center overflow-hidden">
+    <div className="card-hover bg-white border border-border rounded-2xl overflow-hidden">
+      <div className="h-44 bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
         {p.image_url ? (
           <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
         ) : (
           <Icon name="Image" size={28} className="text-muted-foreground/40" />
         )}
-      </div>
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">{p.category}</span>
-          {!p.in_stock && <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">{t.products.outOfStock}</span>}
+        <div className="absolute top-3 left-3">
+          <span className="text-xs font-medium text-foreground bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm">{p.category}</span>
         </div>
+        {!p.in_stock && (
+          <div className="absolute top-3 right-3">
+            <span className="text-xs font-medium text-white bg-foreground/80 backdrop-blur-md px-2.5 py-1 rounded-full">{t.products.outOfStock}</span>
+          </div>
+        )}
+      </div>
+      <div className="p-5">
         <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{p.description}</p>
-        <div className="flex items-end justify-between pt-3 border-t border-border">
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{p.description}</p>
+        <div className="flex items-end justify-between pt-4 border-t border-border">
           <div>
-            <div className="font-bold">{p.price.toLocaleString("ru")} {p.currency}</div>
-            <div className="text-xs text-muted-foreground">{t.products.from} {p.moq} {t.products.pcs}</div>
+            <div className="font-bold text-base">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
+            <div className="text-xs text-muted-foreground mt-0.5">{t.products.from} {p.moq} {t.products.pcs}</div>
           </div>
           {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
         </div>

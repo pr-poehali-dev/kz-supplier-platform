@@ -32,7 +32,7 @@
     --input: 214 20% 88%;
     --ring: 210 100% 45%;
 
-    --radius: 0.25rem;
+    --radius: 1rem;
 
     --sidebar-background: 220 40% 12%;
     --sidebar-foreground: 210 30% 85%;
@@ -125,22 +125,114 @@
 
   .card-hover {
     transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.3s ease;
   }
   .card-hover:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow:
+      0 20px 50px -12px rgba(0, 0, 0, 0.08),
+      0 8px 24px -8px rgba(0, 0, 0, 0.04);
   }
 
   .hero-grid {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
   .stat-divider {
     border-left: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(220 65% 18%), hsl(210 100% 45%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(
+      135deg,
+      hsl(220 65% 12%) 0%,
+      hsl(220 65% 18%) 50%,
+      hsl(210 80% 30%) 100%
+    );
+  }
+
+  .mesh-bg {
+    background-color: hsl(216 33% 97%);
+    background-image:
+      radial-gradient(
+        at 0% 0%,
+        hsla(210, 100%, 70%, 0.15) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 100% 0%,
+        hsla(220, 80%, 60%, 0.12) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 100% 100%,
+        hsla(190, 100%, 70%, 0.1) 0px,
+        transparent 50%
+      );
+  }
+
+  .btn-modern {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-modern::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .btn-modern:hover::before {
+    opacity: 1;
+  }
+  .btn-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px -10px hsla(210, 100%, 45%, 0.5);
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 hsla(210, 100%, 55%, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 12px hsla(210, 100%, 55%, 0);
+    }
+  }
+  .pulse-glow {
+    animation: pulse-glow 2.5s infinite;
   }
 }
