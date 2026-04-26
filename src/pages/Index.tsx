@@ -231,41 +231,132 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
 
   return (
     <div className="animate-fade-in">
-      <section className="relative mesh-bg overflow-hidden pt-12 pb-16 sm:pt-20 sm:pb-24">
-        <div className="absolute top-32 right-10 w-64 h-64 rounded-full bg-accent/10 blur-3xl animate-float" />
-        <div className="absolute bottom-10 left-10 w-72 h-72 rounded-full bg-blue-300/20 blur-3xl animate-float" style={{ animationDelay: "1.5s" }} />
+      <section className="relative mesh-bg overflow-hidden pt-10 pb-20 sm:pt-16 sm:pb-28">
+        <div className="absolute top-20 right-0 w-[420px] h-[420px] rounded-full bg-accent/15 blur-3xl animate-float" />
+        <div className="absolute bottom-0 left-0 w-[380px] h-[380px] rounded-full bg-blue-300/25 blur-3xl animate-float" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.04)_1px,transparent_0)] [background-size:24px_24px] opacity-60" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 mb-7 px-3 py-1.5 bg-white/70 border border-white/80 rounded-full backdrop-blur-md animate-fade-in-up animate-fade-in-up-delay-1 shadow-sm">
-              <span className="w-2 h-2 bg-accent rounded-full pulse-glow" />
-              <span className="text-xs font-semibold text-foreground uppercase tracking-widest">{t.hero.tag}</span>
+          <div className="grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-8 items-center">
+            <div className="text-left">
+              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-white/80 border border-white rounded-full backdrop-blur-md animate-fade-in-up animate-fade-in-up-delay-1 shadow-sm">
+                <span className="w-2 h-2 bg-accent rounded-full pulse-glow" />
+                <span className="text-xs font-semibold text-foreground uppercase tracking-widest">{t.hero.tag}</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.02] mb-6 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 tracking-tight font-semibold">
+                {t.hero.title1}{" "}
+                <span className="gradient-text">{t.hero.title2}</span>
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed animate-fade-in-up animate-fade-in-up-delay-3">
+                {t.hero.subtitle}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 mb-10 animate-fade-in-up animate-fade-in-up-delay-4">
+                <button onClick={() => onNav("addCompany")} className="btn-modern bg-foreground text-background font-medium px-7 py-3.5 rounded-2xl text-sm flex items-center gap-2 justify-center group">
+                  Оставить заявку <Icon name="ArrowRight" size={16} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button onClick={() => onNav("catalog")} className="bg-white/80 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md flex items-center gap-2 justify-center">
+                  <Icon name="Compass" size={16} /> {t.hero.findSupplier}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-5 animate-fade-in-up animate-fade-in-up-delay-4">
+                <div className="flex -space-x-2">
+                  {["bg-accent","bg-blue-400","bg-emerald-400","bg-amber-400"].map((c, i) => (
+                    <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-sm`}>
+                      {["A","M","K","D"][i]}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1 mb-0.5">
+                    {[0,1,2,3,4].map((i) => <Icon key={i} name="Star" size={12} className="text-amber-400 fill-amber-400" />)}
+                    <span className="text-xs font-semibold ml-1.5">4.9</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">2 400+ компаний уже работают с нами</p>
+                </div>
+              </div>
             </div>
-            <h1 className="sm:text-6xl lg:text-7xl leading-[1.05] mb-7 font-ibm animate-fade-in-up animate-fade-in-up-delay-2 tracking-tight text-center font-semibold text-3xl">
-              {t.hero.title1}<br />
-              <span className="gradient-text">{t.hero.title2}</span>
-            </h1>
-            <p className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed animate-fade-in-up animate-fade-in-up-delay-3">
-              {t.hero.subtitle}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in-up animate-fade-in-up-delay-4">
-              <button onClick={() => onNav("catalog")} className="btn-modern bg-foreground text-background font-medium px-7 py-3.5 rounded-2xl text-sm flex items-center gap-2 justify-center">
-                {t.hero.findSupplier} <Icon name="ArrowRight" size={16} />
-              </button>
-              <button onClick={() => onNav("addCompany")} className="bg-white/70 border border-border hover:bg-white text-foreground font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
-                Оставить заявку · 提交申请
-              </button>
+
+            <div className="relative animate-fade-in-up animate-fade-in-up-delay-3">
+              <div className="absolute -inset-6 bg-gradient-to-br from-accent/20 via-blue-300/20 to-transparent rounded-[40px] blur-2xl" />
+              <div className="relative bg-white/90 backdrop-blur-xl border border-white rounded-3xl p-6 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.15)]">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 bg-foreground rounded-xl flex items-center justify-center">
+                      <Icon name="Package" size={16} className="text-background" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Сделка #C-1842</p>
+                      <p className="text-sm font-semibold">Поставка из Шэньчжэня</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">В пути</span>
+                </div>
+
+                <div className="space-y-3">
+                  {[
+                    { icon: "Search", title: "Поиск поставщика", status: "Готово", color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { icon: "ShieldCheck", title: "Проверка фабрики", status: "Готово", color: "text-emerald-600", bg: "bg-emerald-50" },
+                    { icon: "PackageCheck", title: "Контроль качества", status: "Идёт", color: "text-accent", bg: "bg-accent/10" },
+                    { icon: "Truck", title: "Доставка на склад", status: "Ожидает", color: "text-muted-foreground", bg: "bg-secondary" },
+                  ].map((s, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 bg-secondary/40 rounded-xl border border-border/50">
+                      <div className={`w-9 h-9 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon name={s.icon} size={15} className={s.color} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{s.title}</p>
+                      </div>
+                      <span className={`text-xs font-semibold ${s.color}`}>{s.status}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 pt-5 border-t border-border flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Экономия на закупке</p>
+                    <p className="text-lg font-bold gradient-text">−32%</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground">До прибытия</p>
+                    <p className="text-lg font-bold">12 дней</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute -top-4 -right-4 bg-white border border-border rounded-2xl p-3 shadow-lg flex items-center gap-2 animate-float" style={{ animationDelay: "0.8s" }}>
+                <div className="w-8 h-8 bg-accent/15 rounded-lg flex items-center justify-center">
+                  <Icon name="Factory" size={15} className="text-accent" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Прямые контракты</p>
+                  <p className="text-xs font-semibold">с фабриками</p>
+                </div>
+              </div>
+              <div className="absolute -bottom-4 -left-4 bg-white border border-border rounded-2xl p-3 shadow-lg flex items-center gap-2 animate-float" style={{ animationDelay: "1.2s" }}>
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <Icon name="ShieldCheck" size={15} className="text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Гарантия качества</p>
+                  <p className="text-xs font-semibold">на каждом этапе</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 sm:gap-6 mt-16 max-w-3xl mx-auto animate-fade-in-up animate-fade-in-up-delay-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-20 animate-fade-in-up animate-fade-in-up-delay-4">
             {[
-              { value: "2 400+", label: t.hero.stat1Label },
-              { value: "18 000+", label: t.hero.stat2Label },
-              { value: "96%", label: t.hero.stat3Label },
+              { icon: "Users", value: "2 400+", label: t.hero.stat1Label },
+              { icon: "CheckCircle2", value: "18 000+", label: t.hero.stat2Label },
+              { icon: "Smile", value: "96%", label: t.hero.stat3Label },
+              { icon: "Clock", value: "24/7", label: "поддержка" },
             ].map((s, i) => (
-              <div key={i} className="bg-white/60 border border-white/80 rounded-2xl p-5 backdrop-blur-md text-center">
-                <div className="text-2xl sm:text-3xl font-bold gradient-text">{s.value}</div>
+              <div key={i} className="bg-white/70 border border-white rounded-2xl p-5 backdrop-blur-md hover:bg-white transition-colors group">
+                <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
+                  <Icon name={s.icon} size={18} className="text-foreground group-hover:text-accent transition-colors" />
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold font-ibm">{s.value}</div>
                 <div className="text-xs sm:text-sm text-muted-foreground mt-1">{s.label}</div>
               </div>
             ))}
