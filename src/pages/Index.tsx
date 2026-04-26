@@ -390,23 +390,6 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.bestTag}</p>
-            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.sections.bestTitle}</h2>
-          </div>
-          <button onClick={() => onNav("catalog")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
-            {t.sections.allSuppliers} <Icon name="ArrowRight" size={14} />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[0, 1, 2].map((i) => (
-            <SupplierCard key={i} idx={i} t={t} onView={() => onNav("supplier")} />
-          ))}
-        </div>
-      </section>
-
       {homeProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
           <div className="flex items-end justify-between mb-10">
@@ -471,7 +454,7 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
 
 type RealCompany = { id: number; user_id: number; name: string; logo_url: string; description: string; category: string; location: string; phone: string; email: string; website: string; products_count: number };
 
-function CatalogPage({ onViewSupplier, onViewReal, t, user }: { onViewSupplier: () => void; onViewReal: (userId: number) => void; t: Translation; user: User | null }) {
+function CatalogPage({ onViewReal, t, user }: { onViewReal: (userId: number) => void; t: Translation; user: User | null }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
   const [realCompanies, setRealCompanies] = useState<RealCompany[]>([]);
@@ -512,21 +495,11 @@ function CatalogPage({ onViewSupplier, onViewReal, t, user }: { onViewSupplier: 
     return matchSearch && matchCat;
   });
 
-  const allIdx = baseSuppliers.map((_, i) => i);
-  const filtered = allIdx.filter((i) => {
-    const s = t.suppliersData[i];
-    const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) || s.category.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = activeCategory === t.catalog.categories[0]
-      || s.tags.some((tag) => tag.includes(activeCategory))
-      || s.category.includes(activeCategory);
-    return matchSearch && matchCategory;
-  });
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
       <div className="mb-10">
         <h1 className="text-4xl sm:text-5xl font-bold font-ibm mb-3 tracking-tight">{t.catalog.title}</h1>
-        <p className="text-muted-foreground">{t.catalog.foundCount(baseSuppliers.length)}</p>
+        <p className="text-muted-foreground">{t.catalog.foundCount(realCompanies.length)}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -571,7 +544,7 @@ function CatalogPage({ onViewSupplier, onViewReal, t, user }: { onViewSupplier: 
 
         <div className="flex-1">
           <div className="flex items-center justify-between mb-6 bg-white border border-border rounded-2xl px-5 py-3">
-            <span className="text-sm text-muted-foreground font-medium">{filtered.length} {t.catalog.companies}</span>
+            <span className="text-sm text-muted-foreground font-medium">{filteredReal.length} {t.catalog.companies}</span>
             <select className="text-sm bg-secondary/60 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent/30 cursor-pointer font-medium">
               <option>{t.catalog.sortRating}</option>
               <option>{t.catalog.sortReviews}</option>
@@ -611,9 +584,6 @@ function CatalogPage({ onViewSupplier, onViewReal, t, user }: { onViewSupplier: 
                   <span className="flex items-center gap-1 text-foreground font-medium">Открыть <Icon name="ArrowRight" size={12} /></span>
                 </div>
               </div>
-            ))}
-            {filtered.map((i) => (
-              <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />
             ))}
           </div>
         </div>
@@ -1891,7 +1861,7 @@ export default function Index() {
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
           {page === "home" && <HomePage onNav={navigate} t={t} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
-          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} user={user} />}
+          {page === "catalog" && <CatalogPage onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} user={user} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "realSupplier" && activeRealSupplierId !== null && (
             <RealSupplierPage userId={activeRealSupplierId} onBack={() => navigate("catalog")} onOpenProduct={(id) => { setActiveProductId(id); navigate("product"); }} user={user} />
