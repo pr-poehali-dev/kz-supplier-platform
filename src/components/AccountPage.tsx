@@ -83,6 +83,26 @@ export default function AccountPage({ user, onLogout }: { user: User; onLogout: 
   const token = getToken() || "";
   const authHeaders = { "Content-Type": "application/json", "X-Auth-Token": token };
   const VIDEOS_API = `${COMPANY_API}?resource=videos`;
+  const UPLOAD_API = `${COMPANY_API}?resource=upload`;
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  const uploadFile = async (file: File, folder: string): Promise<string> => {
+    const b64: string = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result || ""));
+      r.onerror = () => reject(new Error("read error"));
+      r.readAsDataURL(file);
+    });
+    const res = await fetch(UPLOAD_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: b64, name: file.name, content_type: file.type || "application/octet-stream", folder }),
+    });
+    const d = await res.json();
+    if (!res.ok || !d.url) throw new Error(d.error || "Не удалось загрузить");
+    return d.url as string;
+  };
 
   const loadCompany = async () => {
     const res = await fetch(COMPANY_API, { headers: { "X-Auth-Token": token } });
@@ -357,8 +377,41 @@ export default function AccountPage({ user, onLogout }: { user: User; onLogout: 
               </div>
               <input type="number" value={productForm.moq} onChange={(e) => setProductForm({ ...productForm, moq: Number(e.target.value) })} placeholder="Минимальная партия"
                 className="w-full bg-secondary/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
-              <input value={productForm.image_url} onChange={(e) => setProductForm({ ...productForm, image_url: e.target.value })} placeholder="URL фото"
-                className="w-full bg-secondary/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+              <div className="space-y-2">
+                {productForm.image_url ? (
+                  <div className="relative bg-secondary/40 rounded-xl overflow-hidden">
+                    <img src={productForm.image_url} alt="" className="w-full h-40 object-cover" />
+                    <button type="button" onClick={() => setProductForm({ ...productForm, image_url: "" })}
+                      className="absolute top-2 right-2 w-8 h-8 bg-white/95 rounded-lg flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors">
+                      <Icon name="X" size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center gap-2 bg-secondary/40 hover:bg-secondary border-2 border-dashed border-border hover:border-accent/40 rounded-xl px-4 py-6 cursor-pointer transition-colors text-center">
+                    <Icon name={uploadingPhoto ? "Loader2" : "ImagePlus"} size={22} className={`text-accent ${uploadingPhoto ? "animate-spin" : ""}`} />
+                    <span className="text-sm font-medium">{uploadingPhoto ? "Загрузка..." : "Загрузить фото"}</span>
+                    <span className="text-xs text-muted-foreground">PNG, JPG, до 50 МБ</span>
+                    <input type="file" accept="image/*" className="hidden" disabled={uploadingPhoto}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploadingPhoto(true);
+                        try {
+                          const url = await uploadFile(file, "products");
+                          setProductForm((p) => ({ ...p, image_url: url }));
+                          toast.success("Фото загружено");
+                        } catch (err: unknown) {
+                          toast.error(err instanceof Error ? err.message : "Ошибка загрузки");
+                        } finally {
+                          setUploadingPhoto(false);
+                          e.target.value = "";
+                        }
+                      }} />
+                  </label>
+                )}
+                <input value={productForm.image_url} onChange={(e) => setProductForm({ ...productForm, image_url: e.target.value })} placeholder="…или вставь URL фото"
+                  className="w-full bg-secondary/50 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white" />
+              </div>
               <textarea rows={2} value={productForm.description} onChange={(e) => setProductForm({ ...productForm, description: e.target.value })} placeholder="Описание"
                 className="w-full bg-secondary/50 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:bg-white resize-none" />
               <label className="flex items-center justify-between bg-secondary/40 rounded-xl px-4 py-2.5 text-sm cursor-pointer">
@@ -428,8 +481,34 @@ export default function AccountPage({ user, onLogout }: { user: User; onLogout: 
             <h3 className="font-bold mb-2 flex items-center gap-2">
               <Icon name="Plus" size={16} /> Добавить видео
             </h3>
-            <p className="text-xs text-muted-foreground mb-4">Поддерживаются YouTube и RuTube. Просто вставь ссылку.</p>
+            <p className="text-xs text-muted-foreground mb-4">Загрузи файл (MP4) или вставь ссылку YouTube / RuTube.</p>
             <div className="space-y-3">
+              <label className="flex flex-col items-center justify-center gap-2 bg-secondary/40 hover:bg-secondary border-2 border-dashed border-border hover:border-accent/40 rounded-xl px-4 py-6 cursor-pointer transition-colors text-center">
+                <Icon name={uploadingVideo ? "Loader2" : "Upload"} size={22} className={`text-accent ${uploadingVideo ? "animate-spin" : ""}`} />
+                <span className="text-sm font-medium">{uploadingVideo ? "Загрузка..." : "Загрузить видео"}</span>
+                <span className="text-xs text-muted-foreground">MP4, до 50 МБ</span>
+                <input type="file" accept="video/*" className="hidden" disabled={uploadingVideo}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingVideo(true);
+                    try {
+                      const url = await uploadFile(file, "videos");
+                      setVideoUrl(url);
+                      toast.success("Видео загружено — нажми «Добавить»");
+                    } catch (err: unknown) {
+                      toast.error(err instanceof Error ? err.message : "Ошибка загрузки");
+                    } finally {
+                      setUploadingVideo(false);
+                      e.target.value = "";
+                    }
+                  }} />
+              </label>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="flex-1 h-px bg-border" />
+                <span>или ссылка</span>
+                <span className="flex-1 h-px bg-border" />
+              </div>
               <input
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
@@ -469,19 +548,23 @@ export default function AccountPage({ user, onLogout }: { user: User; onLogout: 
                 {videos.map((v) => (
                   <div key={v.id} className="bg-white border border-border rounded-2xl overflow-hidden">
                     <div className="aspect-video bg-black">
-                      <iframe
-                        src={videoEmbed(v)}
-                        title={v.title || "Видео"}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
+                      {v.provider === "file" ? (
+                        <video src={v.url} controls className="w-full h-full" />
+                      ) : (
+                        <iframe
+                          src={videoEmbed(v)}
+                          title={v.title || "Видео"}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      )}
                     </div>
                     <div className="p-4 flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full ${v.provider === "youtube" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`}>
-                            {v.provider}
+                          <span className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full ${v.provider === "youtube" ? "bg-red-50 text-red-600" : v.provider === "file" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}`}>
+                            {v.provider === "file" ? "файл" : v.provider}
                           </span>
                         </div>
                         <h4 className="font-medium text-sm truncate">{v.title || "Без названия"}</h4>

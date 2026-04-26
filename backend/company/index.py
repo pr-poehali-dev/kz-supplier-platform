@@ -1,6 +1,9 @@
 import json
 import os
 import re
+import uuid
+import base64
+import boto3
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -74,6 +77,49 @@ def _company_row_to_dict(r):
     }
 
 
+def _handle_upload(method: str, event: dict) -> dict:
+    if method != 'POST':
+        return {'statusCode': 405, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'method not allowed'})}
+    try:
+        body = json.loads(event.get('body') or '{}')
+    except Exception:
+        return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'invalid json'})}
+
+    file_b64 = body.get('file') or ''
+    file_name = (body.get('name') or 'file').strip()
+    content_type = body.get('content_type') or 'application/octet-stream'
+    folder = (body.get('folder') or 'uploads').strip().strip('/')
+
+    if not file_b64:
+        return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'file is required'})}
+    if file_b64.startswith('data:') and ',' in file_b64:
+        file_b64 = file_b64.split(',', 1)[1]
+    try:
+        data = base64.b64decode(file_b64)
+    except Exception:
+        return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'invalid base64'})}
+
+    if len(data) > 50 * 1024 * 1024:
+        return {'statusCode': 413, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'file too large (max 50MB)'})}
+
+    ext = ''
+    if '.' in file_name:
+        ext = '.' + file_name.rsplit('.', 1)[1].lower()
+    key = f"{folder}/{uuid.uuid4().hex}{ext}"
+
+    aws_key = os.environ['AWS_ACCESS_KEY_ID']
+    aws_secret = os.environ['AWS_SECRET_ACCESS_KEY']
+    s3 = boto3.client(
+        's3',
+        endpoint_url='https://bucket.poehali.dev',
+        aws_access_key_id=aws_key,
+        aws_secret_access_key=aws_secret,
+    )
+    s3.put_object(Bucket='files', Key=key, Body=data, ContentType=content_type)
+    url = f"https://cdn.poehali.dev/projects/{aws_key}/bucket/{key}"
+    return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': json.dumps({'url': url, 'key': key, 'size': len(data)})}
+
+
 def handler(event: dict, context) -> dict:
     """Карточка компании пользователя: создание, чтение, обновление"""
     method = event.get('httpMethod', 'GET')
@@ -87,6 +133,8 @@ def handler(event: dict, context) -> dict:
     resource = qs.get('resource') or ''
 
     try:
+        if resource == 'upload':
+            return _handle_upload(method, event)
         if resource == 'videos':
             return _handle_videos(method, qs, token, event)
         if method == 'GET':
@@ -226,9 +274,13 @@ def _handle_videos(method, qs, token, event):
     if method == 'POST':
         url = (body.get('url') or '').strip()
         title = (body.get('title') or '').strip()
-        provider, vid = _parse_video(url)
-        if not provider or not vid:
-            return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'Поддерживаются ссылки YouTube или RuTube'})}
+        if url.startswith('https://cdn.poehali.dev/'):
+            provider = 'file'
+            vid = url.rsplit('/', 1)[-1].split('.')[0]
+        else:
+            provider, vid = _parse_video(url)
+            if not provider or not vid:
+                return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'Поддерживаются ссылки YouTube, RuTube или загруженные файлы'})}
         sql = (
             f"INSERT INTO {SCHEMA}.videos (user_id, title, url, provider, video_id) "
             f"VALUES ({_esc(user_id)}, {_esc(title)}, {_esc(url)}, {_esc(provider)}, {_esc(vid)}) RETURNING id"

@@ -1884,11 +1884,15 @@ function RealSupplierPage({ userId, onBack, onOpenProduct, user }: { userId: num
                 {videos.map((v) => (
                   <div key={v.id} className="rounded-2xl overflow-hidden border border-border bg-secondary/20">
                     <div className="aspect-video bg-black">
-                      <iframe src={videoEmbed(v)} title={v.title || "Видео"} className="w-full h-full" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; clipboard-write" allowFullScreen />
+                      {v.provider === "file" ? (
+                        <video src={v.url} controls className="w-full h-full" />
+                      ) : (
+                        <iframe src={videoEmbed(v)} title={v.title || "Видео"} className="w-full h-full" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; clipboard-write" allowFullScreen />
+                      )}
                     </div>
                     <div className="p-3 flex items-center justify-between gap-2">
                       <span className="text-sm font-medium truncate">{v.title || "Без названия"}</span>
-                      <span className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${v.provider === "youtube" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`}>{v.provider}</span>
+                      <span className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${v.provider === "youtube" ? "bg-red-50 text-red-600" : v.provider === "file" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"}`}>{v.provider === "file" ? "файл" : v.provider}</span>
                     </div>
                   </div>
                 ))}
