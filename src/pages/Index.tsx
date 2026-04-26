@@ -92,7 +92,7 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
     <header className="sticky top-3 z-50 mx-3 sm:mx-6">
       <div className="max-w-7xl mx-auto glass border border-white/40 rounded-2xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.08)] flex items-center justify-between h-16 px-4 sm:px-6">
         <button onClick={() => onNav("home")} className="flex items-center gap-2.5 font-bold text-lg tracking-tight font-ibm">
-          <span className="w-9 h-9 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-600/30">
+          <span className="w-9 h-9 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/30">
             <Icon name="ShoppingCart" size={16} />
           </span>
           <span className="gradient-text">{t.brand}</span>
@@ -460,22 +460,23 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
             {t.services.allBtn ?? "Все услуги"} <Icon name="ArrowRight" size={14} />
           </button>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {t.services.items.map((s, i) => (
-            <button key={i} onClick={() => onOpenService(i)} className="card-hover bg-white border border-border rounded-2xl p-5 text-center flex flex-col items-center gap-3 group">
-              <div className="w-14 h-14 bg-gradient-to-br from-secondary to-secondary/40 rounded-2xl flex items-center justify-center group-hover:from-accent/10 group-hover:to-accent/5 transition-all overflow-hidden">
+            <button key={i} onClick={() => onOpenService(i)} className="card-hover bg-white border border-border rounded-2xl p-4 text-left flex items-center gap-4 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-secondary/40 rounded-xl flex items-center justify-center group-hover:from-accent/10 group-hover:to-accent/5 transition-all overflow-hidden flex-shrink-0">
                 {s.icon === "Taobao" ? (
-                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/8322b202-2dcf-4f1e-b13c-86fe2d1b6c4b.png" alt="Taobao" className="w-9 h-9 object-contain" />
+                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/8322b202-2dcf-4f1e-b13c-86fe2d1b6c4b.png" alt="Taobao" className="w-8 h-8 object-contain" />
                 ) : s.icon === "WeChat" ? (
-                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/ef3d3318-f000-48e2-9eb1-53341f2fbbec.png" alt="WeChat" className="w-9 h-9 object-contain" />
+                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/ef3d3318-f000-48e2-9eb1-53341f2fbbec.png" alt="WeChat" className="w-8 h-8 object-contain" />
                 ) : (
-                  <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+                  <Icon name={s.icon} size={22} className="text-accent" fallback="Star" />
                 )}
               </div>
-              <div>
-                <div className="text-sm font-semibold text-foreground line-clamp-2">{s.title}</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-foreground line-clamp-1">{s.title}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{t.services.detailBtn}</div>
               </div>
+              <Icon name="ChevronRight" size={16} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all flex-shrink-0" />
             </button>
           ))}
         </div>
@@ -1612,7 +1613,7 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
-                <span className="w-9 h-9 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-600/30">
+                <span className="w-9 h-9 bg-gradient-to-br from-accent to-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/30">
             <Icon name="ShoppingCart" size={16} />
           </span>
                 <span className="font-bold text-white font-ibm text-lg">{t.brand}</span>
