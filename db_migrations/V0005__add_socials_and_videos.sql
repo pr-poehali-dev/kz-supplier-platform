@@ -1,0 +1,18 @@
+ALTER TABLE t_p6351432_kz_supplier_platform.companies
+  ADD COLUMN IF NOT EXISTS telegram VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS whatsapp VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS vk VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS instagram VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS wechat VARCHAR(255);
+
+CREATE TABLE IF NOT EXISTS t_p6351432_kz_supplier_platform.videos (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  title VARCHAR(255) NOT NULL DEFAULT '',
+  url TEXT NOT NULL,
+  provider VARCHAR(32) NOT NULL DEFAULT 'youtube',
+  video_id VARCHAR(128) NOT NULL DEFAULT '',
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_videos_user ON t_p6351432_kz_supplier_platform.videos(user_id);
