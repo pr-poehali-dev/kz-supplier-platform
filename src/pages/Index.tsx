@@ -25,7 +25,9 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany";
+type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany";
+
+const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
 const baseSuppliers = [
   { id: 1, verified: true, rating: 4.8, reviews: 127, since: 2015, avatar: "ТП" },
@@ -469,9 +471,9 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
   );
 }
 
-type RealCompany = { id: number; name: string; logo_url: string; description: string; category: string; location: string; phone: string; email: string; website: string; products_count: number };
+type RealCompany = { id: number; user_id: number; name: string; logo_url: string; description: string; category: string; location: string; phone: string; email: string; website: string; products_count: number };
 
-function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Translation }) {
+function CatalogPage({ onViewSupplier, onViewReal, t }: { onViewSupplier: () => void; onViewReal: (userId: number) => void; t: Translation }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
   const [realCompanies, setRealCompanies] = useState<RealCompany[]>([]);
@@ -558,7 +560,11 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {filteredReal.map((c) => (
-              <div key={`real-${c.id}`} className="card-hover bg-white border border-border rounded-2xl p-6">
+              <button
+                key={`real-${c.id}`}
+                onClick={() => onViewReal(c.user_id)}
+                className="card-hover bg-white border border-border rounded-2xl p-6 text-left hover:border-foreground/30 transition-colors"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md overflow-hidden">
                     {c.logo_url ? <img src={c.logo_url} alt="" className="w-full h-full object-cover" /> : c.name[0].toUpperCase()}
@@ -568,11 +574,14 @@ function CatalogPage({ onViewSupplier, t }: { onViewSupplier: () => void; t: Tra
                 <h3 className="font-semibold text-foreground mb-1 text-base">{c.name}</h3>
                 {c.category && <p className="text-xs text-accent font-medium mb-3">{c.category}</p>}
                 {c.description && <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{c.description}</p>}
-                <div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4 flex-wrap">
-                  {c.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={12} />{c.location}</span>}
-                  {c.products_count > 0 && <span className="flex items-center gap-1.5"><Icon name="Package" size={12} />{c.products_count} тов.</span>}
+                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground border-t border-border pt-4 flex-wrap">
+                  <div className="flex items-center gap-4 flex-wrap">
+                    {c.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={12} />{c.location}</span>}
+                    {c.products_count > 0 && <span className="flex items-center gap-1.5"><Icon name="Package" size={12} />{c.products_count} тов.</span>}
+                  </div>
+                  <span className="flex items-center gap-1 text-foreground font-medium">Открыть <Icon name="ArrowRight" size={12} /></span>
                 </div>
-              </div>
+              </button>
             ))}
             {filtered.map((i) => (
               <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />
@@ -1496,6 +1505,168 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
   );
 }
 
+type RealSupplierData = {
+  id: number;
+  user_id: number;
+  name: string;
+  logo_url: string;
+  description: string;
+  category: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+  telegram: string;
+  whatsapp: string;
+  vk: string;
+  instagram: string;
+  wechat: string;
+};
+
+type SupplierVideo = { id: number; title: string; url: string; provider: string; video_id: string };
+
+function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; onBack: () => void; onOpenProduct: (id: number) => void }) {
+  const [company, setCompany] = useState<RealSupplierData | null>(null);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [videos, setVideos] = useState<SupplierVideo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      fetch(`${COMPANY_API}?user_id=${userId}`).then((r) => r.json()).catch(() => ({ company: null })),
+      fetch(`${COMPANY_API}?resource=videos&user_id=${userId}`).then((r) => r.json()).catch(() => ({ items: [] })),
+      fetch(PRODUCTS_API).then((r) => r.json()).catch(() => ({ items: [] })),
+    ]).then(([c, v, p]) => {
+      setCompany(c.company || null);
+      setVideos(v.items || []);
+      const all: AdminProduct[] = (p.items || []).filter((x: AdminProduct & { user_id?: number }) => x.user_id === userId);
+      setProducts(all);
+    }).finally(() => setLoading(false));
+  }, [userId]);
+
+  const videoEmbed = (v: SupplierVideo) =>
+    v.provider === "youtube" ? `https://www.youtube.com/embed/${v.video_id}` : `https://rutube.ru/play/embed/${v.video_id}`;
+
+  if (loading) {
+    return <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 text-center text-muted-foreground animate-fade-in">Загружаем...</div>;
+  }
+
+  if (!company) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+        <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 mb-6">
+          <Icon name="ArrowLeft" size={14} /> Назад в каталог
+        </button>
+        <div className="bg-white border border-dashed border-border rounded-3xl p-20 text-center">
+          <Icon name="Building2" size={32} className="text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">Компания не найдена</p>
+        </div>
+      </div>
+    );
+  }
+
+  const socials = [
+    { key: "telegram", label: "Telegram", icon: "Send", color: "bg-sky-50 text-sky-600", href: (v: string) => v.startsWith("@") ? `https://t.me/${v.slice(1)}` : v.startsWith("http") ? v : `https://t.me/${v}` },
+    { key: "whatsapp", label: "WhatsApp", icon: "MessageCircle", color: "bg-emerald-50 text-emerald-600", href: (v: string) => v.startsWith("http") ? v : `https://wa.me/${v.replace(/[^\d]/g, "")}` },
+    { key: "wechat", label: "WeChat", icon: "MessageSquare", color: "bg-green-50 text-green-700", href: (v: string) => `#${v}` },
+    { key: "vk", label: "ВКонтакте", icon: "Globe", color: "bg-blue-50 text-blue-600", href: (v: string) => v.startsWith("http") ? v : `https://vk.com/${v}` },
+    { key: "instagram", label: "Instagram", icon: "Instagram", color: "bg-pink-50 text-pink-600", href: (v: string) => v.startsWith("http") ? v : `https://instagram.com/${v.replace("@", "")}` },
+  ];
+  const activeSocials = socials.filter((s) => (company as unknown as Record<string, string>)[s.key]);
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+      <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 mb-6">
+        <Icon name="ArrowLeft" size={14} /> Назад в каталог
+      </button>
+
+      <div className="bg-white border border-border rounded-3xl p-7 mb-6">
+        <div className="flex flex-col sm:flex-row gap-6">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-foreground to-foreground/80 flex items-center justify-center text-white font-bold text-3xl shadow-md overflow-hidden flex-shrink-0">
+            {company.logo_url ? <img src={company.logo_url} alt="" className="w-full h-full object-cover" /> : company.name[0].toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start gap-3 flex-wrap mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight">{company.name}</h1>
+              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full mt-1.5">Новый</span>
+            </div>
+            {company.category && <p className="text-sm text-accent font-medium mb-3">{company.category}</p>}
+            {company.description && <p className="text-sm text-muted-foreground leading-relaxed mb-4">{company.description}</p>}
+            <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+              {company.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={13} />{company.location}</span>}
+              {company.phone && <a href={`tel:${company.phone}`} className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Phone" size={13} />{company.phone}</a>}
+              {company.email && <a href={`mailto:${company.email}`} className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Mail" size={13} />{company.email}</a>}
+              {company.website && <a href={company.website.startsWith("http") ? company.website : `https://${company.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Globe" size={13} />{company.website}</a>}
+            </div>
+          </div>
+        </div>
+
+        {activeSocials.length > 0 && (
+          <div className="border-t border-border mt-6 pt-5">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Связаться</h3>
+            <div className="flex flex-wrap gap-2">
+              {activeSocials.map((s) => {
+                const value = (company as unknown as Record<string, string>)[s.key];
+                return (
+                  <a
+                    key={s.key}
+                    href={s.href(value)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium ${s.color} hover:opacity-80 transition-opacity`}
+                  >
+                    <Icon name={s.icon} size={14} fallback="Link" />
+                    {s.label}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {videos.length > 0 && (
+        <div className="bg-white border border-border rounded-3xl p-7 mb-6">
+          <h2 className="text-xl font-bold font-ibm mb-5 flex items-center gap-2"><Icon name="Video" size={18} /> Видео</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {videos.map((v) => (
+              <div key={v.id} className="rounded-2xl overflow-hidden border border-border">
+                <div className="aspect-video bg-black">
+                  <iframe src={videoEmbed(v)} title={v.title || "Видео"} className="w-full h-full" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowFullScreen />
+                </div>
+                {v.title && <div className="p-3 text-sm font-medium">{v.title}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white border border-border rounded-3xl p-7">
+        <h2 className="text-xl font-bold font-ibm mb-5 flex items-center gap-2"><Icon name="Package" size={18} /> Товары · {products.length}</h2>
+        {products.length === 0 ? (
+          <div className="text-center py-12 text-sm text-muted-foreground">Товары пока не добавлены</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {products.map((p) => (
+              <button key={p.id} onClick={() => onOpenProduct(p.id)} className="card-hover bg-white border border-border rounded-2xl overflow-hidden text-left hover:border-foreground/20">
+                <div className="h-40 bg-secondary/40 flex items-center justify-center overflow-hidden">
+                  {p.image_url ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" /> : <Icon name="Image" size={24} className="text-muted-foreground/40" />}
+                </div>
+                <div className="p-4">
+                  <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded-full">{p.category}</span>
+                  <h4 className="font-semibold text-sm mt-2 line-clamp-2">{p.title}</h4>
+                  <div className="font-bold text-base mt-2">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const lang: Lang = "ru";
@@ -1505,6 +1676,7 @@ export default function Index() {
   const [authOpen, setAuthOpen] = useState(false);
   const [activeProductId, setActiveProductId] = useState<number | null>(null);
   const [activeServiceIndex, setActiveServiceIndex] = useState<number | null>(null);
+  const [activeRealSupplierId, setActiveRealSupplierId] = useState<number | null>(null);
   const t = translations[lang];
 
   useEffect(() => {
@@ -1535,8 +1707,11 @@ export default function Index() {
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
           {page === "home" && <HomePage onNav={navigate} t={t} />}
-          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} t={t} />}
+          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
+          {page === "realSupplier" && activeRealSupplierId !== null && (
+            <RealSupplierPage userId={activeRealSupplierId} onBack={() => navigate("catalog")} onOpenProduct={(id) => { setActiveProductId(id); navigate("product"); }} />
+          )}
           {page === "messages" && <MessagesPage t={t} />}
           {page === "products" && <ProductsPage t={t} user={user} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}
           {page === "product" && activeProductId !== null && (
