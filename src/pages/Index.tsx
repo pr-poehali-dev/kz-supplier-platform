@@ -219,7 +219,7 @@ function SupplierCard({ idx, t, onView }: { idx: number; t: Translation; onView:
   );
 }
 
-function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
+function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Translation; onOpenService: (i: number) => void }) {
   const [homeProducts, setHomeProducts] = useState<AdminProduct[]>([]);
   useEffect(() => {
     fetch(PRODUCTS_API)
@@ -227,14 +227,6 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
       .then((d) => setHomeProducts((d.items || []).slice(0, 4)))
       .catch(() => setHomeProducts([]));
   }, []);
-  const catIcons = [
-    { icon: "Cpu", label: t.cats.equipment, count: 412 },
-    { icon: "FlaskConical", label: t.cats.chemistry, count: 187 },
-    { icon: "Building2", label: t.cats.construction, count: 354 },
-    { icon: "Truck", label: t.cats.logistics, count: 298 },
-    { icon: "Monitor", label: t.cats.it, count: 231 },
-    { icon: "Stethoscope", label: t.cats.medicine, count: 143 },
-  ];
   const stepIcons = ["Search", "ShieldCheck", "MessageSquare", "Handshake"];
 
   return (
@@ -370,22 +362,28 @@ function HomePage({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.sections.directionsTag}</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground font-ibm tracking-tight">{t.sections.directionsTitle}</h2>
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.services.tag}</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground font-ibm tracking-tight">{t.services.title}</h2>
           </div>
-          <button onClick={() => onNav("catalog")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
-            {t.sections.allCategories} <Icon name="ArrowRight" size={14} />
+          <button onClick={() => onNav("services")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
+            {t.services.allBtn ?? "Все услуги"} <Icon name="ArrowRight" size={14} />
           </button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {catIcons.map((cat) => (
-            <button key={cat.label} onClick={() => onNav("catalog")} className="card-hover bg-white border border-border rounded-2xl p-5 text-center flex flex-col items-center gap-3 group">
-              <div className="w-14 h-14 bg-gradient-to-br from-secondary to-secondary/40 rounded-2xl flex items-center justify-center group-hover:from-accent/10 group-hover:to-accent/5 transition-all">
-                <Icon name={cat.icon} size={24} className="text-accent" fallback="Box" />
+          {t.services.items.map((s, i) => (
+            <button key={i} onClick={() => onOpenService(i)} className="card-hover bg-white border border-border rounded-2xl p-5 text-center flex flex-col items-center gap-3 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-secondary to-secondary/40 rounded-2xl flex items-center justify-center group-hover:from-accent/10 group-hover:to-accent/5 transition-all overflow-hidden">
+                {s.icon === "Taobao" ? (
+                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/8322b202-2dcf-4f1e-b13c-86fe2d1b6c4b.png" alt="Taobao" className="w-9 h-9 object-contain" />
+                ) : s.icon === "WeChat" ? (
+                  <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/bucket/ef3d3318-f000-48e2-9eb1-53341f2fbbec.png" alt="WeChat" className="w-9 h-9 object-contain" />
+                ) : (
+                  <Icon name={s.icon} size={24} className="text-accent" fallback="Star" />
+                )}
               </div>
               <div>
-                <div className="text-sm font-semibold text-foreground">{cat.label}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{cat.count} {t.cats.companies}</div>
+                <div className="text-sm font-semibold text-foreground line-clamp-2">{s.title}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{t.services.detailBtn}</div>
               </div>
             </button>
           ))}
@@ -1838,7 +1836,7 @@ export default function Index() {
       <Navbar current={page} onNav={navigate} lang={lang} setLang={setLang} t={t} user={user} onLogin={requireAuth} />
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
-          {page === "home" && <HomePage onNav={navigate} t={t} />}
+          {page === "home" && <HomePage onNav={navigate} t={t} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
           {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "realSupplier" && activeRealSupplierId !== null && (
