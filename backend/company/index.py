@@ -168,6 +168,27 @@ def handler(event: dict, context) -> dict:
                     conn.commit()
             return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': json.dumps({'success': True})}
 
+        if method == 'DELETE':
+            target_id = body.get('id') or qs.get('id')
+            target_user_id = body.get('user_id') or qs.get('user_id')
+            if not target_id and not target_user_id:
+                return {'statusCode': 400, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'id or user_id required'})}
+            with _conn() as conn:
+                with conn.cursor() as cur:
+                    if target_id:
+                        cur.execute(f"SELECT user_id FROM {SCHEMA}.companies WHERE id = {_esc(int(target_id))}")
+                        row = cur.fetchone()
+                        if not row:
+                            return {'statusCode': 404, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'not found'})}
+                        owner_id = row[0]
+                    else:
+                        owner_id = int(target_user_id)
+                    cur.execute(f"DELETE FROM {SCHEMA}.videos WHERE user_id = {_esc(owner_id)}")
+                    cur.execute(f"DELETE FROM {SCHEMA}.products WHERE user_id = {_esc(owner_id)}")
+                    cur.execute(f"DELETE FROM {SCHEMA}.companies WHERE user_id = {_esc(owner_id)}")
+                    conn.commit()
+            return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': json.dumps({'success': True})}
+
         return {'statusCode': 405, 'headers': CORS_HEADERS, 'body': json.dumps({'error': 'method not allowed'})}
 
     except Exception as e:

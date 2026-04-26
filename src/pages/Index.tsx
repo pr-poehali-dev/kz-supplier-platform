@@ -471,17 +471,39 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
 
 type RealCompany = { id: number; user_id: number; name: string; logo_url: string; description: string; category: string; location: string; phone: string; email: string; website: string; products_count: number };
 
-function CatalogPage({ onViewSupplier, onViewReal, t }: { onViewSupplier: () => void; onViewReal: (userId: number) => void; t: Translation }) {
+function CatalogPage({ onViewSupplier, onViewReal, t, user }: { onViewSupplier: () => void; onViewReal: (userId: number) => void; t: Translation; user: User | null }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(t.catalog.categories[0]);
   const [realCompanies, setRealCompanies] = useState<RealCompany[]>([]);
 
-  useEffect(() => {
-    fetch("https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa?all=1")
+  const loadCompanies = () => {
+    fetch(`${COMPANY_API}?all=1`)
       .then((r) => r.json())
       .then((d) => setRealCompanies(d.items || []))
       .catch(() => setRealCompanies([]));
+  };
+
+  useEffect(() => {
+    loadCompanies();
   }, []);
+
+  const handleDeleteCompany = async (c: RealCompany, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm(`Удалить поставщика «${c.name}»? Также удалятся его товары и видео.`)) return;
+    const token = getToken() || "";
+    try {
+      const res = await fetch(COMPANY_API, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+        body: JSON.stringify({ id: c.id }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Поставщик удалён");
+      loadCompanies();
+    } catch {
+      toast.error("Не удалось удалить");
+    }
+  };
 
   const filteredReal = realCompanies.filter((c) => {
     const q = search.toLowerCase();
@@ -558,11 +580,20 @@ function CatalogPage({ onViewSupplier, onViewReal, t }: { onViewSupplier: () => 
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {filteredReal.map((c) => (
-              <button
+              <div
                 key={`real-${c.id}`}
                 onClick={() => onViewReal(c.user_id)}
-                className="card-hover bg-white border border-border rounded-2xl p-6 text-left hover:border-foreground/30 transition-colors"
+                className="card-hover bg-white border border-border rounded-2xl p-6 text-left hover:border-foreground/30 transition-colors relative group cursor-pointer"
               >
+                {user && (
+                  <button
+                    onClick={(e) => handleDeleteCompany(c, e)}
+                    title="Удалить поставщика"
+                    className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/95 backdrop-blur-md rounded-lg flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <Icon name="Trash2" size={13} />
+                  </button>
+                )}
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-foreground to-foreground/80 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md overflow-hidden">
                     {c.logo_url ? <img src={c.logo_url} alt="" className="w-full h-full object-cover" /> : c.name[0].toUpperCase()}
@@ -579,7 +610,7 @@ function CatalogPage({ onViewSupplier, onViewReal, t }: { onViewSupplier: () => 
                   </div>
                   <span className="flex items-center gap-1 text-foreground font-medium">Открыть <Icon name="ArrowRight" size={12} /></span>
                 </div>
-              </button>
+              </div>
             ))}
             {filtered.map((i) => (
               <SupplierCard key={i} idx={i} t={t} onView={onViewSupplier} />
@@ -1523,7 +1554,7 @@ type RealSupplierData = {
 
 type SupplierVideo = { id: number; title: string; url: string; provider: string; video_id: string };
 
-function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; onBack: () => void; onOpenProduct: (id: number) => void }) {
+function RealSupplierPage({ userId, onBack, onOpenProduct, user }: { userId: number; onBack: () => void; onOpenProduct: (id: number) => void; user: User | null }) {
   const [company, setCompany] = useState<RealSupplierData | null>(null);
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [videos, setVideos] = useState<SupplierVideo[]>([]);
@@ -1632,6 +1663,29 @@ function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; o
             <button onClick={() => setActiveTab("contacts")} className="flex items-center gap-2 bg-secondary/60 hover:bg-secondary px-5 py-3 rounded-xl text-sm font-medium transition-colors">
               <Icon name="Phone" size={16} /> Контакты
             </button>
+            {user && (
+              <button
+                onClick={async () => {
+                  if (!confirm(`Удалить поставщика «${company.name}»? Также удалятся все его товары и видео.`)) return;
+                  const token = getToken() || "";
+                  try {
+                    const res = await fetch(COMPANY_API, {
+                      method: "DELETE",
+                      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+                      body: JSON.stringify({ id: company.id }),
+                    });
+                    if (!res.ok) throw new Error();
+                    toast.success("Поставщик удалён");
+                    onBack();
+                  } catch {
+                    toast.error("Не удалось удалить");
+                  }
+                }}
+                className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-5 py-3 rounded-xl text-sm font-medium transition-colors"
+              >
+                <Icon name="Trash2" size={16} /> Удалить
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1837,10 +1891,10 @@ export default function Index() {
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
           {page === "home" && <HomePage onNav={navigate} t={t} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
-          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} />}
+          {page === "catalog" && <CatalogPage onViewSupplier={() => navigate("supplier")} onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} user={user} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "realSupplier" && activeRealSupplierId !== null && (
-            <RealSupplierPage userId={activeRealSupplierId} onBack={() => navigate("catalog")} onOpenProduct={(id) => { setActiveProductId(id); navigate("product"); }} />
+            <RealSupplierPage userId={activeRealSupplierId} onBack={() => navigate("catalog")} onOpenProduct={(id) => { setActiveProductId(id); navigate("product"); }} user={user} />
           )}
           {page === "messages" && <MessagesPage t={t} />}
           {page === "products" && <ProductsPage t={t} user={user} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}

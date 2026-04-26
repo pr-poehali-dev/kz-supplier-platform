@@ -25,6 +25,13 @@
       "path": "/",
       "body": {"name": "Test"},
       "expectedStatus": 401
+    },
+    {
+      "name": "DELETE без токена",
+      "method": "DELETE",
+      "path": "/",
+      "body": {"id": 999999},
+      "expectedStatus": 401
     }
   ]
 }
