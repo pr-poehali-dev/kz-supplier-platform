@@ -4,6 +4,7 @@ import { PRODUCTS_API, getToken, type User } from "@/lib/auth";
 import { toast } from "sonner";
 
 const REVIEWS_API = "https://functions.poehali.dev/96054947-1ff6-4cff-b5b9-e76a86aff8b8";
+const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
 type Product = {
   id: number;
@@ -16,6 +17,24 @@ type Product = {
   image_url: string;
   supplier: string;
   in_stock: boolean;
+  user_id?: number | null;
+};
+
+type SupplierInfo = {
+  id: number;
+  user_id: number;
+  name: string;
+  logo_url: string;
+  category: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+  telegram: string;
+  whatsapp: string;
+  vk: string;
+  instagram: string;
+  wechat: string;
 };
 
 type Review = {
@@ -53,11 +72,13 @@ export default function ProductPage({
   onBack,
   user,
   onLogin,
+  onOpenSupplier,
 }: {
   productId: number;
   onBack: () => void;
   user: User | null;
   onLogin: () => void;
+  onOpenSupplier?: (userId: number) => void;
 }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,6 +90,8 @@ export default function ProductPage({
   const [newText, setNewText] = useState("");
   const [newAuthor, setNewAuthor] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [supplierInfo, setSupplierInfo] = useState<SupplierInfo | null>(null);
+  const [contactsOpen, setContactsOpen] = useState(false);
 
   const loadProduct = async () => {
     try {
@@ -76,7 +99,15 @@ export default function ProductPage({
       const d = await res.json();
       const p = (d.items || []).find((x: Product) => x.id === productId);
       setProduct(p || null);
-      if (p) setQuantity(p.moq);
+      if (p) {
+        setQuantity(p.moq);
+        if (p.user_id) {
+          fetch(`${COMPANY_API}?user_id=${p.user_id}`)
+            .then((r) => r.json())
+            .then((d) => setSupplierInfo(d.company || null))
+            .catch(() => setSupplierInfo(null));
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -192,15 +223,27 @@ export default function ProductPage({
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">{product.description}</p>
           )}
 
-          {product.supplier && (
-            <div className="bg-secondary/40 rounded-2xl p-4 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-foreground text-background rounded-xl flex items-center justify-center font-bold">
-                {product.supplier[0].toUpperCase()}
+          {(supplierInfo || product.supplier) && (
+            <div className="bg-secondary/40 rounded-2xl p-4 mb-6 flex items-center gap-3 flex-wrap">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold overflow-hidden bg-foreground text-background flex-shrink-0">
+                {supplierInfo?.logo_url ? (
+                  <img src={supplierInfo.logo_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  (supplierInfo?.name || product.supplier)[0].toUpperCase()
+                )}
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="text-xs text-muted-foreground">Поставщик</div>
-                <div className="font-semibold text-sm">{product.supplier}</div>
+                <div className="font-semibold text-sm truncate">{supplierInfo?.name || product.supplier}</div>
               </div>
+              {supplierInfo && onOpenSupplier && (
+                <button
+                  onClick={() => onOpenSupplier(supplierInfo.user_id)}
+                  className="text-xs font-medium text-foreground bg-white hover:bg-secondary px-3 py-2 rounded-xl flex items-center gap-1.5 border border-border"
+                >
+                  Профиль <Icon name="ArrowRight" size={12} />
+                </button>
+              )}
             </div>
           )}
 
@@ -253,14 +296,22 @@ export default function ProductPage({
               <Icon name="ShoppingCart" size={16} /> Купить
             </button>
             <button
-              onClick={() => toast.success("Сообщение поставщику отправлено")}
-              className="bg-secondary hover:bg-secondary/80 px-5 rounded-xl text-sm font-medium flex items-center gap-2"
+              onClick={() => setContactsOpen(true)}
+              className="btn-modern bg-accent text-white px-5 rounded-xl text-sm font-medium flex items-center gap-2 hover:opacity-90"
             >
-              <Icon name="MessageSquare" size={16} /> Написать
+              <Icon name="MessageSquare" size={16} /> Написать поставщику
             </button>
           </div>
         </div>
       </div>
+
+      {contactsOpen && (
+        <SupplierContactsModal
+          info={supplierInfo}
+          fallbackName={product.supplier}
+          onClose={() => setContactsOpen(false)}
+        />
+      )}
 
       <div className="bg-white border border-border rounded-3xl p-7">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
@@ -333,6 +384,95 @@ export default function ProductPage({
                     {r.text && <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{r.text}</p>}
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SupplierContactsModal({
+  info,
+  fallbackName,
+  onClose,
+}: {
+  info: SupplierInfo | null;
+  fallbackName: string;
+  onClose: () => void;
+}) {
+  const channels: { key: string; label: string; icon: string; color: string; href: string; sub: string }[] = [];
+  if (info?.telegram) {
+    const v = info.telegram;
+    const href = v.startsWith("@") ? `https://t.me/${v.slice(1)}` : v.startsWith("http") ? v : `https://t.me/${v}`;
+    channels.push({ key: "telegram", label: "Telegram", icon: "Send", color: "bg-sky-50 text-sky-600 border-sky-200", href, sub: v });
+  }
+  if (info?.whatsapp) {
+    const v = info.whatsapp;
+    const href = v.startsWith("http") ? v : `https://wa.me/${v.replace(/[^\d]/g, "")}`;
+    channels.push({ key: "whatsapp", label: "WhatsApp", icon: "MessageCircle", color: "bg-emerald-50 text-emerald-600 border-emerald-200", href, sub: v });
+  }
+  if (info?.wechat) {
+    channels.push({ key: "wechat", label: "WeChat", icon: "MessageSquare", color: "bg-green-50 text-green-700 border-green-200", href: "#", sub: info.wechat });
+  }
+  if (info?.phone) {
+    channels.push({ key: "phone", label: "Позвонить", icon: "Phone", color: "bg-secondary text-foreground border-border", href: `tel:${info.phone}`, sub: info.phone });
+  }
+  if (info?.email) {
+    channels.push({ key: "email", label: "Email", icon: "Mail", color: "bg-secondary text-foreground border-border", href: `mailto:${info.email}`, sub: info.email });
+  }
+  if (info?.vk) {
+    const href = info.vk.startsWith("http") ? info.vk : `https://vk.com/${info.vk}`;
+    channels.push({ key: "vk", label: "ВКонтакте", icon: "Globe", color: "bg-blue-50 text-blue-600 border-blue-200", href, sub: info.vk });
+  }
+  if (info?.instagram) {
+    const href = info.instagram.startsWith("http") ? info.instagram : `https://instagram.com/${info.instagram.replace("@", "")}`;
+    channels.push({ key: "instagram", label: "Instagram", icon: "Instagram", color: "bg-pink-50 text-pink-600 border-pink-200", href, sub: info.instagram });
+  }
+
+  const copy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => toast.success("Скопировано")).catch(() => {});
+  };
+
+  return (
+    <div onClick={onClose} className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-3xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h3 className="text-xl font-bold font-ibm">Связаться с поставщиком</h3>
+            <p className="text-sm text-muted-foreground mt-0.5">{info?.name || fallbackName || "Поставщик"}</p>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl hover:bg-secondary flex items-center justify-center flex-shrink-0">
+            <Icon name="X" size={16} />
+          </button>
+        </div>
+
+        {channels.length === 0 ? (
+          <div className="text-center py-8">
+            <Icon name="MessageSquareOff" size={32} className="text-muted-foreground/40 mx-auto mb-3" fallback="MessageSquare" />
+            <p className="text-sm text-muted-foreground">Поставщик пока не указал контактные данные</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {channels.map((c) => (
+              <div key={c.key} className={`flex items-center gap-3 p-3 rounded-2xl border ${c.color}`}>
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon name={c.icon} size={16} fallback="Link" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold">{c.label}</div>
+                  <div className="text-xs opacity-70 truncate">{c.sub}</div>
+                </div>
+                {c.href && c.href !== "#" ? (
+                  <a href={c.href} target="_blank" rel="noreferrer" className="text-xs font-medium bg-white px-3 py-2 rounded-xl hover:opacity-80">
+                    Открыть
+                  </a>
+                ) : (
+                  <button onClick={() => copy(c.sub)} className="text-xs font-medium bg-white px-3 py-2 rounded-xl hover:opacity-80">
+                    Копировать
+                  </button>
+                )}
               </div>
             ))}
           </div>

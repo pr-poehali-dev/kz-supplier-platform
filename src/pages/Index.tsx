@@ -1530,6 +1530,7 @@ function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; o
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [videos, setVideos] = useState<SupplierVideo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"about" | "videos" | "products" | "contacts">("about");
 
   useEffect(() => {
     setLoading(true);
@@ -1546,17 +1547,19 @@ function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; o
   }, [userId]);
 
   const videoEmbed = (v: SupplierVideo) =>
-    v.provider === "youtube" ? `https://www.youtube.com/embed/${v.video_id}` : `https://rutube.ru/play/embed/${v.video_id}`;
+    v.provider === "youtube"
+      ? `https://www.youtube.com/embed/${v.video_id}`
+      : `https://rutube.ru/play/embed/${v.video_id}/`;
 
   if (loading) {
-    return <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 text-center text-muted-foreground animate-fade-in">Загружаем...</div>;
+    return <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center text-muted-foreground animate-fade-in">Загружаем...</div>;
   }
 
   if (!company) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
-        <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 mb-6">
-          <Icon name="ArrowLeft" size={14} /> Назад в каталог
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
+        <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors bg-white/50 hover:bg-white border border-border px-4 py-2 rounded-xl">
+          <Icon name="ArrowLeft" size={16} /> Назад
         </button>
         <div className="bg-white border border-dashed border-border rounded-3xl p-20 text-center">
           <Icon name="Building2" size={32} className="text-muted-foreground/40 mx-auto mb-3" />
@@ -1574,94 +1577,223 @@ function RealSupplierPage({ userId, onBack, onOpenProduct }: { userId: number; o
     { key: "instagram", label: "Instagram", icon: "Instagram", color: "bg-pink-50 text-pink-600", href: (v: string) => v.startsWith("http") ? v : `https://instagram.com/${v.replace("@", "")}` },
   ];
   const activeSocials = socials.filter((s) => (company as unknown as Record<string, string>)[s.key]);
+  const initial = company.name ? company.name[0].toUpperCase() : "?";
+
+  const contactsList = [
+    company.phone && { icon: "Phone", label: "Телефон", value: company.phone, href: `tel:${company.phone}` },
+    company.email && { icon: "Mail", label: "Email", value: company.email, href: `mailto:${company.email}` },
+    company.website && { icon: "Globe", label: "Сайт", value: company.website, href: company.website.startsWith("http") ? company.website : `https://${company.website}` },
+    company.location && { icon: "MapPin", label: "Адрес", value: company.location, href: "" },
+  ].filter(Boolean) as { icon: string; label: string; value: string; href: string }[];
+
+  const primaryContact = company.telegram
+    ? { label: "Написать в Telegram", icon: "Send", href: socials[0].href(company.telegram) }
+    : company.whatsapp
+    ? { label: "Написать в WhatsApp", icon: "MessageCircle", href: socials[1].href(company.whatsapp) }
+    : company.email
+    ? { label: "Написать на email", icon: "Mail", href: `mailto:${company.email}` }
+    : company.phone
+    ? { label: "Позвонить", icon: "Phone", href: `tel:${company.phone}` }
+    : null;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
-      <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 mb-6">
-        <Icon name="ArrowLeft" size={14} /> Назад в каталог
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 animate-fade-in">
+      <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors bg-white/50 hover:bg-white border border-border px-4 py-2 rounded-xl">
+        <Icon name="ArrowLeft" size={16} /> Назад в каталог
       </button>
 
-      <div className="bg-white border border-border rounded-3xl p-7 mb-6">
-        <div className="flex flex-col sm:flex-row gap-6">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-foreground to-foreground/80 flex items-center justify-center text-white font-bold text-3xl shadow-md overflow-hidden flex-shrink-0">
-            {company.logo_url ? <img src={company.logo_url} alt="" className="w-full h-full object-cover" /> : company.name[0].toUpperCase()}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start gap-3 flex-wrap mb-2">
-              <h1 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight">{company.name}</h1>
-              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full mt-1.5">Новый</span>
-            </div>
-            {company.category && <p className="text-sm text-accent font-medium mb-3">{company.category}</p>}
-            {company.description && <p className="text-sm text-muted-foreground leading-relaxed mb-4">{company.description}</p>}
-            <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-              {company.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={13} />{company.location}</span>}
-              {company.phone && <a href={`tel:${company.phone}`} className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Phone" size={13} />{company.phone}</a>}
-              {company.email && <a href={`mailto:${company.email}`} className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Mail" size={13} />{company.email}</a>}
-              {company.website && <a href={company.website.startsWith("http") ? company.website : `https://${company.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-foreground"><Icon name="Globe" size={13} />{company.website}</a>}
-            </div>
+      <div className="bg-white border border-border rounded-3xl mb-5 overflow-hidden">
+        <div className="h-36 gradient-bg relative overflow-hidden">
+          <div className="absolute inset-0 hero-grid opacity-50" />
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute bottom-0 left-8 translate-y-1/2 w-24 h-24 bg-white border-4 border-white rounded-2xl shadow-xl flex items-center justify-center text-foreground font-bold text-2xl overflow-hidden">
+            {company.logo_url ? <img src={company.logo_url} alt="" className="w-full h-full object-cover" /> : initial}
           </div>
         </div>
-
-        {activeSocials.length > 0 && (
-          <div className="border-t border-border mt-6 pt-5">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Связаться</h3>
-            <div className="flex flex-wrap gap-2">
-              {activeSocials.map((s) => {
-                const value = (company as unknown as Record<string, string>)[s.key];
-                return (
-                  <a
-                    key={s.key}
-                    href={s.href(value)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium ${s.color} hover:opacity-80 transition-opacity`}
-                  >
-                    <Icon name={s.icon} size={14} fallback="Link" />
-                    {s.label}
-                  </a>
-                );
-              })}
+        <div className="pt-16 pb-7 px-7 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-bold font-ibm tracking-tight">{company.name}</h1>
+              <div className="flex items-center gap-1 text-emerald-700 text-xs font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">
+                <Icon name="Sparkles" size={13} /> Новый
+              </div>
+            </div>
+            {company.category && <p className="text-accent font-medium mb-3 text-sm">{company.category}</p>}
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+              {company.location && <span className="flex items-center gap-1.5"><Icon name="MapPin" size={14} />{company.location}</span>}
+              <span className="flex items-center gap-1.5"><Icon name="Package" size={14} />{products.length} товаров</span>
+              {videos.length > 0 && <span className="flex items-center gap-1.5"><Icon name="Video" size={14} />{videos.length} видео</span>}
             </div>
           </div>
-        )}
+          <div className="flex gap-2 flex-wrap">
+            {primaryContact && (
+              <a href={primaryContact.href} target="_blank" rel="noreferrer" className="btn-modern flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-xl text-sm font-medium">
+                <Icon name={primaryContact.icon} size={16} /> {primaryContact.label}
+              </a>
+            )}
+            <button onClick={() => setActiveTab("contacts")} className="flex items-center gap-2 bg-secondary/60 hover:bg-secondary px-5 py-3 rounded-xl text-sm font-medium transition-colors">
+              <Icon name="Phone" size={16} /> Контакты
+            </button>
+          </div>
+        </div>
       </div>
 
-      {videos.length > 0 && (
-        <div className="bg-white border border-border rounded-3xl p-7 mb-6">
-          <h2 className="text-xl font-bold font-ibm mb-5 flex items-center gap-2"><Icon name="Video" size={18} /> Видео</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {videos.map((v) => (
-              <div key={v.id} className="rounded-2xl overflow-hidden border border-border">
-                <div className="aspect-video bg-black">
-                  <iframe src={videoEmbed(v)} title={v.title || "Видео"} className="w-full h-full" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowFullScreen />
-                </div>
-                {v.title && <div className="p-3 text-sm font-medium">{v.title}</div>}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+        {[
+          { label: "Товаров", value: String(products.length), icon: "Package" },
+          { label: "Видео", value: String(videos.length), icon: "Video" },
+          { label: "Каналов связи", value: String(activeSocials.length + contactsList.length), icon: "MessageSquare" },
+          { label: "Город", value: company.location || "—", icon: "MapPin" },
+        ].map((stat) => (
+          <div key={stat.label} className="bg-white border border-border rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-accent/10 rounded-xl flex items-center justify-center">
+                <Icon name={stat.icon} size={14} className="text-accent" fallback="Info" />
               </div>
-            ))}
+              <span className="text-xs text-muted-foreground">{stat.label}</span>
+            </div>
+            <div className="text-2xl font-bold font-ibm truncate">{stat.value}</div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
-      <div className="bg-white border border-border rounded-3xl p-7">
-        <h2 className="text-xl font-bold font-ibm mb-5 flex items-center gap-2"><Icon name="Package" size={18} /> Товары · {products.length}</h2>
-        {products.length === 0 ? (
-          <div className="text-center py-12 text-sm text-muted-foreground">Товары пока не добавлены</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {products.map((p) => (
-              <button key={p.id} onClick={() => onOpenProduct(p.id)} className="card-hover bg-white border border-border rounded-2xl overflow-hidden text-left hover:border-foreground/20">
-                <div className="h-40 bg-secondary/40 flex items-center justify-center overflow-hidden">
-                  {p.image_url ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" /> : <Icon name="Image" size={24} className="text-muted-foreground/40" />}
+      <div className="bg-white border border-border rounded-2xl overflow-hidden">
+        <div className="flex border-b border-border px-2 pt-2 gap-1 overflow-x-auto">
+          {([
+            ["about", "О компании"],
+            ["videos", `Видео${videos.length ? ` (${videos.length})` : ""}`],
+            ["products", `Товары${products.length ? ` (${products.length})` : ""}`],
+            ["contacts", "Контакты"],
+          ] as const).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key as typeof activeTab)}
+              className={`px-5 py-3 text-sm font-medium rounded-xl transition-all whitespace-nowrap ${activeTab === key ? "bg-foreground text-background" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-6">
+          {activeTab === "about" && (
+            <div>
+              {company.description ? (
+                <p className="text-muted-foreground mb-6 leading-relaxed">{company.description}</p>
+              ) : (
+                <p className="text-muted-foreground mb-6 leading-relaxed italic">Компания пока не добавила описание</p>
+              )}
+              {company.category && (
+                <>
+                  <h3 className="font-semibold mb-4">Направление</h3>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="bg-accent/10 text-accent text-xs px-3 py-1.5 rounded-full font-medium">{company.category}</span>
+                  </div>
+                </>
+              )}
+              {activeSocials.length > 0 && (
+                <>
+                  <h3 className="font-semibold mb-4">Где найти</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {activeSocials.map((s) => {
+                      const value = (company as unknown as Record<string, string>)[s.key];
+                      return (
+                        <a key={s.key} href={s.href(value)} target="_blank" rel="noreferrer" className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium ${s.color} hover:opacity-80 transition-opacity`}>
+                          <Icon name={s.icon} size={14} fallback="Link" /> {s.label}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {activeTab === "videos" && (
+            videos.length === 0 ? (
+              <div className="text-center py-12">
+                <Icon name="Video" size={32} className="text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Видео пока не добавлены</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {videos.map((v) => (
+                  <div key={v.id} className="rounded-2xl overflow-hidden border border-border bg-secondary/20">
+                    <div className="aspect-video bg-black">
+                      <iframe src={videoEmbed(v)} title={v.title || "Видео"} className="w-full h-full" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; clipboard-write" allowFullScreen />
+                    </div>
+                    <div className="p-3 flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium truncate">{v.title || "Без названия"}</span>
+                      <span className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${v.provider === "youtube" ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`}>{v.provider}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "products" && (
+            products.length === 0 ? (
+              <div className="text-center py-12">
+                <Icon name="Package" size={32} className="text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Товаров пока нет</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {products.map((p) => (
+                  <button key={p.id} onClick={() => onOpenProduct(p.id)} className="card-hover bg-white border border-border rounded-2xl overflow-hidden text-left hover:border-foreground/20">
+                    <div className="h-40 bg-secondary/40 flex items-center justify-center overflow-hidden">
+                      {p.image_url ? <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" /> : <Icon name="Image" size={24} className="text-muted-foreground/40" />}
+                    </div>
+                    <div className="p-4">
+                      <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded-full">{p.category}</span>
+                      <h4 className="font-semibold text-sm mt-2 line-clamp-2">{p.title}</h4>
+                      <div className="font-bold text-base mt-2">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === "contacts" && (
+            <div>
+              {contactsList.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                  {contactsList.map((c) => (
+                    <a key={c.label} href={c.href || "#"} target={c.href ? "_blank" : undefined} rel="noreferrer" className="flex items-start gap-3 bg-secondary/40 hover:bg-secondary/70 transition-colors p-4 rounded-2xl">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Icon name={c.icon} size={16} className="text-accent" fallback="Info" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs text-muted-foreground mb-0.5">{c.label}</div>
+                        <div className="text-sm font-medium truncate">{c.value}</div>
+                      </div>
+                    </a>
+                  ))}
                 </div>
-                <div className="p-4">
-                  <span className="text-xs text-accent bg-accent/10 px-2 py-0.5 rounded-full">{p.category}</span>
-                  <h4 className="font-semibold text-sm mt-2 line-clamp-2">{p.title}</h4>
-                  <div className="font-bold text-base mt-2">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
+              )}
+              {activeSocials.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-sm mb-3">Соцсети и мессенджеры</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {activeSocials.map((s) => {
+                      const value = (company as unknown as Record<string, string>)[s.key];
+                      return (
+                        <a key={s.key} href={s.href(value)} target="_blank" rel="noreferrer" className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium ${s.color} hover:opacity-80 transition-opacity`}>
+                          <Icon name={s.icon} size={14} fallback="Link" /> {s.label}
+                        </a>
+                      );
+                    })}
+                  </div>
                 </div>
-              </button>
-            ))}
-          </div>
-        )}
+              )}
+              {contactsList.length === 0 && activeSocials.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-8">Контакты пока не указаны</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1715,7 +1847,13 @@ export default function Index() {
           {page === "messages" && <MessagesPage t={t} />}
           {page === "products" && <ProductsPage t={t} user={user} onOpen={(id) => { setActiveProductId(id); navigate("product"); }} />}
           {page === "product" && activeProductId !== null && (
-            <ProductPage productId={activeProductId} onBack={() => navigate("products")} user={user} onLogin={() => setAuthOpen(true)} />
+            <ProductPage
+              productId={activeProductId}
+              onBack={() => navigate("products")}
+              user={user}
+              onLogin={() => setAuthOpen(true)}
+              onOpenSupplier={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }}
+            />
           )}
           {page === "services" && <ServicesPage t={t} onNav={navigate} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
           {page === "service" && activeServiceIndex !== null && (

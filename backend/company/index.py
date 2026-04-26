@@ -22,7 +22,7 @@ def _parse_video(url):
     yt = re.search(r'(?:youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([\w-]{6,})', u)
     if yt:
         return 'youtube', yt.group(1)
-    rt = re.search(r'rutube\.ru/(?:video|play/embed)/([\w-]+)', u)
+    rt = re.search(r'rutube\.ru/(?:video(?:/private)?|play/embed|shorts)/([a-f0-9A-Z_-]{6,})', u)
     if rt:
         return 'rutube', rt.group(1)
     return None, ''
