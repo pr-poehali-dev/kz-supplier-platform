@@ -27,7 +27,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket" | "education";
+type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket" | "education" | "course";
 
 const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
@@ -2241,69 +2241,156 @@ function ChinaMarketPage({ onNav }: { onNav: (p: Page) => void }) {
   );
 }
 
-function EducationPage({ onNav }: { onNav: (p: Page) => void }) {
-  const courses = [
-    {
-      icon: "Briefcase",
-      level: "Начальный",
-      duration: "4 недели",
-      lessons: 16,
-      title: "Импорт из Китая для начинающих",
-      desc: "Поиск поставщиков, проверка фабрик, оплата, доставка и таможня. Стартуйте без ошибок.",
-      price: "29 900 ₽",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      icon: "ShoppingBag",
-      level: "Средний",
-      duration: "6 недель",
-      lessons: 24,
-      title: "Продажи на маркетплейсах Китая",
-      desc: "Tmall, JD, Pinduoduo, Douyin: регистрация, оформление, продвижение и работа с отзывами.",
-      price: "49 900 ₽",
-      color: "from-red-500 to-orange-500",
-    },
-    {
-      icon: "Languages",
-      level: "Любой",
-      duration: "8 недель",
-      lessons: 32,
-      title: "Деловой китайский для бизнеса",
-      desc: "Базовые фразы для переговоров, переписки в WeChat, понимание контрактов и счетов.",
-      price: "39 900 ₽",
-      color: "from-yellow-500 to-amber-500",
-    },
-    {
-      icon: "TrendingUp",
-      level: "Продвинутый",
-      duration: "10 недель",
-      lessons: 40,
-      title: "Запуск бренда в Китае",
-      desc: "От стратегии до KOL-маркетинга: как построить узнаваемый бренд на китайском рынке.",
-      price: "79 900 ₽",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      icon: "Truck",
-      level: "Средний",
-      duration: "3 недели",
-      lessons: 12,
-      title: "Логистика и ВЭД",
-      desc: "Инкотермс, контейнерные перевозки, бондовые склады, фулфилмент и оптимизация затрат.",
-      price: "24 900 ₽",
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      icon: "Scale",
-      level: "Средний",
-      duration: "4 недели",
-      lessons: 16,
-      title: "Юридические аспекты работы с КНР",
-      desc: "Контракты, защита торговой марки, разрешение споров и налогообложение сделок.",
-      price: "34 900 ₽",
-      color: "from-slate-600 to-slate-800",
-    },
-  ];
+type Course = {
+  slug: string;
+  icon: string;
+  level: string;
+  duration: string;
+  lessons: number;
+  title: string;
+  desc: string;
+  price: string;
+  color: string;
+  about: string;
+  forWhom: string[];
+  outcomes: string[];
+  modules: { title: string; lessons: string[] }[];
+  teacher: { name: string; role: string; bio: string };
+};
+
+const COURSES: Course[] = [
+  {
+    slug: "import-basics",
+    icon: "Briefcase",
+    level: "Начальный",
+    duration: "4 недели",
+    lessons: 16,
+    title: "Импорт из Китая для начинающих",
+    desc: "Поиск поставщиков, проверка фабрик, оплата, доставка и таможня. Стартуйте без ошибок.",
+    price: "29 900 ₽",
+    color: "from-blue-500 to-cyan-500",
+    about: "Базовый курс для тех, кто хочет начать импортировать товары из Китая без посредников. Разберём весь путь от выбора ниши до получения первой партии на склад в России.",
+    forWhom: ["Начинающие предприниматели", "Закупщики розничных сетей", "Селлеры маркетплейсов Wildberries и Ozon", "Владельцы интернет-магазинов"],
+    outcomes: ["Найдёте проверенного поставщика на 1688 и Alibaba", "Научитесь читать прайсы и спецификации", "Закроете первую сделку с экономией 20–40%", "Поймёте налоги и таможенные сборы"],
+    modules: [
+      { title: "Модуль 1. Подготовка к работе", lessons: ["Анализ ниши и расчёт юнит-экономики", "Регистрация ИП/ООО для ВЭД", "Открытие валютного счёта и паспорт сделки", "Базовая терминология импортёра"] },
+      { title: "Модуль 2. Поиск поставщиков", lessons: ["Площадки 1688, Alibaba, Made-in-China", "Скрипты переписки на английском", "Запрос образцов и проверка качества", "Аудит фабрики через инспекторов"] },
+      { title: "Модуль 3. Оплата и логистика", lessons: ["T/T, аккредитив, эскроу — что выбрать", "Инкотермс 2020 простыми словами", "Карго vs официальная доставка", "Расчёт полной себестоимости"] },
+      { title: "Модуль 4. Таможня и приёмка", lessons: ["Подготовка документов для ФТС", "Сертификация и маркировка «Честный знак»", "Приёмка и проверка партии на складе", "Финальный кейс: импортируем тестовую партию"] },
+    ],
+    teacher: { name: "Алексей Морозов", role: "Импортёр с 12-летним опытом", bio: "Привёз более 800 контейнеров из Китая, основатель оптовой компании с оборотом 400 млн ₽/год." },
+  },
+  {
+    slug: "marketplaces",
+    icon: "ShoppingBag",
+    level: "Средний",
+    duration: "6 недель",
+    lessons: 24,
+    title: "Продажи на маркетплейсах Китая",
+    desc: "Tmall, JD, Pinduoduo, Douyin: регистрация, оформление, продвижение и работа с отзывами.",
+    price: "49 900 ₽",
+    color: "from-red-500 to-orange-500",
+    about: "Полная программа по запуску магазина на китайских маркетплейсах. Разберём все технические нюансы, требования к контенту и стратегии продвижения внутри площадок.",
+    forWhom: ["Производители российских брендов", "Экспортёры FMCG и косметики", "Команды маркетинга и e-commerce", "Бренд-менеджеры"],
+    outcomes: ["Зарегистрируете магазин на Tmall Global или JD Worldwide", "Создадите карточки товаров по китайским стандартам", "Запустите первые рекламные кампании", "Поймёте систему отзывов и ранжирования"],
+    modules: [
+      { title: "Модуль 1. Обзор площадок", lessons: ["Tmall Global vs JD Worldwide", "Pinduoduo и низкий ценовой сегмент", "Douyin Shop и социальная коммерция", "Какую площадку выбрать под продукт"] },
+      { title: "Модуль 2. Регистрация магазина", lessons: ["Требования к юрлицу и брендам", "Документы для регистрации", "Депозиты и ежегодные сборы", "Работа через TP-агентство"] },
+      { title: "Модуль 3. Контент и карточки", lessons: ["Локализация описаний на китайский", "Дизайн detail page по стандартам Tmall", "Видео и live-stream контент", "SEO внутри площадки"] },
+      { title: "Модуль 4. Реклама и продвижение", lessons: ["Zhitongche — контекст внутри Tmall", "Brand Zone и медийная реклама", "Работа с KOL и KOC", "Участие в Double 11 и 618"] },
+      { title: "Модуль 5. Работа с клиентами", lessons: ["Чат-операторы и скрипты ответов", "Управление отзывами и рейтингом", "Возвраты и претензии по китайским законам", "Программы лояльности"] },
+      { title: "Модуль 6. Аналитика и масштабирование", lessons: ["Дашборды Business Advisor и Growth360", "Расчёт ROI рекламных кампаний", "A/B тесты карточек", "Финальный проект: план запуска магазина"] },
+    ],
+    teacher: { name: "Ли Вэй", role: "Экс-руководитель Tmall Global RU", bio: "5 лет работал в Alibaba Group, запустил более 60 российских брендов на китайские маркетплейсы." },
+  },
+  {
+    slug: "chinese-language",
+    icon: "Languages",
+    level: "Любой",
+    duration: "8 недель",
+    lessons: 32,
+    title: "Деловой китайский для бизнеса",
+    desc: "Базовые фразы для переговоров, переписки в WeChat, понимание контрактов и счетов.",
+    price: "39 900 ₽",
+    color: "from-yellow-500 to-amber-500",
+    about: "Прикладной курс делового китайского без академической грамматики. Только то, что нужно для общения с фабриками, чтения документов и переписки в мессенджерах.",
+    forWhom: ["Менеджеры по закупкам", "Логисты, работающие с Китаем", "Предприниматели в ВЭД", "Все, кто часто общается с китайскими партнёрами"],
+    outcomes: ["Сможете вести базовый диалог в WeChat", "Распознаёте 300+ иероглифов делового лексикона", "Поймёте структуру инвойсов, контрактов и упаковочных листов", "Научитесь произносить ключевые цифры и даты"],
+    modules: [
+      { title: "Модуль 1. Фонетика и базовые фразы", lessons: ["Тоны и пиньинь без боли", "Приветствия и знакомство", "Числа, даты, время", "Самопрезентация компании"] },
+      { title: "Модуль 2. Переговоры о цене", lessons: ["Запрос прайса и спецификаций", "Обсуждение скидок и MOQ", "Сроки производства и отгрузки", "Аргументация и торг"] },
+      { title: "Модуль 3. Документы и контракты", lessons: ["Чтение инвойсов и Packing List", "Структура внешнеторгового контракта", "Иероглифика терминов Инкотермс", "Подписи, печати и заверения"] },
+      { title: "Модуль 4. WeChat и финал", lessons: ["Голосовые сообщения и стикеры", "Деловая переписка в чате", "Решение конфликтов на китайском", "Финальный кейс: переговоры с фабрикой"] },
+    ],
+    teacher: { name: "Чэнь Сяомэй", role: "Преподаватель делового китайского", bio: "Носитель языка из Шанхая, 8 лет преподаёт деловой китайский в международных компаниях." },
+  },
+  {
+    slug: "brand-launch",
+    icon: "TrendingUp",
+    level: "Продвинутый",
+    duration: "10 недель",
+    lessons: 40,
+    title: "Запуск бренда в Китае",
+    desc: "От стратегии до KOL-маркетинга: как построить узнаваемый бренд на китайском рынке.",
+    price: "79 900 ₽",
+    color: "from-purple-500 to-pink-500",
+    about: "Флагманский курс для тех, кто строит бренд на китайском рынке всерьёз. Стратегия, позиционирование, лицензирование, маркетинг и масштабирование за 10 недель.",
+    forWhom: ["Бренд-менеджеры и маркетологи", "Основатели DTC-брендов", "Топ-менеджеры экспортных компаний", "Инвесторы в потребительский сектор"],
+    outcomes: ["Разработаете стратегию выхода бренда на 3 года", "Подготовите бренд-бук под китайскую аудиторию", "Запустите KOL-кампанию в Xiaohongshu и Douyin", "Спланируете участие в Double 11 с прогнозом GMV"],
+    modules: [
+      { title: "Модуль 1. Исследование рынка", lessons: ["Сегменты и культурные особенности", "Анализ конкурентов в нише", "Trendy reports от Tmall и iiMedia", "Customer Journey китайского покупателя"] },
+      { title: "Модуль 2. Позиционирование и нейминг", lessons: ["Выбор китайского имени бренда", "Регистрация ТМ в CNIPA", "Разработка слогана и tone of voice", "Адаптация визуальной айдентики"] },
+      { title: "Модуль 3. Каналы дистрибуции", lessons: ["DTC-сайт vs маркетплейсы", "Live-commerce и Douyin Shop", "Cross-border vs General Trade", "Офлайн-партнёры и шоурумы"] },
+      { title: "Модуль 4. Контент и маркетинг", lessons: ["Стратегия в Xiaohongshu", "Video marketing на Douyin и Bilibili", "Работа с KOL-агентствами и CPS", "PR в китайских медиа"] },
+      { title: "Модуль 5. Запуск и масштабирование", lessons: ["План запуска по неделям", "Бюджетирование первого года", "Метрики и KPI бренда", "Финальный проект: защита стратегии бренда"] },
+    ],
+    teacher: { name: "Виктория Чжан", role: "Brand Director, экс-L'Oréal China", bio: "10 лет в маркетинге FMCG в Шанхае, запускала европейские бренды косметики и одежды на рынок Китая." },
+  },
+  {
+    slug: "logistics",
+    icon: "Truck",
+    level: "Средний",
+    duration: "3 недели",
+    lessons: 12,
+    title: "Логистика и ВЭД",
+    desc: "Инкотермс, контейнерные перевозки, бондовые склады, фулфилмент и оптимизация затрат.",
+    price: "24 900 ₽",
+    color: "from-green-500 to-emerald-500",
+    about: "Концентрат знаний по международной логистике из Китая. Разберём цепочки поставок, документооборот и научимся снижать стоимость доставки на 15–30%.",
+    forWhom: ["Логисты и менеджеры по ВЭД", "Импортёры и экспортёры", "Фаундеры e-commerce проектов", "Финансовые директора"],
+    outcomes: ["Будете уверенно работать с Инкотермс 2020", "Сравните и выберете оптимальный маршрут", "Сократите логистические издержки", "Поймёте работу бондовых зон Китая"],
+    modules: [
+      { title: "Модуль 1. Основы ВЭД", lessons: ["Инкотермс 2020: разбор всех 11 терминов", "Документооборот: B/L, AWB, CMR, инвойс", "Валютный контроль и паспорт сделки", "Базовая терминология"] },
+      { title: "Модуль 2. Маршруты и транспорт", lessons: ["Морские контейнерные перевозки", "ЖД через Казахстан и Монголию", "Авиа и экспресс-доставка", "Карго: плюсы, минусы, риски"] },
+      { title: "Модуль 3. Хранение и оптимизация", lessons: ["Бондовые склады в Китае и РФ", "Фулфилмент для маркетплейсов", "Расчёт и снижение себестоимости", "Финальный кейс: оптимизация цепочки"] },
+    ],
+    teacher: { name: "Игорь Ковалёв", role: "Логист с 15-летним опытом ВЭД", bio: "Бывший директор по логистике в крупном импортёре электроники. Управлял потоком 1500+ контейнеров в год." },
+  },
+  {
+    slug: "legal",
+    icon: "Scale",
+    level: "Средний",
+    duration: "4 недели",
+    lessons: 16,
+    title: "Юридические аспекты работы с КНР",
+    desc: "Контракты, защита торговой марки, разрешение споров и налогообложение сделок.",
+    price: "34 900 ₽",
+    color: "from-slate-600 to-slate-800",
+    about: "Юридическая защита бизнеса при работе с Китаем. Реальные кейсы судебных споров, разбор подводных камней контрактов и стратегии защиты интеллектуальной собственности.",
+    forWhom: ["Юристы внешнеэкономических отделов", "Предприниматели и собственники", "Финансовые директора", "Менеджеры по контрактам"],
+    outcomes: ["Составите безопасный внешнеторговый контракт", "Защитите торговую марку в Китае и России", "Разберётесь в налогообложении сделок", "Узнаете, как выиграть спор в китайском арбитраже"],
+    modules: [
+      { title: "Модуль 1. Контрактная база", lessons: ["Структура и обязательные пункты контракта", "Подсудность и применимое право", "Гарантии и форс-мажор", "Чек-лист безопасного контракта"] },
+      { title: "Модуль 2. Интеллектуальная собственность", lessons: ["Регистрация ТМ в CNIPA", "Борьба с патентными троллями", "Защита патентов и дизайнов", "Кейсы успешных и проигранных дел"] },
+      { title: "Модуль 3. Налоги и валютный контроль", lessons: ["НДС при импорте и экспорте", "Двойное налогообложение РФ–КНР", "Валютный контроль и комиссия банка", "Оптимизация через ОАЭ и Гонконг"] },
+      { title: "Модуль 4. Споры и арбитраж", lessons: ["CIETAC и международный арбитраж", "Стратегии досудебного урегулирования", "Обеспечительные меры и иски", "Финальный кейс: разбор судебного дела"] },
+    ],
+    teacher: { name: "Наталья Ким", role: "Партнёр юрфирмы по ВЭД", bio: "Кандидат юр. наук, ведёт практику внешнеэкономической деятельности с КНР с 2008 года, выиграла более 40 арбитражных дел." },
+  },
+];
+
+function EducationPage({ onNav, onOpenCourse }: { onNav: (p: Page) => void; onOpenCourse: (slug: string) => void }) {
+  const courses = COURSES;
 
   const formats = [
     { icon: "Video", title: "Онлайн-лекции", desc: "Записи доступны 12 месяцев после покупки" },
@@ -2383,7 +2470,7 @@ function EducationPage({ onNav }: { onNav: (p: Page) => void }) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {courses.map((c, i) => (
-            <div key={i} className="card-hover bg-white border border-border rounded-3xl overflow-hidden flex flex-col">
+            <button key={i} onClick={() => onOpenCourse(c.slug)} className="card-hover bg-white border border-border rounded-3xl overflow-hidden flex flex-col text-left">
               <div className={`h-32 bg-gradient-to-br ${c.color} relative flex items-center justify-center`}>
                 <div className="absolute inset-0 hero-grid opacity-30" />
                 <Icon name={c.icon} size={48} className="text-white relative" fallback="BookOpen" />
@@ -2400,12 +2487,12 @@ function EducationPage({ onNav }: { onNav: (p: Page) => void }) {
                 <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{c.desc}</p>
                 <div className="flex items-center justify-between pt-4 border-t border-border">
                   <div className="font-bold text-lg font-ibm">{c.price}</div>
-                  <button onClick={() => onNav("addCompany")} className="text-sm font-medium text-accent hover:gap-2 flex items-center gap-1 transition-all">
-                    Записаться <Icon name="ArrowRight" size={13} />
-                  </button>
+                  <span className="text-sm font-medium text-accent hover:gap-2 flex items-center gap-1 transition-all">
+                    Подробнее <Icon name="ArrowRight" size={13} />
+                  </span>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </section>
@@ -2476,8 +2563,174 @@ function EducationPage({ onNav }: { onNav: (p: Page) => void }) {
   );
 }
 
+function CoursePage({ slug, onNav, onBack }: { slug: string; onNav: (p: Page) => void; onBack: () => void }) {
+  const course = COURSES.find((c) => c.slug === slug);
+  if (!course) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in">
+        <p className="text-muted-foreground mb-5">Курс не найден</p>
+        <button onClick={onBack} className="text-sm font-medium text-accent">← Вернуться к обучению</button>
+      </div>
+    );
+  }
+  const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+
+  return (
+    <div className="animate-fade-in">
+      <section className={`relative overflow-hidden bg-gradient-to-br ${course.color}`}>
+        <div className="absolute inset-0 hero-grid opacity-20" />
+        <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[360px] h-[360px] rounded-full bg-white/10 blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <button onClick={onBack} className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-8 transition-colors">
+            <Icon name="ArrowLeft" size={14} /> К обучению
+          </button>
+          <div className="grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start">
+            <div className="text-white">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <Icon name={course.icon} size={14} className="text-white" fallback="BookOpen" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest">{course.level} уровень</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight mb-5 leading-tight">
+                {course.title}
+              </h1>
+              <p className="text-white/90 text-base sm:text-lg mb-8 max-w-2xl leading-relaxed">{course.about}</p>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-md px-4 py-2 rounded-xl">
+                  <Icon name="Clock" size={14} /> {course.duration}
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-md px-4 py-2 rounded-xl">
+                  <Icon name="PlayCircle" size={14} /> {course.lessons} уроков
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-md px-4 py-2 rounded-xl">
+                  <Icon name="Award" size={14} /> Сертификат
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/95 backdrop-blur-md rounded-3xl p-7 shadow-2xl">
+              <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">Стоимость курса</div>
+              <div className="text-4xl font-bold font-ibm mb-1 text-foreground">{course.price}</div>
+              <div className="text-sm text-muted-foreground mb-6">или от 4 990 ₽/мес в рассрочку</div>
+              <button onClick={() => onNav("addCompany")} className="btn-modern w-full bg-foreground text-white font-semibold px-6 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2 mb-3">
+                Записаться на курс <Icon name="ArrowRight" size={15} />
+              </button>
+              <button onClick={() => onNav("contacts")} className="w-full bg-secondary hover:bg-secondary/70 text-foreground font-medium px-6 py-3 rounded-2xl text-sm transition-all">
+                Скачать программу
+              </button>
+              <div className="mt-5 pt-5 border-t border-border space-y-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2"><Icon name="Check" size={12} className="text-accent" /> Доступ к материалам 12 месяцев</div>
+                <div className="flex items-center gap-2"><Icon name="Check" size={12} className="text-accent" /> Возврат в течение 14 дней</div>
+                <div className="flex items-center gap-2"><Icon name="Check" size={12} className="text-accent" /> Чат поддержки 24/7</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="bg-white border border-border rounded-3xl p-7">
+            <div className="w-11 h-11 bg-accent/10 rounded-xl flex items-center justify-center mb-4">
+              <Icon name="Users" size={20} className="text-accent" />
+            </div>
+            <h3 className="text-xl font-bold font-ibm mb-4">Для кого этот курс</h3>
+            <ul className="space-y-2.5">
+              {course.forWhom.map((f, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <Icon name="Check" size={16} className="text-accent flex-shrink-0 mt-0.5" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-white border border-border rounded-3xl p-7">
+            <div className="w-11 h-11 bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
+              <Icon name="Target" size={20} className="text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold font-ibm mb-4">Что вы получите</h3>
+            <ul className="space-y-2.5">
+              {course.outcomes.map((o, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <Icon name="Sparkles" size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                  <span>{o}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Программа</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Что внутри курса</h2>
+            <p className="text-muted-foreground mt-3">{course.modules.length} модулей · {totalLessons} уроков</p>
+          </div>
+          <div className="space-y-3">
+            {course.modules.map((m, i) => (
+              <details key={i} className="group bg-white border border-border rounded-2xl overflow-hidden" open={i === 0}>
+                <summary className="flex items-center gap-4 p-5 cursor-pointer list-none">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${course.color} text-white font-bold font-ibm flex items-center justify-center flex-shrink-0`}>
+                    {i + 1}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-base">{m.title}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{m.lessons.length} уроков</div>
+                  </div>
+                  <Icon name="ChevronDown" size={18} className="text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
+                </summary>
+                <div className="px-5 pb-5 pt-0 border-t border-border">
+                  <ul className="space-y-2 mt-4">
+                    {m.lessons.map((l, j) => (
+                      <li key={j} className="flex items-start gap-3 text-sm">
+                        <span className="w-6 h-6 rounded-lg bg-secondary text-muted-foreground text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">{j + 1}</span>
+                        <span className="leading-relaxed">{l}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <div className="bg-white border border-border rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row gap-6 items-start">
+          <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white text-2xl font-bold font-ibm flex-shrink-0`}>
+            {course.teacher.name.charAt(0)}
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Преподаватель</p>
+            <h3 className="text-xl font-bold font-ibm mb-1">{course.teacher.name}</h3>
+            <div className="text-sm text-muted-foreground mb-3">{course.teacher.role}</div>
+            <p className="text-sm leading-relaxed">{course.teacher.bio}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${course.color} p-10 sm:p-14 text-center`}>
+          <div className="absolute inset-0 hero-grid opacity-30" />
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/15 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-white/10 blur-3xl" />
+          <div className="relative">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight text-white mb-4">Старт ближайшего потока — каждый понедельник</h2>
+            <p className="text-white/85 mb-8 max-w-lg mx-auto">Места ограничены — в группе максимум 30 человек, чтобы каждому уделить внимание</p>
+            <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-foreground font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
+              Записаться за {course.price} <Icon name="ArrowRight" size={15} />
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
+  const [activeCourseSlug, setActiveCourseSlug] = useState<string | null>(null);
   const lang: Lang = "ru";
   const setLang = (_l: Lang) => {};
   const [activePostIndex, setActivePostIndex] = useState(0);
@@ -2534,7 +2787,8 @@ export default function Index() {
           )}
           {page === "services" && <ServicesPage t={t} onNav={navigate} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
           {page === "chinaMarket" && <ChinaMarketPage onNav={navigate} />}
-          {page === "education" && <EducationPage onNav={navigate} />}
+          {page === "education" && <EducationPage onNav={navigate} onOpenCourse={(slug) => { setActiveCourseSlug(slug); navigate("course"); }} />}
+          {page === "course" && activeCourseSlug && <CoursePage slug={activeCourseSlug} onNav={navigate} onBack={() => navigate("education")} />}
           {page === "service" && activeServiceIndex !== null && (
             <ServicePage serviceIndex={activeServiceIndex} t={t} onBack={() => navigate("services")} />
           )}
