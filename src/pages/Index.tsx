@@ -514,6 +514,62 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
         </div>
       </section>
 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B0000] via-[#C8102E] to-[#FFB81C]">
+          <div className="absolute inset-0 hero-grid opacity-20" />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-yellow-400/20 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-red-500/30 blur-3xl" />
+          <div className="relative grid lg:grid-cols-2 gap-8 items-center p-8 sm:p-12">
+            <div className="text-white">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest">Готовое решение</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight mb-4 leading-tight">
+                Выход на рынок Китая
+              </h2>
+              <p className="text-white/85 text-sm sm:text-base mb-7 max-w-md leading-relaxed">
+                Полный цикл сопровождения: от регистрации компании и сертификации до выхода на маркетплейсы и поиска дистрибьюторов.
+              </p>
+              <div className="grid grid-cols-2 gap-3 mb-7 max-w-md">
+                <div className="flex items-center gap-2 text-sm">
+                  <Icon name="Check" size={16} className="text-yellow-300 flex-shrink-0" />
+                  <span>Регистрация бизнеса</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Icon name="Check" size={16} className="text-yellow-300 flex-shrink-0" />
+                  <span>Сертификация CCC</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Icon name="Check" size={16} className="text-yellow-300 flex-shrink-0" />
+                  <span>Tmall и JD.com</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Icon name="Check" size={16} className="text-yellow-300 flex-shrink-0" />
+                  <span>Поиск партнёров</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button onClick={() => onNav("services")} className="btn-modern bg-white text-[#8B0000] font-semibold px-6 py-3 rounded-2xl text-sm flex items-center justify-center gap-2">
+                  Узнать подробнее <Icon name="ArrowRight" size={15} />
+                </button>
+                <button onClick={() => onNav("addCompany")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-6 py-3 rounded-2xl text-sm transition-all backdrop-blur-md">
+                  Получить консультацию
+                </button>
+              </div>
+            </div>
+            <div className="relative hidden lg:block">
+              <div className="absolute inset-0 bg-gradient-to-tr from-yellow-300/20 to-transparent rounded-2xl blur-2xl" />
+              <img
+                src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/3b0587d5-08ab-490e-bf97-b38db20647c1.jpg"
+                alt="Выход на рынок Китая"
+                className="relative w-full h-full max-h-[380px] object-cover rounded-2xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {homeProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
           <div className="flex items-end justify-between mb-10">
