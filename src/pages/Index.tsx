@@ -1699,7 +1699,7 @@ function Footer({ onNav, t }: { onNav: (p: Page) => void; t: Translation }) {
   const colPages: Page[][] = [
     ["home", "catalog", "blog"],
     ["addCompany", "contacts", "contacts"],
-    ["contacts", "contacts", "messages"],
+    ["contacts", "chinaSuppliers", "messages"],
   ];
   return (
     <footer className="mt-auto px-3 sm:px-6 pb-3 sm:pb-6">
