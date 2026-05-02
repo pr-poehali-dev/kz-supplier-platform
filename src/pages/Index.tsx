@@ -27,7 +27,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket";
+type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket" | "education";
 
 const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
@@ -86,6 +86,7 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
     { label: t.nav.catalog, page: "catalog" },
     { label: t.nav.products, page: "products" },
     { label: t.nav.services, page: "services" },
+    { label: "Обучение", page: "education" },
     { label: t.nav.blog, page: "blog" },
     { label: t.nav.contacts, page: "contacts" },
   ];
@@ -2240,6 +2241,241 @@ function ChinaMarketPage({ onNav }: { onNav: (p: Page) => void }) {
   );
 }
 
+function EducationPage({ onNav }: { onNav: (p: Page) => void }) {
+  const courses = [
+    {
+      icon: "Briefcase",
+      level: "Начальный",
+      duration: "4 недели",
+      lessons: 16,
+      title: "Импорт из Китая для начинающих",
+      desc: "Поиск поставщиков, проверка фабрик, оплата, доставка и таможня. Стартуйте без ошибок.",
+      price: "29 900 ₽",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: "ShoppingBag",
+      level: "Средний",
+      duration: "6 недель",
+      lessons: 24,
+      title: "Продажи на маркетплейсах Китая",
+      desc: "Tmall, JD, Pinduoduo, Douyin: регистрация, оформление, продвижение и работа с отзывами.",
+      price: "49 900 ₽",
+      color: "from-red-500 to-orange-500",
+    },
+    {
+      icon: "Languages",
+      level: "Любой",
+      duration: "8 недель",
+      lessons: 32,
+      title: "Деловой китайский для бизнеса",
+      desc: "Базовые фразы для переговоров, переписки в WeChat, понимание контрактов и счетов.",
+      price: "39 900 ₽",
+      color: "from-yellow-500 to-amber-500",
+    },
+    {
+      icon: "TrendingUp",
+      level: "Продвинутый",
+      duration: "10 недель",
+      lessons: 40,
+      title: "Запуск бренда в Китае",
+      desc: "От стратегии до KOL-маркетинга: как построить узнаваемый бренд на китайском рынке.",
+      price: "79 900 ₽",
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      icon: "Truck",
+      level: "Средний",
+      duration: "3 недели",
+      lessons: 12,
+      title: "Логистика и ВЭД",
+      desc: "Инкотермс, контейнерные перевозки, бондовые склады, фулфилмент и оптимизация затрат.",
+      price: "24 900 ₽",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: "Scale",
+      level: "Средний",
+      duration: "4 недели",
+      lessons: 16,
+      title: "Юридические аспекты работы с КНР",
+      desc: "Контракты, защита торговой марки, разрешение споров и налогообложение сделок.",
+      price: "34 900 ₽",
+      color: "from-slate-600 to-slate-800",
+    },
+  ];
+
+  const formats = [
+    { icon: "Video", title: "Онлайн-лекции", desc: "Записи доступны 12 месяцев после покупки" },
+    { icon: "Users", title: "Живые вебинары", desc: "Еженедельные разборы и Q&A с экспертами" },
+    { icon: "FileText", title: "Практические задания", desc: "Работа над реальными кейсами с проверкой" },
+    { icon: "Award", title: "Сертификат", desc: "После сдачи финального проекта" },
+  ];
+
+  const reviews = [
+    { name: "Анна Соколова", role: "Основатель бренда косметики", text: "После курса запустила продажи на Tmall за 2 месяца. Окупила обучение в 10 раз." },
+    { name: "Дмитрий Лебедев", role: "Импортёр электроники", text: "Перестал терять деньги на недобросовестных поставщиках. Окупилось с первой партии." },
+    { name: "Марина Петрова", role: "Директор по закупкам", text: "Команда прошла курс — теперь сами ведём переговоры с фабриками без посредников." },
+  ];
+
+  return (
+    <div className="animate-fade-in">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600">
+        <div className="absolute inset-0 hero-grid opacity-20" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-cyan-400/20 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-purple-500/30 blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+          <button onClick={() => onNav("home")} className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-8 transition-colors">
+            <Icon name="ArrowLeft" size={14} /> На главную
+          </button>
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="text-white">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <span className="w-1.5 h-1.5 bg-cyan-300 rounded-full pulse-glow" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest">Школа международной торговли</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-ibm tracking-tight mb-5 leading-tight">
+                Обучение работе с Китаем
+              </h1>
+              <p className="text-white/90 text-base sm:text-lg mb-8 max-w-xl leading-relaxed">
+                Практические курсы для предпринимателей и закупщиков. Учитесь у экспертов с 10+ лет опыта работы на китайском рынке.
+              </p>
+              <div className="grid grid-cols-3 gap-4 mb-8 max-w-md">
+                <div>
+                  <div className="text-3xl font-bold font-ibm">2 500+</div>
+                  <div className="text-xs text-white/70">выпускников</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold font-ibm">15</div>
+                  <div className="text-xs text-white/70">курсов</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold font-ibm">4.9</div>
+                  <div className="text-xs text-white/70">рейтинг</div>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-blue-700 font-semibold px-7 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
+                  Записаться на курс <Icon name="ArrowRight" size={15} />
+                </button>
+                <button onClick={() => onNav("contacts")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
+                  Получить программу
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-300/30 to-transparent rounded-3xl blur-3xl" />
+              <img
+                src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/b6c9b87f-7690-49be-9789-5a8f765070f2.jpg"
+                alt="Обучение работе с Китаем"
+                className="relative w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Программы</p>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Курсы и программы</h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">Выберите программу под свою задачу — от первого заказа до построения бренда</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {courses.map((c, i) => (
+            <div key={i} className="card-hover bg-white border border-border rounded-3xl overflow-hidden flex flex-col">
+              <div className={`h-32 bg-gradient-to-br ${c.color} relative flex items-center justify-center`}>
+                <div className="absolute inset-0 hero-grid opacity-30" />
+                <Icon name={c.icon} size={48} className="text-white relative" fallback="BookOpen" />
+                <div className="absolute top-3 left-3">
+                  <span className="text-[10px] font-semibold text-white bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full uppercase tracking-widest">{c.level}</span>
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col">
+                <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
+                  <span className="flex items-center gap-1"><Icon name="Clock" size={12} /> {c.duration}</span>
+                  <span className="flex items-center gap-1"><Icon name="PlayCircle" size={12} /> {c.lessons} уроков</span>
+                </div>
+                <h3 className="font-semibold text-base mb-2 leading-snug">{c.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{c.desc}</p>
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="font-bold text-lg font-ibm">{c.price}</div>
+                  <button onClick={() => onNav("addCompany")} className="text-sm font-medium text-accent hover:gap-2 flex items-center gap-1 transition-all">
+                    Записаться <Icon name="ArrowRight" size={13} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Формат</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Как проходит обучение</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {formats.map((f, i) => (
+              <div key={i} className="bg-white border border-border rounded-2xl p-6 text-center">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Icon name={f.icon} size={24} className="text-blue-600" fallback="Star" />
+                </div>
+                <h3 className="font-semibold text-base mb-2">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Отзывы</p>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Что говорят выпускники</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {reviews.map((r, i) => (
+            <div key={i} className="bg-white border border-border rounded-2xl p-6">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, j) => (
+                  <Icon key={j} name="Star" size={14} className="text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <p className="text-sm leading-relaxed mb-5">{r.text}</p>
+              <div className="flex items-center gap-3 pt-4 border-t border-border">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  {r.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-semibold text-sm">{r.name}</div>
+                  <div className="text-xs text-muted-foreground">{r.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-purple-700 p-10 sm:p-14 text-center">
+          <div className="absolute inset-0 hero-grid opacity-30" />
+          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-cyan-400/30 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-pink-400/20 blur-3xl" />
+          <div className="relative">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight text-white mb-4">Не знаете, какой курс выбрать?</h2>
+            <p className="text-white/80 mb-8 max-w-lg mx-auto">Оставьте заявку — методист подберёт программу под вашу задачу и расскажет о скидках</p>
+            <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-blue-700 font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
+              Получить консультацию <Icon name="ArrowRight" size={15} />
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const lang: Lang = "ru";
@@ -2298,6 +2534,7 @@ export default function Index() {
           )}
           {page === "services" && <ServicesPage t={t} onNav={navigate} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
           {page === "chinaMarket" && <ChinaMarketPage onNav={navigate} />}
+          {page === "education" && <EducationPage onNav={navigate} />}
           {page === "service" && activeServiceIndex !== null && (
             <ServicePage serviceIndex={activeServiceIndex} t={t} onBack={() => navigate("services")} />
           )}
