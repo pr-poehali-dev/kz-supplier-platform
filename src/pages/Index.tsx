@@ -536,98 +536,120 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
       )}
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#7A0000] via-[#C8102E] to-[#FFB81C] p-2 sm:p-3 shadow-2xl shadow-[#8B0000]/20">
-          <div className="absolute inset-0 hero-grid opacity-15" />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-yellow-400/20 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-red-500/30 blur-3xl" />
+        <div className="relative bg-gradient-to-br from-foreground to-foreground/95 rounded-[32px] p-8 sm:p-14 overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#C8102E]/25 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#FFB81C]/20 blur-3xl" />
+          <div className="absolute inset-0 hero-grid opacity-30" />
 
-          <div className="relative rounded-[1.7rem] border border-white/15 bg-white/[0.03] backdrop-blur-sm overflow-hidden">
-            <div className="p-8 sm:p-12 text-center">
-              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
-                <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
-                <span className="text-[10px] font-semibold text-white uppercase tracking-widest">Россия ⇄ Китай · 中俄贸易</span>
+          <div className="relative">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+              <div>
+                <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full backdrop-blur-md">
+                  <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
+                  <span className="text-[10px] font-semibold text-white/90 uppercase tracking-widest">Россия ⇄ Китай · 中俄贸易</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight text-white max-w-2xl leading-tight">
+                  Двусторонняя торговля без границ
+                </h2>
+                <p className="text-white/60 text-sm sm:text-base mt-4 max-w-2xl leading-relaxed">
+                  Помогаем российским компаниям выходить на рынок Китая, а китайским поставщикам — продавать в России.
+                </p>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight text-white mb-3 leading-tight">
-                Двусторонняя торговля без границ
-              </h2>
-              <p className="text-white/80 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-                Помогаем российским компаниям выходить на рынок Китая, а китайским поставщикам — продавать в России.
-              </p>
+              <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-foreground font-medium px-6 py-3 rounded-2xl text-sm flex items-center gap-2 self-start lg:self-auto">
+                Получить консультацию <Icon name="ArrowRight" size={15} />
+              </button>
             </div>
 
-            <div className="relative grid md:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-5 pt-0">
-              <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center pointer-events-none">
-                <div className="absolute w-32 h-32 rounded-full bg-yellow-300/20 blur-2xl animate-spin-slow" />
-                <div className="relative w-16 h-16 rounded-full bg-white shadow-2xl border-[5px] border-white/30 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#8B0000]/10 to-[#FFB81C]/15" />
-                  <div className="relative flex flex-col items-center -space-y-0.5">
-                    <Icon name="ArrowRight" size={16} className="text-[#8B0000] animate-arrow-right" />
-                    <Icon name="ArrowLeft" size={16} className="text-[#C8102E] animate-arrow-left" />
-                  </div>
-                </div>
-              </div>
-
-              <button onClick={() => onNav("chinaMarket")} className="relative rounded-[1.4rem] border border-white/20 bg-gradient-to-br from-white/[0.12] via-white/[0.06] to-transparent backdrop-blur-md p-6 sm:p-8 text-left group hover:border-white/40 hover:bg-white/[0.10] transition-all overflow-hidden">
-                <div className="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-white/[0.08] blur-2xl group-hover:bg-white/[0.15] transition-all" />
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full backdrop-blur-md">
-                      <span className="text-base">🇷🇺</span>
-                      <Icon name="ArrowRight" size={11} className="text-yellow-300" />
-                      <span className="text-base">🇨🇳</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 relative">
+              <button onClick={() => onNav("chinaMarket")} className="group text-left">
+                <div className="relative bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-2xl p-7 sm:p-8 hover:bg-white/10 hover:border-white/20 transition-all h-full overflow-hidden">
+                  <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#C8102E]/20 blur-2xl group-hover:bg-[#C8102E]/30 transition-all" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#C8102E] to-[#8B0000] rounded-2xl flex items-center justify-center shadow-lg shadow-[#C8102E]/30">
+                        <Icon name="Plane" size={20} className="text-white" fallback="ArrowRight" />
+                      </div>
+                      <span className="text-4xl font-bold font-ibm text-white/15 leading-none select-none">01</span>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-widest text-white/60">для бизнеса РФ</div>
+                    <div className="inline-flex items-center gap-2 mb-3 px-2.5 py-1 bg-white/10 border border-white/15 rounded-full backdrop-blur-md">
+                      <span className="text-xs">🇷🇺</span>
+                      <Icon name="ArrowRight" size={10} className="text-yellow-300" />
+                      <span className="text-xs">🇨🇳</span>
+                      <span className="text-[9px] font-semibold uppercase tracking-widest text-white/70 ml-1">для бизнеса РФ</span>
+                    </div>
+                    <h3 className="font-bold text-white mb-3 text-xl sm:text-2xl font-ibm leading-tight">Выход на рынок Китая</h3>
+                    <p className="text-sm text-white/60 leading-relaxed mb-5">
+                      Регистрация WFOE, сертификация CCC, запуск на Tmall и JD.com, поиск дистрибьюторов.
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      <span className="text-[11px] font-medium text-white/90 bg-white/10 border border-white/15 px-2.5 py-1 rounded-full">Регистрация</span>
+                      <span className="text-[11px] font-medium text-white/90 bg-white/10 border border-white/15 px-2.5 py-1 rounded-full">CCC</span>
+                      <span className="text-[11px] font-medium text-white/90 bg-white/10 border border-white/15 px-2.5 py-1 rounded-full">Tmall · JD</span>
+                      <span className="text-[11px] font-medium text-white/90 bg-white/10 border border-white/15 px-2.5 py-1 rounded-full">Партнёры</span>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm text-white font-medium group-hover:gap-3 transition-all">
+                      Узнать подробнее <Icon name="ArrowRight" size={14} />
+                    </span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold font-ibm text-white leading-tight mb-3">Выход на рынок Китая</h3>
-                  <p className="text-white/75 text-sm leading-relaxed mb-5">
-                    Регистрация WFOE, сертификация CCC, запуск на Tmall и JD.com, поиск дистрибьюторов.
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    <span className="text-[11px] font-medium text-white bg-white/10 border border-white/15 backdrop-blur-md px-2.5 py-1 rounded-full">Регистрация</span>
-                    <span className="text-[11px] font-medium text-white bg-white/10 border border-white/15 backdrop-blur-md px-2.5 py-1 rounded-full">CCC</span>
-                    <span className="text-[11px] font-medium text-white bg-white/10 border border-white/15 backdrop-blur-md px-2.5 py-1 rounded-full">Tmall · JD</span>
-                    <span className="text-[11px] font-medium text-white bg-white/10 border border-white/15 backdrop-blur-md px-2.5 py-1 rounded-full">Партнёры</span>
-                  </div>
-                  <span className="inline-flex items-center gap-2 bg-white text-[#8B0000] font-semibold px-5 py-2.5 rounded-full text-sm group-hover:gap-3 transition-all shadow-lg">
-                    Узнать подробнее <Icon name="ArrowRight" size={14} />
-                  </span>
                 </div>
               </button>
 
-              <button onClick={() => onNav("chinaSuppliers")} className="relative rounded-[1.4rem] border border-white/20 bg-gradient-to-br from-yellow-300/[0.18] via-white/[0.06] to-transparent backdrop-blur-md p-6 sm:p-8 text-left group hover:border-white/40 hover:bg-white/[0.10] transition-all overflow-hidden">
-                <div className="absolute -top-12 -left-12 w-44 h-44 rounded-full bg-yellow-300/15 blur-2xl group-hover:bg-yellow-300/25 transition-all" />
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full backdrop-blur-md">
-                      <span className="text-base">🇨🇳</span>
-                      <Icon name="ArrowRight" size={11} className="text-yellow-300" />
-                      <span className="text-base">🇷🇺</span>
+              <button onClick={() => onNav("chinaSuppliers")} className="group text-left">
+                <div className="relative bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-2xl p-7 sm:p-8 hover:bg-white/10 hover:border-white/20 transition-all h-full overflow-hidden">
+                  <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-[#FFB81C]/20 blur-2xl group-hover:bg-[#FFB81C]/30 transition-all" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#FFB81C] to-[#C8102E] rounded-2xl flex items-center justify-center shadow-lg shadow-[#FFB81C]/30">
+                        <Icon name="Store" size={20} className="text-white" fallback="ArrowLeft" />
+                      </div>
+                      <span className="text-4xl font-bold font-ibm text-white/15 leading-none select-none">02</span>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-widest text-white/60">中国供应商</div>
+                    <div className="inline-flex items-center gap-2 mb-3 px-2.5 py-1 bg-white/10 border border-white/15 rounded-full backdrop-blur-md">
+                      <span className="text-xs">🇨🇳</span>
+                      <Icon name="ArrowRight" size={10} className="text-yellow-300" />
+                      <span className="text-xs">🇷🇺</span>
+                      <span className="text-[9px] font-semibold uppercase tracking-widest text-white/70 ml-1">中国供应商</span>
+                    </div>
+                    <h3 className="font-bold text-white mb-3 text-xl sm:text-2xl font-ibm leading-tight">把您的产品销往俄罗斯</h3>
+                    <p className="text-sm text-white/60 leading-relaxed mb-5">
+                      Продавайте свои товары в России — бесплатная регистрация, поддержка на китайском, расчёты в юанях.
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 mb-6">
+                      <div className="bg-white/10 border border-white/15 rounded-xl px-3 py-2.5 text-center">
+                        <div className="text-base font-bold font-ibm text-white">12K+</div>
+                        <div className="text-[9px] text-white/60 leading-tight mt-0.5">活跃买家</div>
+                      </div>
+                      <div className="bg-white/10 border border-white/15 rounded-xl px-3 py-2.5 text-center">
+                        <div className="text-base font-bold font-ibm text-white">¥ 0</div>
+                        <div className="text-[9px] text-white/60 leading-tight mt-0.5">免费注册</div>
+                      </div>
+                      <div className="bg-white/10 border border-white/15 rounded-xl px-3 py-2.5 text-center">
+                        <div className="text-base font-bold font-ibm text-white">24h</div>
+                        <div className="text-[9px] text-white/60 leading-tight mt-0.5">审核</div>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-sm text-white font-medium group-hover:gap-3 transition-all">
+                      免费注册 / Узнать <Icon name="ArrowRight" size={14} />
+                    </span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold font-ibm text-white leading-tight mb-3">把您的产品销往俄罗斯</h3>
-                  <p className="text-white/75 text-sm leading-relaxed mb-5">
-                    Продавайте свои товары в России — бесплатная регистрация, поддержка на китайском, расчёты в юанях.
-                  </p>
-                  <div className="grid grid-cols-3 gap-2 mb-6">
-                    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md px-3 py-2.5 text-center">
-                      <div className="text-base font-bold font-ibm text-white">12K+</div>
-                      <div className="text-[9px] text-white/70 leading-tight mt-0.5">活跃买家</div>
-                    </div>
-                    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md px-3 py-2.5 text-center">
-                      <div className="text-base font-bold font-ibm text-white">¥ 0</div>
-                      <div className="text-[9px] text-white/70 leading-tight mt-0.5">免费注册</div>
-                    </div>
-                    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md px-3 py-2.5 text-center">
-                      <div className="text-base font-bold font-ibm text-white">24h</div>
-                      <div className="text-[9px] text-white/70 leading-tight mt-0.5">审核</div>
-                    </div>
-                  </div>
-                  <span className="inline-flex items-center gap-2 bg-white text-[#8B0000] font-semibold px-5 py-2.5 rounded-full text-sm group-hover:gap-3 transition-all shadow-lg">
-                    免费注册 / Узнать <Icon name="ArrowRight" size={14} />
-                  </span>
                 </div>
               </button>
+            </div>
+
+            <div className="mt-10 pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              {[
+                { icon: "Globe", label: "2 направления торговли" },
+                { icon: "Languages", label: "Поддержка на китайском" },
+                { icon: "Wallet", label: "Расчёты в юанях" },
+                { icon: "ShieldCheck", label: "Верифицированные стороны" },
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Icon name={f.icon} size={15} className="text-white" fallback="Check" />
+                  </div>
+                  <span className="text-sm text-white/80 font-medium">{f.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
