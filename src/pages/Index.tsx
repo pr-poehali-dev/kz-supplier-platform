@@ -2791,6 +2791,34 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
       ctaTitle: "今天就开始把产品卖到俄罗斯",
       ctaSubtitle: "30秒注册，24小时审核，立即开始接收订单",
       ctaBtn: "免费注册",
+      formTag: "供应商注册",
+      formTitle: "提交注册申请",
+      formSubtitle: "填写以下表格，我们的中文经理将在24小时内与您联系",
+      f: {
+        company: "公司名称",
+        companyPh: "例如：深圳科技有限公司",
+        contact: "联系人姓名",
+        contactPh: "您的姓名",
+        phone: "电话 / WeChat",
+        phonePh: "+86 138 xxxx xxxx",
+        email: "邮箱",
+        emailPh: "your@email.com",
+        category: "产品类别",
+        categoryPh: "选择类别",
+        cats: ["电子产品", "服装鞋帽", "家居用品", "美容化妆品", "汽车配件", "工业设备", "食品饮料", "其他"],
+        city: "所在城市",
+        cityPh: "例如：广州、义乌、深圳",
+        moq: "最小起订量 (MOQ)",
+        moqPh: "例如：100 件",
+        about: "公司简介",
+        aboutPh: "简要介绍您的公司、主要产品和经验",
+        agree: "我同意",
+        agreeLink: "用户协议和隐私政策",
+        submit: "提交申请",
+        submitting: "提交中...",
+        success: "申请已提交！我们的经理将在24小时内与您联系。",
+        error: "提交失败，请稍后重试或直接联系我们。",
+      },
     },
     ru: {
       back: "На главную",
@@ -2841,9 +2869,60 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
       ctaTitle: "Начните продавать в Россию уже сегодня",
       ctaSubtitle: "Регистрация за 30 секунд, модерация за 24 часа, сразу принимайте заказы",
       ctaBtn: "Бесплатная регистрация",
+      formTag: "Регистрация поставщика",
+      formTitle: "Оставить заявку",
+      formSubtitle: "Заполните форму — наш менеджер со знанием китайского свяжется с вами в течение 24 часов",
+      f: {
+        company: "Название компании",
+        companyPh: "Например: Shenzhen Tech Co., Ltd.",
+        contact: "Контактное лицо",
+        contactPh: "Ваше имя",
+        phone: "Телефон / WeChat",
+        phonePh: "+86 138 xxxx xxxx",
+        email: "Email",
+        emailPh: "your@email.com",
+        category: "Категория товаров",
+        categoryPh: "Выберите категорию",
+        cats: ["Электроника", "Одежда и обувь", "Дом и быт", "Косметика", "Автозапчасти", "Промышленное оборудование", "Продукты питания", "Другое"],
+        city: "Город",
+        cityPh: "Например: Гуанчжоу, Иу, Шэньчжэнь",
+        moq: "Минимальный заказ (MOQ)",
+        moqPh: "Например: 100 шт.",
+        about: "О компании",
+        aboutPh: "Кратко опишите компанию, основные товары и опыт",
+        agree: "Я согласен с",
+        agreeLink: "пользовательским соглашением",
+        submit: "Отправить заявку",
+        submitting: "Отправка...",
+        success: "Заявка отправлена! Менеджер свяжется с вами в течение 24 часов.",
+        error: "Не удалось отправить. Попробуйте позже или свяжитесь с нами напрямую.",
+      },
     },
   };
   const c = tr[lang];
+  const [form, setForm] = useState({ company: "", contact: "", phone: "", email: "", category: "", city: "", moq: "", about: "", agree: false });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState<"ok" | "err" | null>(null);
+
+  const handleSubmit = async () => {
+    if (!form.company || !form.contact || !form.phone || !form.agree) {
+      toast.error(lang === "zh" ? "请填写必填项并同意协议" : "Заполните обязательные поля и примите соглашение");
+      return;
+    }
+    setSubmitting(true);
+    setSubmitted(null);
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      setSubmitted("ok");
+      setForm({ company: "", contact: "", phone: "", email: "", category: "", city: "", moq: "", about: "", agree: false });
+      toast.success(c.f.success);
+    } catch {
+      setSubmitted("err");
+      toast.error(c.f.error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="animate-fade-in">
@@ -2878,9 +2957,9 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
                 ))}
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-[#8B0000] font-semibold px-7 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
+                <a href="#supplier-form" className="btn-modern bg-white text-[#8B0000] font-semibold px-7 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
                   {c.ctaPrimary} <Icon name="ArrowRight" size={15} />
-                </button>
+                </a>
                 <button onClick={() => onNav("contacts")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
                   {c.ctaSecondary}
                 </button>
@@ -2975,9 +3054,9 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
                     </li>
                   ))}
                 </ul>
-                <button onClick={() => onNav("addCompany")} className={`w-full py-3 rounded-2xl text-sm font-semibold transition-all ${p.highlight ? "bg-white text-[#8B0000] hover:bg-yellow-50" : "bg-foreground text-white hover:bg-foreground/90"}`}>
+                <a href="#supplier-form" className={`block text-center w-full py-3 rounded-2xl text-sm font-semibold transition-all ${p.highlight ? "bg-white text-[#8B0000] hover:bg-yellow-50" : "bg-foreground text-white hover:bg-foreground/90"}`}>
                   {c.ctaPrimary}
-                </button>
+                </a>
               </div>
             ))}
           </div>
@@ -3001,7 +3080,95 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+      <section id="supplier-form" className="bg-secondary/30 py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{c.formTag}</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{c.formTitle}</h2>
+            <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">{c.formSubtitle}</p>
+          </div>
+          <div className="bg-white border border-border rounded-3xl p-6 sm:p-10 shadow-sm">
+            {submitted === "ok" ? (
+              <div className="text-center py-10">
+                <div className="w-16 h-16 bg-green-500/10 rounded-2xl mx-auto mb-5 flex items-center justify-center">
+                  <Icon name="CheckCircle2" size={32} className="text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold font-ibm mb-2">{lang === "zh" ? "申请已提交！" : "Заявка отправлена!"}</h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto">{c.f.success}</p>
+                <button onClick={() => setSubmitted(null)} className="mt-6 text-sm font-medium text-accent hover:underline">
+                  {lang === "zh" ? "提交另一个申请" : "Отправить ещё одну"}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.company} <span className="text-[#C8102E]">*</span></label>
+                    <input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder={c.f.companyPh}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.contact} <span className="text-[#C8102E]">*</span></label>
+                    <input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} placeholder={c.f.contactPh}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.phone} <span className="text-[#C8102E]">*</span></label>
+                    <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder={c.f.phonePh}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.email}</label>
+                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={c.f.emailPh}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.category}</label>
+                    <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all appearance-none cursor-pointer">
+                      <option value="">{c.f.categoryPh}</option>
+                      {c.f.cats.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.city}</label>
+                    <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder={c.f.cityPh}
+                      className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.moq}</label>
+                  <input value={form.moq} onChange={(e) => setForm({ ...form, moq: e.target.value })} placeholder={c.f.moqPh}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-muted-foreground">{c.f.about}</label>
+                  <textarea value={form.about} onChange={(e) => setForm({ ...form, about: e.target.value })} placeholder={c.f.aboutPh} rows={4}
+                    className="w-full bg-secondary/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:bg-white transition-all resize-none" />
+                </div>
+                <label className="flex items-start gap-2.5 cursor-pointer pt-2">
+                  <input type="checkbox" checked={form.agree} onChange={(e) => setForm({ ...form, agree: e.target.checked })}
+                    className="mt-1 w-4 h-4 rounded border-border accent-[#C8102E] cursor-pointer" />
+                  <span className="text-xs text-muted-foreground leading-relaxed">
+                    {c.f.agree} <span className="text-foreground underline">{c.f.agreeLink}</span>
+                  </span>
+                </label>
+                <button onClick={handleSubmit} disabled={submitting}
+                  className="w-full mt-3 bg-gradient-to-br from-[#8B0000] to-[#C8102E] text-white font-semibold px-7 py-4 rounded-2xl text-sm flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-[#C8102E]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                  {submitting ? c.f.submitting : c.f.submit}
+                  {!submitting && <Icon name="ArrowRight" size={15} />}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20 pt-20">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B0000] to-[#C8102E] p-10 sm:p-14 text-center">
           <div className="absolute inset-0 hero-grid opacity-30" />
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-yellow-400/30 blur-3xl" />
@@ -3009,9 +3176,9 @@ function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
           <div className="relative">
             <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight text-white mb-4">{c.ctaTitle}</h2>
             <p className="text-white/85 mb-8 max-w-lg mx-auto">{c.ctaSubtitle}</p>
-            <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-[#8B0000] font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
+            <a href="#supplier-form" className="btn-modern bg-white text-[#8B0000] font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
               {c.ctaBtn} <Icon name="ArrowRight" size={15} />
-            </button>
+            </a>
           </div>
         </div>
       </section>
