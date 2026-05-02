@@ -571,6 +571,55 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
         </div>
       </section>
 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <button onClick={() => onNav("chinaSuppliers")} className="block w-full text-left group">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B0000] via-[#C8102E] to-[#FFB81C] transition-transform group-hover:scale-[1.005]">
+            <div className="absolute inset-0 hero-grid opacity-20" />
+            <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-yellow-400/20 blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-red-500/30 blur-3xl" />
+            <div className="relative grid lg:grid-cols-[1.1fr_1fr] gap-8 items-center p-8 sm:p-12">
+              <div className="text-white">
+                <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                  <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
+                  <span className="text-[10px] font-semibold uppercase tracking-widest">中国供应商专属 · Для китайских поставщиков</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight mb-3 leading-tight">
+                  把您的产品销往俄罗斯
+                </h2>
+                <p className="text-white/90 text-base sm:text-lg mb-6 max-w-lg leading-relaxed">
+                  Продавайте свои товары в России — бесплатная регистрация, поддержка на китайском, расчёты в юанях.
+                </p>
+                <div className="grid grid-cols-3 gap-4 mb-7 max-w-md">
+                  <div>
+                    <div className="text-2xl font-bold font-ibm">12 000+</div>
+                    <div className="text-[10px] text-white/70 leading-tight mt-0.5">活跃买家<br />Покупателей</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold font-ibm">¥ 0</div>
+                    <div className="text-[10px] text-white/70 leading-tight mt-0.5">免费注册<br />Регистрация</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold font-ibm">24h</div>
+                    <div className="text-[10px] text-white/70 leading-tight mt-0.5">审核<br />Модерация</div>
+                  </div>
+                </div>
+                <span className="btn-modern bg-white text-[#8B0000] font-semibold px-7 py-3.5 rounded-2xl text-sm inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                  免费注册 / Узнать подробнее <Icon name="ArrowRight" size={15} />
+                </span>
+              </div>
+              <div className="relative hidden lg:block">
+                <div className="absolute inset-0 bg-gradient-to-tr from-yellow-300/20 to-transparent rounded-2xl blur-2xl" />
+                <img
+                  src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/5ece66b3-3c87-41e3-a866-a6f414315c8e.jpg"
+                  alt="把您的产品销往俄罗斯"
+                  className="relative w-full h-full max-h-[380px] object-cover rounded-2xl shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </button>
+      </section>
+
       {homeProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
           <div className="flex items-end justify-between mb-10">
