@@ -1466,7 +1466,7 @@ function ServicesPage({ t, onNav, onOpenService }: { t: Translation; onNav: (p: 
   );
 }
 
-function ContactsPage({ t }: { t: Translation }) {
+function ContactsPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }) {
   const contactIcons = ["Phone", "Mail", "MessageSquare", "MapPin"];
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 animate-fade-in">
@@ -1526,17 +1526,28 @@ function ContactsPage({ t }: { t: Translation }) {
             </div>
           ))}
 
-          <div className="gradient-bg text-white rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute inset-0 hero-grid opacity-50" />
-            <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-accent/20 blur-3xl" />
+          <div className="bg-gradient-to-br from-[#8B0000] via-[#C8102E] to-[#FFB81C] text-white rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute inset-0 hero-grid opacity-30" />
+            <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-yellow-300/20 blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-red-500/30 blur-3xl" />
             <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="HelpCircle" size={18} className="text-blue-300" />
-                <span className="font-semibold text-sm">{t.contacts.kbTitle}</span>
+              <div className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <span className="text-[10px] font-semibold uppercase tracking-widest">中国供应商</span>
               </div>
-              <p className="text-xs text-blue-100/80 mb-4 leading-relaxed">{t.contacts.kbText}</p>
-              <button className="text-xs text-white font-medium flex items-center gap-1.5 hover:gap-2.5 transition-all bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full">
-                {t.contacts.kbLink} <Icon name="ArrowRight" size={12} />
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="Store" size={18} className="text-yellow-300" />
+                <span className="font-semibold text-sm">Информация для китайских поставщиков</span>
+              </div>
+              <p className="text-xs text-white/85 mb-4 leading-relaxed">
+                Размещайте товары на платформе бесплатно и получайте заявки от российских импортёров. Поддержка на китайском, оплата в юанях, документы по стандартам РФ.
+              </p>
+              <ul className="space-y-1.5 mb-4 text-xs text-white/90">
+                <li className="flex items-center gap-2"><Icon name="Check" size={12} className="text-yellow-300 flex-shrink-0" /> Регистрация за 24 часа</li>
+                <li className="flex items-center gap-2"><Icon name="Check" size={12} className="text-yellow-300 flex-shrink-0" /> Менеджер со знанием китайского</li>
+                <li className="flex items-center gap-2"><Icon name="Check" size={12} className="text-yellow-300 flex-shrink-0" /> Помощь с документами и логистикой</li>
+              </ul>
+              <button onClick={() => onNav("addCompany")} className="text-xs text-[#8B0000] font-semibold flex items-center gap-1.5 hover:gap-2.5 transition-all bg-white hover:bg-yellow-50 px-4 py-2 rounded-full">
+                Стать поставщиком <Icon name="ArrowRight" size={12} />
               </button>
             </div>
           </div>
@@ -2794,7 +2805,7 @@ export default function Index() {
           )}
           {page === "blog" && <BlogPage t={t} onOpenPost={openPost} />}
           {page === "blogPost" && <BlogPostPage t={t} postIndex={activePostIndex} onBack={() => navigate("blog")} onOpenPost={openPost} />}
-          {page === "contacts" && <ContactsPage t={t} />}
+          {page === "contacts" && <ContactsPage t={t} onNav={navigate} />}
         {page === "addCompany" && <AddCompanyPage t={t} onNav={navigate} />}
           {page === "account" && user && <AccountPage user={user} onLogout={() => { setUser(null); navigate("home"); }} />}
           {page === "account" && !user && <div className="max-w-xl mx-auto p-12 text-center"><p className="text-muted-foreground mb-4">Войди, чтобы открыть кабинет</p><button onClick={() => setAuthOpen(true)} className="btn-modern bg-foreground text-background px-6 py-3 rounded-xl text-sm font-medium">Войти</button></div>}
