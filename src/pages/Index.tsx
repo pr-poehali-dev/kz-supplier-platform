@@ -221,12 +221,12 @@ function SupplierCard({ idx, t, onView }: { idx: number; t: Translation; onView:
   );
 }
 
-function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Translation; onOpenService: (i: number) => void }) {
+function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page) => void; t: Translation; onOpenService: (i: number) => void; onOpenProduct: (id: number) => void }) {
   const [homeProducts, setHomeProducts] = useState<AdminProduct[]>([]);
   useEffect(() => {
     fetch(PRODUCTS_API)
       .then((r) => r.json())
-      .then((d) => setHomeProducts((d.items || []).slice(0, 4)))
+      .then((d) => setHomeProducts((d.items || []).slice(0, 6)))
       .catch(() => setHomeProducts([]));
   }, []);
   const stepIcons = ["Search", "ShieldCheck", "MessageSquare", "Handshake"];
@@ -526,9 +526,9 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
               {t.products.allBtn} <Icon name="ArrowRight" size={14} />
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {homeProducts.map((p) => (
-              <ProductCard key={p.id} p={p} t={t} />
+              <ProductCard key={p.id} p={p} t={t} onOpen={onOpenProduct} />
             ))}
           </div>
         </section>
@@ -1155,30 +1155,28 @@ function ProductCard({ p, t, onOpen, canManage, onEdit, onDelete }: { p: AdminPr
         </div>
       )}
       <button onClick={() => onOpen(p.id)} className="text-left w-full">
-        <div className="h-44 bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
+        <div className="aspect-square bg-gradient-to-br from-secondary to-secondary/40 flex items-center justify-center overflow-hidden relative">
           {p.image_url ? (
             <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
           ) : (
-            <Icon name="Image" size={28} className="text-muted-foreground/40" />
+            <Icon name="Image" size={22} className="text-muted-foreground/40" />
           )}
-          <div className="absolute top-3 left-3">
-            <span className="text-xs font-medium text-foreground bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm">{p.category}</span>
+          <div className="absolute top-1.5 left-1.5">
+            <span className="text-[10px] font-medium text-foreground bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-full shadow-sm">{p.category}</span>
           </div>
           {!p.in_stock && !canManage && (
-            <div className="absolute top-3 right-3">
-              <span className="text-xs font-medium text-white bg-foreground/80 backdrop-blur-md px-2.5 py-1 rounded-full">{t.products.outOfStock}</span>
+            <div className="absolute top-1.5 right-1.5">
+              <span className="text-[10px] font-medium text-white bg-foreground/80 backdrop-blur-md px-2 py-0.5 rounded-full">{t.products.outOfStock}</span>
             </div>
           )}
         </div>
-        <div className="p-5">
-          <h3 className="font-semibold text-sm leading-snug mb-1 line-clamp-2">{p.title}</h3>
-          <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{p.description}</p>
-          <div className="flex items-end justify-between pt-4 border-t border-border">
+        <div className="p-2.5">
+          <h3 className="font-semibold text-xs leading-snug mb-1 line-clamp-2 min-h-[2.2em]">{p.title}</h3>
+          <div className="flex items-end justify-between pt-2 border-t border-border">
             <div>
-              <div className="font-bold text-base">{p.price.toLocaleString("ru")} <span className="text-xs text-muted-foreground font-normal">{p.currency}</span></div>
-              <div className="text-xs text-muted-foreground mt-0.5">{t.products.from} {p.moq} {t.products.pcs}</div>
+              <div className="font-bold text-sm leading-tight">{p.price.toLocaleString("ru")} <span className="text-[10px] text-muted-foreground font-normal">{p.currency}</span></div>
+              <div className="text-[10px] text-muted-foreground">{t.products.from} {p.moq} {t.products.pcs}</div>
             </div>
-            {p.supplier && <span className="text-xs text-muted-foreground truncate ml-2">{p.supplier}</span>}
           </div>
         </div>
       </button>
@@ -1284,7 +1282,7 @@ function ProductsPage({ t, user, onOpen }: { t: Translation; user: User | null; 
           <p className="text-sm text-muted-foreground">{t.products.empty}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {filtered.map((p) => (
             <ProductCard key={p.id} p={p} t={t} onOpen={onOpen} canManage={canManage} onEdit={setEditing} onDelete={handleDelete} />
           ))}
@@ -2038,7 +2036,7 @@ export default function Index() {
       <Navbar current={page} onNav={navigate} lang={lang} setLang={setLang} t={t} user={user} onLogin={requireAuth} />
       <main className="flex-1">
         <div key={`${page}-${activePostIndex}`} className="animate-page">
-          {page === "home" && <HomePage onNav={navigate} t={t} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
+          {page === "home" && <HomePage onNav={navigate} t={t} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} onOpenProduct={(id) => { setActiveProductId(id); navigate("product"); }} />}
           {page === "catalog" && <CatalogPage onViewReal={(uid) => { setActiveRealSupplierId(uid); navigate("realSupplier"); }} t={t} user={user} />}
           {page === "supplier" && <SupplierProfilePage onBack={() => navigate("catalog")} onMessage={() => navigate("messages")} t={t} />}
           {page === "realSupplier" && activeRealSupplierId !== null && (
