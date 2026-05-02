@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 import { translations, type Lang, type Translation } from "@/lib/i18n";
+import { SERVICE_LIST } from "@/lib/services";
 import AuthModal from "@/components/AuthModal";
 import AccountPage from "@/components/AccountPage";
 import ProductPage from "@/components/ProductPage";
@@ -83,6 +85,7 @@ function Navbar({ current, onNav, lang, setLang, t, user, onLogin }: { current: 
     { label: t.nav.home, page: "home" },
     { label: t.nav.catalog, page: "catalog" },
     { label: t.nav.products, page: "products" },
+    { label: t.nav.services, page: "services" },
     { label: t.nav.blog, page: "blog" },
     { label: t.nav.contacts, page: "contacts" },
   ];
@@ -377,6 +380,36 @@ function HomePage({ onNav, t, onOpenService }: { onNav: (p: Page) => void; t: Tr
               {t.search.find}
             </button>
           </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16">
+        <div className="flex items-end justify-between mb-6 flex-wrap gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Что мы делаем</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-ibm tracking-tight">Услуги в Китае</h2>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-md">Полный цикл — от поиска товара до доставки до вашей двери. Выбирайте нужное.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SERVICE_LIST.map((s) => (
+            <Link
+              key={s.slug}
+              to={`/services/${s.slug}`}
+              className="group bg-[#E3EEFB] hover:bg-[#D7E6F8] rounded-3xl p-6 pr-3 flex items-center gap-3 transition-all hover:shadow-lg hover:shadow-blue-200/60 hover:-translate-y-0.5"
+            >
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-lg sm:text-xl font-ibm text-foreground mb-1.5 truncate">{s.title}</h3>
+                <p className="text-xs sm:text-sm text-foreground/60 leading-snug line-clamp-2">{s.short}</p>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Подробнее <Icon name="ArrowRight" size={12} />
+                </span>
+              </div>
+              <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-2xl overflow-hidden bg-white/40">
+                <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
