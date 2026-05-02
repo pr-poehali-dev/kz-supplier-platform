@@ -27,7 +27,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany";
+type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket";
 
 const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
@@ -550,7 +550,7 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <button onClick={() => onNav("services")} className="btn-modern bg-white text-[#8B0000] font-semibold px-6 py-3 rounded-2xl text-sm flex items-center justify-center gap-2">
+                <button onClick={() => onNav("chinaMarket")} className="btn-modern bg-white text-[#8B0000] font-semibold px-6 py-3 rounded-2xl text-sm flex items-center justify-center gap-2">
                   Узнать подробнее <Icon name="ArrowRight" size={15} />
                 </button>
                 <button onClick={() => onNav("addCompany")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-6 py-3 rounded-2xl text-sm transition-all backdrop-blur-md">
@@ -2053,6 +2053,193 @@ function RealSupplierPage({ userId, onBack, onOpenProduct, user }: { userId: num
   );
 }
 
+function ChinaMarketPage({ onNav }: { onNav: (p: Page) => void }) {
+  const stages = [
+    { icon: "Search", title: "Анализ рынка", desc: "Исследуем нишу, конкурентов, спрос и ценообразование в провинциях Китая" },
+    { icon: "FileText", title: "Юридическая база", desc: "Регистрация WFOE/JV, открытие счёта в банке, налоговая постановка" },
+    { icon: "ShieldCheck", title: "Сертификация", desc: "CCC, GB-стандарты, регистрация торговой марки и патентов в CNIPA" },
+    { icon: "Truck", title: "Логистика", desc: "Складирование на бондовых складах, фулфилмент, последняя миля" },
+    { icon: "ShoppingBag", title: "Маркетплейсы", desc: "Запуск магазинов на Tmall Global, JD Worldwide, Pinduoduo, Douyin" },
+    { icon: "Megaphone", title: "Маркетинг", desc: "KOL/KOC-инфлюенсеры, продвижение в WeChat, Weibo, Xiaohongshu" },
+  ];
+  const packages = [
+    {
+      name: "Старт",
+      price: "490 000 ₽",
+      desc: "Базовый аудит и быстрый запуск",
+      features: ["Анализ ниши и конкурентов", "Регистрация торговой марки", "Открытие магазина на 1 маркетплейсе", "Базовая локализация контента", "Сопровождение 3 месяца"],
+      highlight: false,
+    },
+    {
+      name: "Бизнес",
+      price: "1 290 000 ₽",
+      desc: "Полноценный выход и масштабирование",
+      features: ["Всё из тарифа Старт", "Регистрация WFOE-компании", "Сертификация CCC и GB", "Магазины на 3 маркетплейсах", "KOL-маркетинг и контент-план", "Сопровождение 6 месяцев"],
+      highlight: true,
+    },
+    {
+      name: "Премиум",
+      price: "от 2 900 000 ₽",
+      desc: "Под ключ с дистрибуцией",
+      features: ["Всё из тарифа Бизнес", "Поиск дистрибьюторов офлайн", "Личный менеджер в Китае", "Юр. сопровождение сделок", "PR-кампании и медиа", "Сопровождение 12 месяцев"],
+      highlight: false,
+    },
+  ];
+  const faqs = [
+    { q: "Сколько времени занимает выход на рынок?", a: "Регистрация компании — 4–8 недель, сертификация — от 8 недель, запуск магазина на маркетплейсе — 2–4 недели. Полный цикл «Старт» обычно укладывается в 2–3 месяца." },
+    { q: "Нужно ли открывать юрлицо в Китае?", a: "Не всегда. Для маркетплейсов Tmall Global и JD Worldwide достаточно российского юрлица. Для офлайн-дистрибуции и работы с госзакупками — обязательно WFOE или JV." },
+    { q: "Какие документы потребуются?", a: "Свидетельство о регистрации компании, ИНН, выписка ЕГРЮЛ, паспорта учредителей, описание продукции, фото и сертификаты качества (если есть)." },
+    { q: "Берёте ли вы процент от продаж?", a: "Нет, мы работаем по фиксированной стоимости пакета. Возможна модель revenue share — обсуждаем индивидуально." },
+  ];
+
+  return (
+    <div className="animate-fade-in">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#8B0000] via-[#C8102E] to-[#FFB81C]">
+        <div className="absolute inset-0 hero-grid opacity-20" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-yellow-400/20 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-red-500/30 blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+          <button onClick={() => onNav("home")} className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-8 transition-colors">
+            <Icon name="ArrowLeft" size={14} /> На главную
+          </button>
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="text-white">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest">Готовое решение под ключ</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-ibm tracking-tight mb-5 leading-tight">
+                Выход на рынок Китая
+              </h1>
+              <p className="text-white/90 text-base sm:text-lg mb-8 max-w-xl leading-relaxed">
+                Поможем российскому бизнесу запустить продажи в Китае: от регистрации компании до выхода на маркетплейсы и поиска дистрибьюторов.
+              </p>
+              <div className="grid grid-cols-3 gap-4 mb-8 max-w-md">
+                <div>
+                  <div className="text-3xl font-bold font-ibm">120+</div>
+                  <div className="text-xs text-white/70">проектов</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold font-ibm">8 лет</div>
+                  <div className="text-xs text-white/70">в Китае</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold font-ibm">15+</div>
+                  <div className="text-xs text-white/70">отраслей</div>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-[#8B0000] font-semibold px-7 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
+                  Получить консультацию <Icon name="ArrowRight" size={15} />
+                </button>
+                <button onClick={() => onNav("contacts")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
+                  Связаться с нами
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-yellow-300/30 to-transparent rounded-3xl blur-3xl" />
+              <img
+                src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/3b0587d5-08ab-490e-bf97-b38db20647c1.jpg"
+                alt="Выход на рынок Китая"
+                className="relative w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Этапы работы</p>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">6 шагов к продажам в Китае</h2>
+          <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">Каждый этап ведём под ключ: вы получаете результат, а не задачи</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {stages.map((s, i) => (
+            <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6 relative overflow-hidden group">
+              <div className="absolute top-4 right-4 text-5xl font-bold font-ibm text-secondary/60 leading-none select-none">0{i + 1}</div>
+              <div className="w-12 h-12 bg-gradient-to-br from-[#C8102E]/10 to-[#FFB81C]/10 rounded-xl flex items-center justify-center mb-4 group-hover:from-[#C8102E]/20 group-hover:to-[#FFB81C]/20 transition-all">
+                <Icon name={s.icon} size={22} className="text-[#C8102E]" fallback="Star" />
+              </div>
+              <h3 className="font-semibold text-base mb-2">{s.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Тарифы</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Выберите подходящий пакет</h2>
+            <p className="text-muted-foreground mt-3">Прозрачные цены без скрытых платежей</p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {packages.map((p, i) => (
+              <div key={i} className={`relative rounded-3xl p-7 ${p.highlight ? "bg-gradient-to-br from-[#8B0000] to-[#C8102E] text-white shadow-2xl scale-[1.02]" : "bg-white border border-border"}`}>
+                {p.highlight && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                    Популярный
+                  </div>
+                )}
+                <h3 className="text-xl font-bold font-ibm mb-1">{p.name}</h3>
+                <p className={`text-sm mb-5 ${p.highlight ? "text-white/80" : "text-muted-foreground"}`}>{p.desc}</p>
+                <div className="text-3xl font-bold font-ibm mb-6">{p.price}</div>
+                <ul className="space-y-3 mb-7">
+                  {p.features.map((f, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm">
+                      <Icon name="Check" size={16} className={`flex-shrink-0 mt-0.5 ${p.highlight ? "text-yellow-300" : "text-accent"}`} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => onNav("addCompany")} className={`w-full py-3 rounded-2xl text-sm font-semibold transition-all ${p.highlight ? "bg-white text-[#8B0000] hover:bg-yellow-50" : "bg-foreground text-white hover:bg-foreground/90"}`}>
+                  Оставить заявку
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Вопросы и ответы</p>
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">Часто спрашивают</h2>
+        </div>
+        <div className="space-y-3">
+          {faqs.map((f, i) => (
+            <details key={i} className="group bg-white border border-border rounded-2xl p-5 cursor-pointer">
+              <summary className="flex items-center justify-between font-semibold text-sm list-none">
+                {f.q}
+                <Icon name="ChevronDown" size={16} className="text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-foreground to-foreground/90 p-10 sm:p-14 text-center">
+          <div className="absolute inset-0 hero-grid opacity-30" />
+          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#C8102E]/30 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#FFB81C]/20 blur-3xl" />
+          <div className="relative">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight text-white mb-4">Готовы начать?</h2>
+            <p className="text-white/70 mb-8 max-w-lg mx-auto">Оставьте заявку — за 1 рабочий день подготовим персональное предложение и расчёт</p>
+            <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-foreground font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
+              Получить консультацию <Icon name="ArrowRight" size={15} />
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const lang: Lang = "ru";
@@ -2110,6 +2297,7 @@ export default function Index() {
             />
           )}
           {page === "services" && <ServicesPage t={t} onNav={navigate} onOpenService={(i) => { setActiveServiceIndex(i); navigate("service"); }} />}
+          {page === "chinaMarket" && <ChinaMarketPage onNav={navigate} />}
           {page === "service" && activeServiceIndex !== null && (
             <ServicePage serviceIndex={activeServiceIndex} t={t} onBack={() => navigate("services")} />
           )}
