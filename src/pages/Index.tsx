@@ -535,6 +535,16 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
           </div>
 
           <div className="relative grid md:grid-cols-2 gap-px bg-white/10 mt-2">
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 items-center justify-center pointer-events-none">
+              <div className="absolute w-32 h-32 rounded-full bg-white/10 blur-2xl animate-spin-slow" />
+              <div className="relative w-20 h-20 rounded-full bg-white shadow-2xl border-4 border-white/40 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#8B0000]/10 to-[#FFB81C]/10" />
+                <div className="relative flex flex-col items-center gap-0.5">
+                  <Icon name="ArrowRight" size={18} className="text-[#8B0000] animate-arrow-right" />
+                  <Icon name="ArrowLeft" size={18} className="text-[#C8102E] animate-arrow-left" />
+                </div>
+              </div>
+            </div>
             <button onClick={() => onNav("chinaMarket")} className="bg-gradient-to-br from-[#8B0000]/40 to-transparent backdrop-blur-sm p-7 sm:p-10 text-left group hover:bg-white/5 transition-all">
               <div className="flex items-start gap-4 mb-5">
                 <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/20 backdrop-blur-md flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">

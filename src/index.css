@@ -167,6 +167,44 @@
     -webkit-backdrop-filter: blur(20px);
   }
 
+  .animate-spin-slow {
+    animation: spinSlow 8s linear infinite;
+  }
+  @keyframes spinSlow {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-arrow-right {
+    animation: arrowRight 1.6s ease-in-out infinite;
+  }
+  @keyframes arrowRight {
+    0%,
+    100% {
+      transform: translateX(-3px);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateX(3px);
+      opacity: 1;
+    }
+  }
+  .animate-arrow-left {
+    animation: arrowLeft 1.6s ease-in-out infinite;
+  }
+  @keyframes arrowLeft {
+    0%,
+    100% {
+      transform: translateX(3px);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateX(-3px);
+      opacity: 1;
+    }
+  }
+
   .gradient-text {
     background: linear-gradient(135deg, hsl(220 65% 18%), hsl(210 100% 45%));
     -webkit-background-clip: text;
