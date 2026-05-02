@@ -548,9 +548,7 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
                   <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
                   <span className="text-[10px] font-semibold text-white/90 uppercase tracking-widest">Россия ⇄ Китай · 中俄贸易</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight text-white max-w-2xl leading-tight">
-                  Двусторонняя торговля без границ
-                </h2>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-ibm tracking-tight text-white max-w-2xl leading-tight">Торговля без границ</h2>
                 <p className="text-white/60 text-sm sm:text-base mt-4 max-w-2xl leading-relaxed">
                   Помогаем российским компаниям выходить на рынок Китая, а китайским поставщикам — продавать в России.
                 </p>
