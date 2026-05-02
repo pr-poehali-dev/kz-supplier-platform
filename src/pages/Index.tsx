@@ -27,7 +27,7 @@ type AdminProduct = {
 
 const HERO_IMAGE = "https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/84c5569f-5d72-4607-9942-6fd7f5ed1dfd.jpg";
 
-type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket" | "education" | "course";
+type Page = "home" | "catalog" | "supplier" | "realSupplier" | "blog" | "blogPost" | "contacts" | "messages" | "services" | "products" | "account" | "product" | "service" | "addCompany" | "chinaMarket" | "education" | "course" | "chinaSuppliers";
 
 const COMPANY_API = "https://functions.poehali.dev/8c5a112a-69ee-45e1-bab8-ce9a83537caa";
 
@@ -1546,7 +1546,7 @@ function ContactsPage({ t, onNav }: { t: Translation; onNav: (p: Page) => void }
                 <li className="flex items-center gap-2"><Icon name="Check" size={12} className="text-yellow-300 flex-shrink-0" /> Менеджер со знанием китайского</li>
                 <li className="flex items-center gap-2"><Icon name="Check" size={12} className="text-yellow-300 flex-shrink-0" /> Помощь с документами и логистикой</li>
               </ul>
-              <button onClick={() => onNav("addCompany")} className="text-xs text-[#8B0000] font-semibold flex items-center gap-1.5 hover:gap-2.5 transition-all bg-white hover:bg-yellow-50 px-4 py-2 rounded-full">
+              <button onClick={() => onNav("chinaSuppliers")} className="text-xs text-[#8B0000] font-semibold flex items-center gap-1.5 hover:gap-2.5 transition-all bg-white hover:bg-yellow-50 px-4 py-2 rounded-full">
                 Стать поставщиком <Icon name="ArrowRight" size={12} />
               </button>
             </div>
@@ -2739,6 +2739,286 @@ function CoursePage({ slug, onNav, onBack }: { slug: string; onNav: (p: Page) =>
   );
 }
 
+function ChinaSuppliersPage({ onNav }: { onNav: (p: Page) => void }) {
+  const [lang, setLang] = useState<"ru" | "zh">("zh");
+  const tr = {
+    zh: {
+      back: "返回首页",
+      tag: "中国供应商专属",
+      title: "把您的产品销往俄罗斯",
+      subtitle: "免费注册成为平台供应商，直接接收来自俄罗斯进口商和经销商的订单。",
+      stats: [{ n: "12 000+", l: "活跃买家" }, { n: "₽ 8 亿", l: "月度交易额" }, { n: "24 小时", l: "审核时间" }],
+      ctaPrimary: "免费注册",
+      ctaSecondary: "联系经理",
+      whyTitle: "为什么选择我们",
+      why: [
+        { icon: "Globe", title: "俄罗斯市场入口", desc: "无需开设公司，直接接触1.4亿俄罗斯消费者市场" },
+        { icon: "MessageCircle", title: "中文客服支持", desc: "我们的经理懂中文，全程帮您处理订单和文件" },
+        { icon: "Wallet", title: "人民币结算", desc: "支持人民币、美元和卢布付款，安全便捷" },
+        { icon: "ShieldCheck", title: "买家验证", desc: "所有俄罗斯买家经过实名认证，避免欺诈风险" },
+        { icon: "Truck", title: "物流支持", desc: "提供全程物流方案：海运、铁路、空运" },
+        { icon: "FileText", title: "文件协助", desc: "帮助准备俄罗斯海关所需的全套文件" },
+      ],
+      stepsTitle: "如何开始合作",
+      steps: [
+        { title: "提交申请", desc: "填写公司信息和产品类别" },
+        { title: "审核认证", desc: "我们将在24小时内完成审核" },
+        { title: "上传产品", desc: "添加产品照片、价格和最小订量" },
+        { title: "接收订单", desc: "直接与俄罗斯买家沟通并发货" },
+      ],
+      reqTitle: "对供应商的要求",
+      reqs: [
+        "在中国合法注册的公司或个体工商户",
+        "拥有出口经验或愿意学习",
+        "至少3张产品高清照片",
+        "营业执照副本（中文）",
+        "最小起订量（MOQ）说明",
+      ],
+      tariffsTitle: "价格方案",
+      tariffs: [
+        { name: "免费", price: "¥ 0", desc: "试用期30天", features: ["上架10个产品", "基础统计", "标准客服支持"], highlight: false },
+        { name: "标准", price: "¥ 2 800/月", desc: "适合中小企业", features: ["上架100个产品", "推广位置", "专属经理", "每周分析报告"], highlight: true },
+        { name: "金牌供应商", price: "¥ 8 800/月", desc: "顶级合作伙伴", features: ["无限产品", "首页推荐", "优先订单匹配", "翻译服务", "营销支持"], highlight: false },
+      ],
+      faqTitle: "常见问题",
+      faqs: [
+        { q: "我需要在俄罗斯有公司吗？", a: "不需要。您只需在中国合法注册即可在我们平台销售产品。我们处理所有跨境业务。" },
+        { q: "买家如何付款？", a: "买家通过平台预付款，资金托管直到货物送达。您可以选择人民币、美元或卢布结算。" },
+        { q: "运费由谁承担？", a: "通常由买家承担。您可以选择EXW、FOB或CIF条款，根据条款决定责任范围。" },
+        { q: "支持哪些产品类别？", a: "电子产品、服装、家居用品、美容化妆品、汽车配件、工业设备等。违禁品除外。" },
+        { q: "如何处理退货？", a: "退货政策由您和买家在订单条款中约定。平台提供争议调解服务。" },
+      ],
+      ctaTitle: "今天就开始把产品卖到俄罗斯",
+      ctaSubtitle: "30秒注册，24小时审核，立即开始接收订单",
+      ctaBtn: "免费注册",
+    },
+    ru: {
+      back: "На главную",
+      tag: "Для китайских поставщиков",
+      title: "Продавайте свои товары в России",
+      subtitle: "Бесплатная регистрация на платформе. Получайте заказы напрямую от российских импортёров и дистрибьюторов.",
+      stats: [{ n: "12 000+", l: "активных покупателей" }, { n: "₽ 800 млн", l: "оборот в месяц" }, { n: "24 часа", l: "модерация" }],
+      ctaPrimary: "Бесплатная регистрация",
+      ctaSecondary: "Связаться с менеджером",
+      whyTitle: "Почему выбирают нас",
+      why: [
+        { icon: "Globe", title: "Доступ к рынку РФ", desc: "Без регистрации компании в России — выход к 140 млн потребителей" },
+        { icon: "MessageCircle", title: "Поддержка на китайском", desc: "Наши менеджеры говорят по-китайски и помогут с заказами и документами" },
+        { icon: "Wallet", title: "Расчёты в юанях", desc: "Принимаем оплату в юанях, долларах и рублях — безопасно и удобно" },
+        { icon: "ShieldCheck", title: "Верификация покупателей", desc: "Все российские покупатели проходят проверку, чтобы избежать мошенничества" },
+        { icon: "Truck", title: "Логистика", desc: "Полный спектр доставки: море, ЖД, авиа" },
+        { icon: "FileText", title: "Помощь с документами", desc: "Подготовим полный пакет документов для российской таможни" },
+      ],
+      stepsTitle: "Как начать сотрудничество",
+      steps: [
+        { title: "Заявка", desc: "Заполните данные компании и категории товаров" },
+        { title: "Проверка", desc: "Модерация в течение 24 часов" },
+        { title: "Загрузка товаров", desc: "Добавьте фото, цены и MOQ" },
+        { title: "Приём заказов", desc: "Общайтесь напрямую с покупателями и отгружайте" },
+      ],
+      reqTitle: "Требования к поставщикам",
+      reqs: [
+        "Юридически зарегистрированная компания или ИП в Китае",
+        "Опыт экспорта или готовность учиться",
+        "Минимум 3 качественных фото товара",
+        "Копия лицензии на ведение бизнеса (на китайском)",
+        "Информация о минимальном заказе (MOQ)",
+      ],
+      tariffsTitle: "Тарифные планы",
+      tariffs: [
+        { name: "Бесплатно", price: "¥ 0", desc: "Пробный период 30 дней", features: ["До 10 товаров", "Базовая статистика", "Стандартная поддержка"], highlight: false },
+        { name: "Стандарт", price: "¥ 2 800/мес", desc: "Для малого и среднего бизнеса", features: ["До 100 товаров", "Промо-размещение", "Персональный менеджер", "Еженедельные отчёты"], highlight: true },
+        { name: "Золотой поставщик", price: "¥ 8 800/мес", desc: "Топовое партнёрство", features: ["Безлимит товаров", "Витрина на главной", "Приоритет в матчинге", "Услуги перевода", "Маркетинговая поддержка"], highlight: false },
+      ],
+      faqTitle: "Часто задаваемые вопросы",
+      faqs: [
+        { q: "Нужна ли компания в России?", a: "Нет. Достаточно регистрации в Китае. Мы берём на себя все трансграничные операции." },
+        { q: "Как покупатели оплачивают заказы?", a: "Через платформу с эскроу — деньги поступают вам после доставки. Расчёт в юанях, долларах или рублях." },
+        { q: "Кто оплачивает доставку?", a: "Обычно покупатель. Вы выбираете условия EXW, FOB или CIF, от которых зависит распределение обязанностей." },
+        { q: "Какие категории товаров принимаются?", a: "Электроника, одежда, дом, косметика, автозапчасти, промышленное оборудование. Кроме запрещённых товаров." },
+        { q: "Как обрабатываются возвраты?", a: "Условия возврата вы согласуете с покупателем в договоре заказа. Платформа выступает медиатором при спорах." },
+      ],
+      ctaTitle: "Начните продавать в Россию уже сегодня",
+      ctaSubtitle: "Регистрация за 30 секунд, модерация за 24 часа, сразу принимайте заказы",
+      ctaBtn: "Бесплатная регистрация",
+    },
+  };
+  const c = tr[lang];
+
+  return (
+    <div className="animate-fade-in">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#8B0000] via-[#C8102E] to-[#FFB81C]">
+        <div className="absolute inset-0 hero-grid opacity-20" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-yellow-400/20 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-red-500/30 blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+          <div className="flex items-center justify-between mb-8">
+            <button onClick={() => onNav("home")} className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm transition-colors">
+              <Icon name="ArrowLeft" size={14} /> {c.back}
+            </button>
+            <div className="flex items-center gap-1 bg-white/10 border border-white/25 backdrop-blur-md rounded-full p-1">
+              <button onClick={() => setLang("zh")} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${lang === "zh" ? "bg-white text-[#8B0000]" : "text-white/80"}`}>中文</button>
+              <button onClick={() => setLang("ru")} className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${lang === "ru" ? "bg-white text-[#8B0000]" : "text-white/80"}`}>RU</button>
+            </div>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="text-white">
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 bg-white/15 border border-white/25 rounded-full backdrop-blur-md">
+                <span className="w-1.5 h-1.5 bg-yellow-300 rounded-full pulse-glow" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest">{c.tag}</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-ibm tracking-tight mb-5 leading-tight">{c.title}</h1>
+              <p className="text-white/90 text-base sm:text-lg mb-8 max-w-xl leading-relaxed">{c.subtitle}</p>
+              <div className="grid grid-cols-3 gap-4 mb-8 max-w-md">
+                {c.stats.map((s, i) => (
+                  <div key={i}>
+                    <div className="text-2xl sm:text-3xl font-bold font-ibm">{s.n}</div>
+                    <div className="text-xs text-white/70 mt-1">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-[#8B0000] font-semibold px-7 py-3.5 rounded-2xl text-sm flex items-center justify-center gap-2">
+                  {c.ctaPrimary} <Icon name="ArrowRight" size={15} />
+                </button>
+                <button onClick={() => onNav("contacts")} className="bg-white/10 border border-white/25 hover:bg-white/20 text-white font-medium px-7 py-3.5 rounded-2xl text-sm transition-all backdrop-blur-md">
+                  {c.ctaSecondary}
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-yellow-300/30 to-transparent rounded-3xl blur-3xl" />
+              <img src="https://cdn.poehali.dev/projects/8f6e0248-9eef-44c9-b7df-4a2c56853a70/files/e6feec1c-57c6-4f11-83e3-338fb05b81f1.jpg" alt={c.title} className="relative w-full rounded-3xl shadow-2xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{c.whyTitle}</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {c.why.map((w, i) => (
+            <div key={i} className="card-hover bg-white border border-border rounded-2xl p-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#C8102E]/10 to-[#FFB81C]/10 rounded-xl flex items-center justify-center mb-4">
+                <Icon name={w.icon} size={22} className="text-[#C8102E]" fallback="Star" />
+              </div>
+              <h3 className="font-semibold text-base mb-2">{w.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{w.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{c.stepsTitle}</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {c.steps.map((s, i) => (
+              <div key={i} className="bg-white border border-border rounded-2xl p-6 relative">
+                <div className="absolute top-4 right-4 text-5xl font-bold font-ibm text-secondary leading-none select-none">0{i + 1}</div>
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#C8102E] to-[#FFB81C] text-white flex items-center justify-center mb-4">
+                  <Icon name="ChevronsRight" size={20} />
+                </div>
+                <h3 className="font-semibold text-base mb-2 relative">{s.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-20">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">Requirements</p>
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight mb-5">{c.reqTitle}</h2>
+            <p className="text-muted-foreground leading-relaxed">{lang === "zh" ? "为了保证平台质量，我们对供应商有以下基本要求：" : "Чтобы поддерживать качество платформы, мы предъявляем минимальные требования к поставщикам:"}</p>
+          </div>
+          <div className="bg-white border border-border rounded-3xl p-7">
+            <ul className="space-y-3">
+              {c.reqs.map((r, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm">
+                  <div className="w-6 h-6 rounded-lg bg-[#C8102E]/10 text-[#C8102E] text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</div>
+                  <span className="leading-relaxed">{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-secondary/30 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{c.tariffsTitle}</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {c.tariffs.map((p, i) => (
+              <div key={i} className={`relative rounded-3xl p-7 ${p.highlight ? "bg-gradient-to-br from-[#8B0000] to-[#C8102E] text-white shadow-2xl scale-[1.02]" : "bg-white border border-border"}`}>
+                {p.highlight && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+                    {lang === "zh" ? "推荐" : "Популярный"}
+                  </div>
+                )}
+                <h3 className="text-xl font-bold font-ibm mb-1">{p.name}</h3>
+                <p className={`text-sm mb-5 ${p.highlight ? "text-white/80" : "text-muted-foreground"}`}>{p.desc}</p>
+                <div className="text-3xl font-bold font-ibm mb-6">{p.price}</div>
+                <ul className="space-y-3 mb-7">
+                  {p.features.map((f, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm">
+                      <Icon name="Check" size={16} className={`flex-shrink-0 mt-0.5 ${p.highlight ? "text-yellow-300" : "text-accent"}`} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => onNav("addCompany")} className={`w-full py-3 rounded-2xl text-sm font-semibold transition-all ${p.highlight ? "bg-white text-[#8B0000] hover:bg-yellow-50" : "bg-foreground text-white hover:bg-foreground/90"}`}>
+                  {c.ctaPrimary}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{c.faqTitle}</h2>
+        </div>
+        <div className="space-y-3">
+          {c.faqs.map((f, i) => (
+            <details key={i} className="group bg-white border border-border rounded-2xl p-5 cursor-pointer">
+              <summary className="flex items-center justify-between font-semibold text-sm list-none">
+                {f.q}
+                <Icon name="ChevronDown" size={16} className="text-muted-foreground group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B0000] to-[#C8102E] p-10 sm:p-14 text-center">
+          <div className="absolute inset-0 hero-grid opacity-30" />
+          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-yellow-400/30 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-red-500/20 blur-3xl" />
+          <div className="relative">
+            <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight text-white mb-4">{c.ctaTitle}</h2>
+            <p className="text-white/85 mb-8 max-w-lg mx-auto">{c.ctaSubtitle}</p>
+            <button onClick={() => onNav("addCompany")} className="btn-modern bg-white text-[#8B0000] font-semibold px-8 py-4 rounded-2xl text-sm inline-flex items-center gap-2">
+              {c.ctaBtn} <Icon name="ArrowRight" size={15} />
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function Index() {
   const [page, setPage] = useState<Page>("home");
   const [activeCourseSlug, setActiveCourseSlug] = useState<string | null>(null);
@@ -2800,6 +3080,7 @@ export default function Index() {
           {page === "chinaMarket" && <ChinaMarketPage onNav={navigate} />}
           {page === "education" && <EducationPage onNav={navigate} onOpenCourse={(slug) => { setActiveCourseSlug(slug); navigate("course"); }} />}
           {page === "course" && activeCourseSlug && <CoursePage slug={activeCourseSlug} onNav={navigate} onBack={() => navigate("education")} />}
+          {page === "chinaSuppliers" && <ChinaSuppliersPage onNav={navigate} />}
           {page === "service" && activeServiceIndex !== null && (
             <ServicePage serviceIndex={activeServiceIndex} t={t} onBack={() => navigate("services")} />
           )}
