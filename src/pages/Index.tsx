@@ -515,6 +515,26 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
         </div>
       </section>
 
+      {homeProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.homeTag}</p>
+              <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.products.homeTitle}</h2>
+              <p className="text-sm text-muted-foreground mt-1">{t.products.homeSubtitle}</p>
+            </div>
+            <button onClick={() => onNav("products")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
+              {t.products.allBtn} <Icon name="ArrowRight" size={14} />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {homeProducts.map((p) => (
+              <ProductCard key={p.id} p={p} t={t} onOpen={onOpenProduct} />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
         <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#7A0000] via-[#C8102E] to-[#FFB81C] p-2 sm:p-3 shadow-2xl shadow-[#8B0000]/20">
           <div className="absolute inset-0 hero-grid opacity-15" />
@@ -612,26 +632,6 @@ function HomePage({ onNav, t, onOpenService, onOpenProduct }: { onNav: (p: Page)
           </div>
         </div>
       </section>
-
-      {homeProducts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-2">{t.products.homeTag}</p>
-              <h2 className="text-3xl sm:text-4xl font-bold font-ibm tracking-tight">{t.products.homeTitle}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{t.products.homeSubtitle}</p>
-            </div>
-            <button onClick={() => onNav("products")} className="text-sm text-foreground font-medium flex items-center gap-1.5 hover:gap-3 transition-all bg-secondary/60 px-4 py-2 rounded-xl hover:bg-secondary">
-              {t.products.allBtn} <Icon name="ArrowRight" size={14} />
-            </button>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {homeProducts.map((p) => (
-              <ProductCard key={p.id} p={p} t={t} onOpen={onOpenProduct} />
-            ))}
-          </div>
-        </section>
-      )}
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
         <div className="relative bg-gradient-to-br from-foreground to-foreground/95 rounded-[32px] p-8 sm:p-14 overflow-hidden">
